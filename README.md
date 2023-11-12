@@ -6,11 +6,15 @@
 
 #### From scratch with zero prior knowledge assumed:
 
+#### Section 1
+
 - Node.js Basics & Basic Core Modules
 
 - Parsing Requests & Sending Responses
 
 - Rendering HTML Dynamically (on the Server)
+
+#### Section 2
 
 - Using Express.js
 
