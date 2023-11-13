@@ -14,6 +14,8 @@
 
 - Rendering HTML Dynamically (on the Server)
 
+- Improved Development Workflow and Debugging
+
 #### Section 2
 
 - Using Express.js
