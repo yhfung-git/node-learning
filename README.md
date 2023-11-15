@@ -20,6 +20,18 @@
 
 - Using Express.js
 
+- Handling different routes
+
+- Parsing incoming requests
+
+- Serving files statically
+
+- Working with dynamic content
+
+- Adding templating engines
+
+#### Section 3
+
 - Working with Files and generating PDFs on the Server (on-the-fly)
 
 - File Up- and Download
