@@ -1,0 +1,36 @@
+.user-form {
+  width: 20rem;
+  max-width: 90%;
+}
+
+.form-control {
+  margin: 1rem 0;
+}
+
+.form-control label,
+.form-control input {
+  display: block;
+  width: 100%;
+}
+
+.form-control input {
+  border: 1px solid #4F6F52;
+  border-radius: 3px;
+  font: inherit;
+}
+
+button {
+  font: inherit;
+  border-radius: 3px;
+  border: 1px solid #4F6F52;
+  color: #f4ce14;
+  background-color: #4F6F52;
+  cursor: pointer;
+}
+
+button:hover,
+button:active {
+  background-color: #f4ce14;
+  color: #4F6F52;
+  cursor: pointer;
+}
