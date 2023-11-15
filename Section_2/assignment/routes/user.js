@@ -11,7 +11,6 @@ router.get("/users", (req, res, next) => {
 });
 
 router.post("/users", (req, res, next) => {
-  console.log(req.body);
   res.redirect("/");
 });
 
