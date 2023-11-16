@@ -7,8 +7,8 @@ block content
     main
       h1 My Products
       if prods.length > 0
-        each products in prods
-          .grid
+        .grid
+          each products in prods
             article.card.product-item
               header.card__header
                 h1.product__title #{products.title}
