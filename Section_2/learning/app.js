@@ -7,11 +7,12 @@ const app = express();
 const adminData = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 
+// To use pug templating engines for rendering dynamic html content
 app.set("view engine", "pug");
 app.set("views", "views");
 
 app.use(express.urlencoded({ extended: true })); // To handle parsing incoming requests
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "public"))); // To handling static files requests like JS, CSS, Images, etc...
 
 app.use("/admin", adminData.routes);
 app.use(shopRoutes);
