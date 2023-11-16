@@ -2,10 +2,10 @@ const path = require("path");
 
 const express = require("express");
 
+const app = express();
+
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
-
-const app = express();
 
 app.use(express.urlencoded({ extended: true })); // To handle parsing incoming requests
 app.use(express.static(path.join(__dirname, "public")));
