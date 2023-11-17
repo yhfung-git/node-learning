@@ -12,7 +12,7 @@ router.get("/", (req, res, next) => {
   res.render("main", { pageTitle: "Home", path: "/", formCSS: true });
 });
 
-router.post("/", (req, res, next) => {
+router.post("/add-user", (req, res, next) => {
   users.push({ username: req.body.username });
   res.redirect("/users");
 });
