@@ -1,0 +1,14 @@
+<main>
+  <h1>User List</h1>
+  <% if (users.length > 0) { %>
+    <ul class="users__user-list">
+      <% for (let user of users) { %>
+        <div class="users__border">
+          <li class="users__user"><%= user.username %></li>
+        </div>
+      <% } %>
+    </ul>
+  <% } else { %>
+    <p>NO USER ADDED</p>
+  <% } %>
+</main>
