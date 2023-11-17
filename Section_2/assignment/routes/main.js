@@ -1,13 +1,21 @@
-const path = require("path");
+// const path = require("path");
 
 const express = require("express");
 
-const rootDir = require("../utils/path");
+// const rootDir = require("../utils/path");
 
 const router = express.Router();
 
+const users = [];
+
 router.get("/", (req, res, next) => {
-  res.sendFile(path.join(rootDir, "views", "main.html"));
+  res.render("main", { pageTitle: "Home", path: "/", formCSS: true });
 });
 
-module.exports = router;
+router.post("/", (req, res, next) => {
+  users.push({ username: req.body.username });
+  res.redirect("/users");
+});
+
+exports.routes = router;
+exports.users = users;
