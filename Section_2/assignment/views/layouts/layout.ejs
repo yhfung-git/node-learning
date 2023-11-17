@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= pageTitle %></title>
+    <link rel="stylesheet" href="/css/main.css" />
+    <% if (typeof formCSS !== "undefined" && formCSS) { %>
+      <link rel="stylesheet" href="/css/form.css" />
+    <% } %>
+    <% if (typeof userListCSS !== "undefined" && userListCSS) { %>
+      <link rel="stylesheet" href="/css/userList.css" />
+    <% } %>
+  </head>
+  <body>
+    <header class="main-header">
+      <nav class="main-header__nav">
+        <ul class="main-header__user-list">
+          <li class="main-header__user"><a class="<%= path === "/" ? "active" : ""  %>" href="/">Home</a></li>
+          <li class="main-header__user"><a class="<%= path === "/users" ? "active" : ""  %>" href="/users">Users</a></li>
+        </ul>
+      </nav>
+    </header>
+    <%- body %>
+  </body>
+</html>
