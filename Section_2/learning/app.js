@@ -1,17 +1,24 @@
 const path = require("path");
 
 const express = require("express");
-const { engine } = require("express-handlebars");
+// const { engine } = require("express-handlebars");
+const expressLayouts = require("express-ejs-layouts");
 
 const app = express();
 
 const adminData = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 
+// To use "ejs" templating engines for rendering dynamic html content
+app.use(expressLayouts);
+app.set("layout", "./layouts/main-layout");
+app.set("view engine", "ejs");
+// app.set("views", "./views"); // include this to make the engine works if not using the express-ejs-layouts
+
 // To use "handlebars" templating engines for rendering dynamic html content
-app.engine("handlebars", engine({ defaultLayout: "main-layout" }));
-app.set("view engine", "handlebars");
-app.set("views", "./views");
+// app.engine("handlebars", engine({ defaultLayout: "main-layout" }));
+// app.set("view engine", "handlebars");
+// app.set("views", "./views");
 
 // To use "pug" templating engines for rendering dynamic html content
 // app.set("view engine", "pug");
@@ -25,7 +32,7 @@ app.use(shopRoutes);
 
 app.use((req, res, next) => {
   // res.status(404).sendFile(path.join(__dirname, "views", "404.html"));
-  res.status(404).render("404", { pageTitle: "Page Not Found" });
+  res.status(404).render("404", { pageTitle: "Page Not Found", path: null });
 });
 
 app.listen(3000);
