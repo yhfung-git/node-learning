@@ -15,7 +15,7 @@ app.use(expressLayout);
 app.set("view engine", "ejs");
 app.set("layout", "./layouts/main-layout");
 
-app.use("/admin", adminRoutes.routes);
+app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 
 app.use((req, res, next) => {
