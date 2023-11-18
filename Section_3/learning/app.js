@@ -7,6 +7,7 @@ const app = express();
 
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
+const errorsController = require("./controllers/errors");
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
@@ -18,8 +19,6 @@ app.set("layout", "./layouts/main-layout");
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 
-app.use((req, res, next) => {
-  res.status(404).render("404", { pageTitle: "Page Not Found", path: null });
-});
+app.use(errorsController.error404);
 
 app.listen(3000);
