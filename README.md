@@ -32,11 +32,17 @@
 
 #### Section 3
 
-- Working with Files and generating PDFs on the Server (on-the-fly)
-
-- File Up- and Download
-
 - Using the Model-View-Controller (MVC) Pattern
+
+- Fetching data in files via the Model
+
+- CRUD (Create, Read, Update, Delete)
+
+- Extracting dynamic params & Using query params
+
+- Dynamic Routes & Advanced Models
+
+### Section 4
 
 - Using Node.js with SQL (MySQL) and Sequelize
 
@@ -49,6 +55,10 @@
 - Sending E-Mails
 
 - Validating User Input
+
+- Working with Files and generating PDFs on the Server (on-the-fly)
+
+- File Up- and Download
 
 - Data Pagination
 
