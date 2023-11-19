@@ -6,7 +6,7 @@
 
 #### From scratch with zero prior knowledge assumed:
 
-#### Section 1
+### Section 1
 
 - Node.js Basics & Basic Core Modules
 
@@ -16,7 +16,7 @@
 
 - Improved Development Workflow and Debugging
 
-#### Section 2
+### Section 2
 
 - Using Express.js
 
@@ -30,7 +30,7 @@
 
 - Adding templating engines
 
-#### Section 3
+### Section 3
 
 - Using the Model-View-Controller (MVC) Pattern
 
