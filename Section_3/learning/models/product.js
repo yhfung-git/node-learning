@@ -16,7 +16,7 @@ const getProductFromFile = (cb) => {
 
 module.exports = class Product {
   constructor(title, imageUrl, description, price) {
-    this.id = Date.now();
+    this.id = Date.now().toString();
     this.title = title;
     this.imageUrl = imageUrl;
     this.description = description;
@@ -34,5 +34,14 @@ module.exports = class Product {
 
   static fetchAll(cb) {
     getProductFromFile(cb);
+  }
+
+  static findById(id, cb) {
+    getProductFromFile((products) => {
+      const product = products.find((product) => {
+        return product.id === id;
+      });
+      cb(product);
+    });
   }
 };
