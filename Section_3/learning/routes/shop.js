@@ -7,6 +7,8 @@ const cartsController = require("../controllers/carts");
 
 router.get("/cart", cartsController.getCart);
 
+router.post("/cart", cartsController.postCart);
+
 router.get("/checkout", cartsController.getCheckout);
 
 router.get("/orders", cartsController.getOrders);
