@@ -31,7 +31,7 @@ module.exports = class Cart {
         cart.products = [...cart.products, updatedProduct];
       }
       // Updating the total price of the cart by adding the product price
-      cart.totalPrice += +productPrice.toFixed(2);
+      cart.totalPrice += +productPrice;
       // Writing the updated cart back to the file
       fs.writeFile(cartDataPath, JSON.stringify(cart), (err) => {
         // Logging an error if there is any
@@ -60,6 +60,26 @@ module.exports = class Cart {
       fs.writeFile(cartDataPath, JSON.stringify(cartProducts), (err) => {
         console.log(err);
       });
+    });
+  }
+
+  static updateProductPrice(id, productPrice) {
+    fs.readFile(cartDataPath, (err, fileContent) => {
+      if (err) {
+        return;
+      }
+      const cart = { ...JSON.parse(fileContent) };
+      const cartProductIndex = cart.products.findIndex((product) => {
+        return product.id === id;
+      });
+      const cartProduct = cart.products[cartProductIndex];
+      if (cartProduct) {
+        const productQty = cartProduct.qty;
+        cart.totalPrice += +(productPrice * productQty).toFixed(2);
+        fs.writeFile(cartDataPath, JSON.stringify(cart), (err) => {
+          console.log(err);
+        });
+      }
     });
   }
 };
