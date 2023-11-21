@@ -27,12 +27,19 @@ module.exports = class Product {
 
   save() {
     getProductFromFile((products) => {
+      let updatedProductPrice = 0;
       if (this.id) {
         const existingProductIndex = products.findIndex((product) => {
           return product.id === this.id;
         });
         const updatedProducts = [...products];
+        const newProductPrice = this.price;
+        const oldProductPrice = updatedProducts[existingProductIndex].price;
+        updatedProductPrice = +(newProductPrice - oldProductPrice);
         updatedProducts[existingProductIndex] = this;
+        if (updatedProductPrice !== 0) {
+          Cart.updateProductPrice(this.id, updatedProductPrice);
+        }
         fs.writeFile(
           productDataPath,
           JSON.stringify(updatedProducts),
