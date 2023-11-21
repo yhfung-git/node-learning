@@ -4,6 +4,8 @@ const fs = require("fs");
 const dirPath = require("../utils/path");
 const productDataPath = path.join(dirPath, "data", "products.json");
 
+const Cart = require("./cart");
+
 const getProductFromFile = (cb) => {
   fs.readFile(productDataPath, (err, fileContent) => {
     if (err) {
@@ -58,6 +60,25 @@ module.exports = class Product {
         return product.id === id;
       });
       cb(product);
+    });
+  }
+
+  static deleteById(id) {
+    getProductFromFile((products) => {
+      const product = products.find((product) => {
+        return product.id === id;
+      });
+      // Only keep the elements which return true
+      const updatedProducts = products.filter((product) => {
+        return product.id !== id;
+      });
+      fs.writeFile(productDataPath, JSON.stringify(updatedProducts), (err) => {
+        if (!err) {
+          Cart.deleteProduct(id, product.price);
+        } else {
+          console.log(err);
+        }
+      });
     });
   }
 };
