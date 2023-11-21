@@ -47,8 +47,11 @@ module.exports = class Cart {
       }
       const cartProducts = { ...JSON.parse(fileContent) };
       const product = cartProducts.products.find((product) => {
-        return product.id === id;
+        return product.id === id || null;
       });
+      if (product == null) {
+        return;
+      }
       const productQty = product.qty;
       cartProducts.products = cartProducts.products.filter((product) => {
         return product.id !== id;
