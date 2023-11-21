@@ -29,9 +29,22 @@ exports.getEditProduct = (req, res, next) => {
   });
 };
 
+exports.postEditProduct = (req, res, next) => {
+  const { productId, title, imageUrl, description, price } = req.body;
+  const updatedProduct = new Product(
+    productId,
+    title,
+    imageUrl,
+    description,
+    price
+  );
+  updatedProduct.save();
+  res.redirect("/admin/product-list");
+};
+
 exports.postAddProduct = (req, res, next) => {
-  const { title, imageUrl, description, price } = req.body;
-  const product = new Product(title, imageUrl, description, price);
+  const { id, title, imageUrl, description, price } = req.body;
+  const product = new Product(id, title, imageUrl, description, price);
   product.save();
   res.redirect("/");
 };
