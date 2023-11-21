@@ -31,10 +31,30 @@ module.exports = class Cart {
         cart.products = [...cart.products, updatedProduct];
       }
       // Updating the total price of the cart by adding the product price
-      cart.totalPrice += +productPrice;
+      cart.totalPrice += +productPrice.toFixed(2);
       // Writing the updated cart back to the file
       fs.writeFile(cartDataPath, JSON.stringify(cart), (err) => {
         // Logging an error if there is any
+        console.log(err);
+      });
+    });
+  }
+
+  static deleteProduct(id, productPrice) {
+    fs.readFile(cartDataPath, (err, fileContent) => {
+      if (err) {
+        return;
+      }
+      const cartProducts = { ...JSON.parse(fileContent) };
+      const product = cartProducts.products.find((product) => {
+        return product.id === id;
+      });
+      const productQty = product.qty;
+      cartProducts.products = cartProducts.products.filter((product) => {
+        return product.id !== id;
+      });
+      cartProducts.totalPrice -= +(productPrice * productQty).toFixed(2);
+      fs.writeFile(cartDataPath, JSON.stringify(cartProducts), (err) => {
         console.log(err);
       });
     });
