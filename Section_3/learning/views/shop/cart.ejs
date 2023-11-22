@@ -20,11 +20,15 @@
             <%= productData.description %>
           </p>
         </div>
+        <form action="/cart-delete-product" method="POST">
+          <input type="hidden" name="productId" value="<%= productData.id %>">
+          <button class="btn" type="submit">Delete</button>
+        </form>
       </article>
     <% }) %>
   </div>
   <form action="/checkout" method="POST">
-    <button class="btn">Checkout</button>
+    <button class="btn" type="submit">Checkout</button>
   </form>
 <% } else { %>
   <p>No Products in Cart!</p>
