@@ -2,9 +2,27 @@ const Cart = require("../models/cart");
 const Product = require("../models/product");
 
 exports.getCart = (req, res, next) => {
-  res.render("shop/cart", {
-    pageTitle: "Your Cart",
-    path: "/cart",
+  Cart.getCart((cart) => {
+    Product.fetchAll((products) => {
+      const cartProducts = [];
+      for (const product of products) {
+        const cartProduct = cart.products.find((cartProduct) => {
+          return cartProduct.id === product.id;
+        });
+        if (cartProduct) {
+          cartProducts.push({
+            productData: product,
+            productQty: cartProduct.qty,
+          });
+        }
+      }
+      res.render("shop/cart", {
+        pageTitle: "Your Cart",
+        path: "/cart",
+        products: cartProducts,
+        productCSS: true,
+      });
+    });
   });
 };
 
