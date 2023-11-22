@@ -20,7 +20,7 @@
             <%= productData.description %>
           </p>
         </div>
-        <form action="/cart-delete-product" method="POST">
+        <form class="btn-cart-delete" action="/cart-delete-product" method="POST">
           <input type="hidden" name="productId" value="<%= productData.id %>">
           <button class="btn" type="submit">Delete</button>
         </form>
