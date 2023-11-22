@@ -188,6 +188,11 @@ main {
   cursor: pointer;
 }
 
+.btn-cart-delete {
+  text-align: center;
+  padding: 1rem;
+}
+
 .btn:hover,
 .btn:active {
   background-color: #00695c;
