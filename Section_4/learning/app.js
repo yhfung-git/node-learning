@@ -8,6 +8,15 @@ const app = express();
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 const errorsController = require("./controllers/errors");
+const db = require("./utils/database");
+
+db.execute("SELECT * FROM products")
+  .then((result) => {
+    console.log(result[0], result[1]);
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
