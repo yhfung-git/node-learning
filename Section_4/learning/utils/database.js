@@ -1,4 +1,5 @@
-const mysql = require("mysql2");
+// Require mysql2 to be installed in oder to use Sequelize
+const { Sequelize } = require("sequelize");
 
 require("dotenv").config();
 
@@ -7,11 +8,9 @@ const dbUser = process.env.DB_USER;
 const dbName = process.env.DB_NAME;
 const dbPassword = process.env.DB_PASSWORD;
 
-const pool = mysql.createPool({
+const sequelize = new Sequelize(dbName, dbUser, dbPassword, {
   host: dbHost,
-  user: dbUser,
-  database: dbName,
-  password: dbPassword,
+  dialect: "mysql",
 });
 
-module.exports = pool.promise();
+module.exports = sequelize;
