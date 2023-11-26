@@ -1,8 +1,8 @@
 const Product = require("../models/product");
 
 exports.getIndex = (req, res, next) => {
-  Product.fetchAll()
-    .then(([products]) => {
+  Product.findAll()
+    .then((products) => {
       res.render("shop/index", {
         pageTitle: "Shop",
         products: products,
@@ -10,12 +10,14 @@ exports.getIndex = (req, res, next) => {
         productCSS: true,
       });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 exports.getProducts = (req, res, next) => {
-  Product.fetchAll()
-    .then(([products]) => {
+  Product.findAll()
+    .then((products) => {
       res.render("shop/product-list", {
         pageTitle: "Your Products",
         products: products,
@@ -23,18 +25,23 @@ exports.getProducts = (req, res, next) => {
         productCSS: true,
       });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 exports.getProduct = (req, res, next) => {
   const productId = req.params.productId;
-  Product.findById(productId)
-    .then(([product]) => {
+  Product.findByPk(productId)
+    .then((product) => {
       res.render("shop/product-detail", {
-        product: product[0],
-        pageTitle: product[0].title,
+        product: product,
+        pageTitle: product.title,
         path: "/products",
+        productCSS: true,
       });
     })
     .catch((err) => console.log(err));
+  // An alternative way to get one of the products
+  // Product.findAll({ where: { id: productId } });
 };
