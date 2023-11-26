@@ -28,7 +28,7 @@ exports.getCart = (req, res, next) => {
 
 exports.postCartDeleteProduct = (req, res, next) => {
   const productId = req.body.productId;
-  Product.findById(productId, (product) => {
+  Product.findByPk(productId, (product) => {
     Cart.deleteProduct(productId, product.price);
     res.redirect("/cart");
   });
@@ -36,7 +36,7 @@ exports.postCartDeleteProduct = (req, res, next) => {
 
 exports.postCart = (req, res, next) => {
   const productId = req.body.productId;
-  Product.findById(productId, (product) => {
+  Product.findByPk(productId, (product) => {
     Cart.addProduct(productId, product.price);
   });
   res.redirect("/cart");
