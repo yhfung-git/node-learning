@@ -1,45 +1,62 @@
 const Cart = require("../models/cart");
 const Product = require("../models/product");
 
-exports.getCart = (req, res, next) => {
-  Cart.getCart((cart) => {
-    Product.fetchAll((products) => {
-      const cartProducts = [];
-      for (const product of products) {
-        const cartProduct = cart.products.find((cartProduct) => {
-          return cartProduct.id === product.id;
-        });
-        if (cartProduct) {
-          cartProducts.push({
-            productData: product,
-            productQty: cartProduct.qty,
-          });
-        }
-      }
-      res.render("shop/cart", {
-        pageTitle: "Your Cart",
-        path: "/cart",
-        products: cartProducts,
-        productCSS: true,
-      });
+exports.getCart = async (req, res, next) => {
+  try {
+    const cart = await req.user.getCart();
+    const products = await cart.getProducts();
+
+    res.render("shop/cart", {
+      pageTitle: "Your Cart",
+      path: "/cart",
+      products: products,
+      productCSS: true,
     });
-  });
+  } catch (err) {
+    console.log(err);
+  }
 };
 
-exports.postCartDeleteProduct = (req, res, next) => {
-  const productId = req.body.productId;
-  Product.findByPk(productId, (product) => {
-    Cart.deleteProduct(productId, product.price);
+exports.postCart = async (req, res, next) => {
+  try {
+    const { productId } = req.body;
+    let product = await Product.findByPk(productId);
+
+    const cart = await req.user.getCart();
+    const cartProduct = await cart.getProducts({ where: { id: productId } });
+
+    let newQuantity = 1;
+
+    // check if the product exists in the cart, if yes, +1 quantity
+    if (cartProduct.length > 0) {
+      product = cartProduct[0];
+      const oldQuantity = product.cartItem.quantity;
+      newQuantity = oldQuantity + 1;
+    }
+
+    await cart.addProduct(product, {
+      through: { quantity: newQuantity },
+    });
+
     res.redirect("/cart");
-  });
+  } catch (err) {
+    console.log(err);
+  }
 };
 
-exports.postCart = (req, res, next) => {
+exports.postCartDeleteProduct = async (req, res, next) => {
   const productId = req.body.productId;
-  Product.findByPk(productId, (product) => {
-    Cart.addProduct(productId, product.price);
-  });
-  res.redirect("/cart");
+  try {
+    const cart = await req.user.getCart();
+    const product = await cart.getProducts({ where: { id: productId } });
+
+    await product[0].cartItem.destroy();
+
+    console.log("Product removed from Cart!");
+    res.redirect("/cart");
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 exports.getCheckout = (req, res, next) => {
