@@ -21,13 +21,14 @@ app.use(expressLayout);
 app.set("view engine", "ejs");
 app.set("layout", "./layouts/main-layout");
 
-app.use((req, res, next) => {
-  User.findByPk(1)
-    .then((user) => {
-      req.user = user;
-      next();
-    })
-    .catch((err) => console.log(err));
+app.use(async (req, res, next) => {
+  try {
+    const user = await User.findByPk(1);
+    req.user = user;
+    next();
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 app.use("/admin", adminRoutes);
@@ -46,21 +47,28 @@ Cart.belongsToMany(Product, { through: CartItem });
 // A product can be in multiple carts, productId will be store in CartItem
 Product.belongsToMany(Cart, { through: CartItem });
 
-sequelize
-  .sync()
-  .then((result) => {
-    // console.log(result);
-    return User.findByPk(1);
-  })
-  .then((user) => {
-    return !user
-      ? User.create({ username: "Howard", email: "howard@gmail.com" })
-      : user;
-  })
-  .then((user) => {
-    // console.log(user);
+const startApp = async () => {
+  try {
+    await sequelize.sync();
+
+    // User
+    let user = await User.findByPk(1);
+    if (!user) {
+      user = await User.create({
+        username: "Howard",
+        email: "howard@gmail.com",
+      });
+    }
+
+    // Cart
+    let cart = await user.getCart();
+    if (!cart) {
+      cart = await user.createCart();
+    }
+
     app.listen(3000);
-  })
-  .catch((err) => {
+  } catch (err) {
     console.log(err);
-  });
+  }
+};
+startApp();
