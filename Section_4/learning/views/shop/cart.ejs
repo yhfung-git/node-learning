@@ -1,27 +1,27 @@
 <h1>Your Cart</h1>
 <% if (products.length > 0) { %>
   <div class="grid">
-    <% products.forEach(({ productData, productQty }) => { %>
+    <% products.forEach((product) => { %>
       <article class="card product-item">
         <header class="card__header">
-          <h1 class="product__title"><%= productData.title %> (<%= productQty %>)</h1>
+          <h1 class="product__title"><%= product.title %> (<%= product.cartItem.quantity %>)</h1>
         </header>
         <div class="card__image">
           <img
-            src="<%= productData.imageUrl %>"
-            alt="<%= productData.title %>"
+            src="<%= product.imageUrl %>"
+            alt="<%= product.title %>"
           />
         </div>
         <div class="card__content">
           <h2 class="product__price">
-            $<%= productData.price %>
+            $<%= product.price %>
           </h2>
           <p class="product__description">
-            <%= productData.description %>
+            <%= product.description %>
           </p>
         </div>
         <form class="btn-cart-delete" action="/cart-delete-product" method="POST">
-          <input type="hidden" name="productId" value="<%= productData.id %>">
+          <input type="hidden" name="productId" value="<%= product.id %>">
           <button class="btn" type="submit">Delete</button>
         </form>
       </article>
