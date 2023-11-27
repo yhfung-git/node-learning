@@ -63,7 +63,7 @@ main {
   position: fixed;
   left: 0;
   top: 0;
-  background: white;
+  background: #ffffff;
   z-index: 10;
   padding: 2rem 1rem 1rem 2rem;
   transform: translateX(-100%);
@@ -98,17 +98,17 @@ main {
 .mobile-nav__item a:hover,
 .mobile-nav__item a.active {
   background: #00695c;
-  color: white;
+  color: #ffffff;
   border-radius: 3px;
 }
 
 #side-menu-toggle {
-  border: 1px solid white;
+  border: 1px solid #ffffff;
   font: inherit;
   padding: 0.5rem;
   display: block;
   background: transparent;
-  color: white;
+  color: #ffffff;
   cursor: pointer;
 }
 
@@ -194,7 +194,7 @@ main {
   font: inherit;
   border: 1px solid #00695c;
   color: #00695c;
-  background: white;
+  background: #ffffff;
   border-radius: 3px;
   cursor: pointer;
 }
@@ -204,10 +204,20 @@ main {
   padding: 1rem;
 }
 
+.btn-delete {
+  color: #ff0000;
+  border: 1px solid #ff0000;
+}
+
+.btn-delete:hover,
+.btn-delete:active {
+  background-color: #ff0000 !important;
+}
+
 .btn:hover,
 .btn:active {
   background-color: #00695c;
-  color: white;
+  color: #ffffff;
 }
 
 @media (min-width: 768px) {
