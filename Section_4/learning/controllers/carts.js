@@ -1,4 +1,3 @@
-const Cart = require("../models/cart");
 const Product = require("../models/product");
 
 exports.getCart = async (req, res, next) => {
@@ -45,8 +44,9 @@ exports.postCart = async (req, res, next) => {
 };
 
 exports.postCartDeleteProduct = async (req, res, next) => {
-  const productId = req.body.productId;
   try {
+    const productId = req.body.productId;
+
     const cart = await req.user.getCart();
     const product = await cart.getProducts({ where: { id: productId } });
 
