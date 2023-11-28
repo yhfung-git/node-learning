@@ -36,7 +36,7 @@ exports.postAddProduct = async (req, res, next) => {
     });
 
     if (!createdProduct) {
-      console.log("Created Failed!");
+      console.log("Create Product Failed!");
       return res.render("/admin/add-product");
     }
 
@@ -91,7 +91,7 @@ exports.postEditProduct = async (req, res, next) => {
     );
 
     if (!updatedProduct) {
-      console.log("Updated Failed!");
+      console.log("Update Product Failed!");
       return res.render("/admin/product-list");
     }
 
@@ -111,7 +111,7 @@ exports.postDeleteProduct = async (req, res, next) => {
     });
 
     if (!deletedProduct) {
-      console.log("Destroyed Failed!");
+      console.log("Destroy Product Failed!");
       return res.render("/admin/product-list");
     }
 
