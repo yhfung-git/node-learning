@@ -37,7 +37,7 @@ exports.postAddProduct = async (req, res, next) => {
 
     if (!createdProduct) {
       console.log("Create Product Failed!");
-      return res.render("/admin/add-product");
+      return res.redirect("/admin/add-product");
     }
 
     console.log("Product Created!");
@@ -92,7 +92,7 @@ exports.postEditProduct = async (req, res, next) => {
 
     if (!updatedProduct) {
       console.log("Update Product Failed!");
-      return res.render("/admin/product-list");
+      return res.redirect("/admin/product-list");
     }
 
     console.log("Product Updated!");
@@ -112,7 +112,7 @@ exports.postDeleteProduct = async (req, res, next) => {
 
     if (!deletedProduct) {
       console.log("Destroy Product Failed!");
-      return res.render("/admin/product-list");
+      return res.redirect("/admin/product-list");
     }
 
     console.log("Product Destroyed!");
