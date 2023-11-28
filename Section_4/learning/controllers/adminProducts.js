@@ -28,12 +28,17 @@ exports.postAddProduct = async (req, res, next) => {
   try {
     const { title, imageUrl, description, price } = req.body;
 
-    await req.user.createProduct({
+    const createdProduct = await req.user.createProduct({
       title: title,
       imageUrl: imageUrl,
       description: description,
       price: price,
     });
+
+    if (!createdProduct) {
+      console.log("Created Failed!");
+      return res.render("/admin/add-product");
+    }
 
     console.log("Product Created!");
     res.redirect("/admin/product-list");
@@ -47,14 +52,16 @@ exports.getEditProduct = async (req, res, next) => {
   try {
     const editMode = req.query.edit;
     if (!editMode) {
-      return res.redirect("/");
+      console.log("Not Edit Mode");
+      return res.redirect("/admin/product-list");
     }
 
     const productId = req.params.productId;
-    const products = await req.user.getProducts({ where: { id: productId } });
-    const product = products[0];
+    // [product] = destructuring and assign the first element of the array
+    const [product] = await req.user.getProducts({ where: { id: productId } });
     if (!product) {
-      return res.redirect("/");
+      console.log("Get Edit Product Failed!");
+      return res.redirect("/admin/product-list");
     }
 
     res.render("admin/edit-product", {
@@ -67,80 +74,50 @@ exports.getEditProduct = async (req, res, next) => {
   } catch (err) {
     console.log(err);
   }
-  // An alternative way to get Edit
-
-  // Product.findByPk(productId)
-  //   .then((product) => {
-  //     if (!product) {
-  //       return res.redirect("/");
-  //     }
-  //     res.render("admin/edit-product", {
-  //       pageTitle: `Edit ${product.title}`,
-  //       path: "/admin/edit-product",
-  //       formCSS: true,
-  //       editing: editMode,
-  //       product: product,
-  //     });
-  //   })
-  //   .catch((err) => console.log(err));
 };
 
 exports.postEditProduct = async (req, res, next) => {
   try {
     const { productId, title, imageUrl, description, price } = req.body;
 
-    await Product.update(
+    const updatedProduct = await Product.update(
       {
         title: title,
         imageUrl: imageUrl,
         description: description,
         price: price,
       },
-      { where: { id: productId } }
+      { where: { id: productId, userId: req.user.id } }
     );
+
+    if (!updatedProduct) {
+      console.log("Updated Failed!");
+      return res.render("/admin/product-list");
+    }
 
     console.log("Product Updated!");
     res.redirect("/admin/product-list");
   } catch (err) {
     console.log(err);
   }
-  // An alternative way to update
-
-  // Product.findByPk(productId)
-  //   .then((product) => {
-  //     (product.title = title),
-  //       (product.imageUrl = imageUrl),
-  //       (product.description = description),
-  //       (product.price = price);
-  //     return product.save();
-  //   })
-  //   .then((result) => {
-  //     console.log("Product Updated!");
-  //     res.redirect("/admin/product-list");
-  //   })
-  //   .catch((err) => console.log(err));
 };
 
 exports.postDeleteProduct = async (req, res, next) => {
   try {
     const productId = req.body.productId;
 
-    await Product.destroy({ where: { id: productId } });
+    const deletedProduct = await Product.destroy({
+      where: { id: productId, userId: req.user.id },
+    });
+
+    if (!deletedProduct) {
+      console.log("Destroyed Failed!");
+      return res.render("/admin/product-list");
+    }
 
     console.log("Product Destroyed!");
     res.redirect("/admin/product-list");
   } catch (err) {
     console.log(err);
   }
-  // An alternative way to delete
-
-  // Product.findByPk(productId)
-  //   .then((product) => {
-  //     return product.destroy();
-  //   })
-  //   .then((result) => {
-  //     console.log("Product Destroyed!");
-  //     res.redirect("/admin/product-list");
-  //   })
-  //   .catch((err) => console.log(err));
 };
