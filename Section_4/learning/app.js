@@ -13,6 +13,8 @@ const Product = require("./models/product");
 const User = require("./models/user");
 const Cart = require("./models/cart");
 const CartItem = require("./models/cart-item");
+const Order = require("./models/order");
+const OrderItem = require("./models/order-item");
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
@@ -36,7 +38,7 @@ app.use(shopRoutes);
 
 app.use(errorsController.error404);
 
-// constraints: true = Ensures the product has a userId, onDelete: "CASCADE" = if the user deleted, products with its userId will be deleted as well
+// constraints: true = Ensures the product has a valid userId; onDelete: "CASCADE" = if the user deleted, products with its userId will be deleted as well
 Product.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
 User.hasMany(Product);
 User.hasOne(Cart);
@@ -46,6 +48,13 @@ Cart.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
 Cart.belongsToMany(Product, { through: CartItem });
 // A product can be in multiple carts, productId will be store in CartItem
 Product.belongsToMany(Cart, { through: CartItem });
+User.hasMany(Order);
+// A single order belongs to one single user
+Order.belongsTo(User, { constraints: true });
+// An order can have multiple products
+Order.belongsToMany(Product, { through: OrderItem });
+// A product can be in multiple orders
+Product.belongsToMany(Order, { through: OrderItem });
 
 const startApp = async () => {
   try {
