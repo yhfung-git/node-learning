@@ -1,0 +1,32 @@
+<h1>Your Orders</h1>
+<% if (orders.length > 0) { %>
+  <% orders.forEach(order => { %>
+    <h2 class="order__id">#<%= order.id %></h2>
+    <div class="grid">
+      <% order.products.forEach(product => { %>
+        <article class="card product-item">
+          <header class="card__header">
+            <h1 class="product__title"><%= product.title %> (<%= product.orderItem.quantity %>)</h1>
+          </header>
+          <div class="card__image">
+            <img
+              src="<%= product.imageUrl %>"
+              alt="<%= product.title %>"
+            />
+          </div>
+          <div class="card__content">
+            <h2 class="product__price">
+              $<%= product.price %>
+            </h2>
+            <p class="product__description">
+              <%= product.description %>
+            </p>
+          </div>
+        </article>
+      <% }); %>
+    </div>
+    <hr class="order__hr">
+  <% }); %>
+<% } else { %>
+  <p>No orders</p>
+<% } %>
