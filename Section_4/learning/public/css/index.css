@@ -140,6 +140,20 @@ main {
   align-items: stretch;
 }
 
+.order__id {
+  text-align: center;
+  border-radius: 3px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+  width: 5rem;
+  margin: 1rem auto;
+  padding: 0.5rem;
+}
+
+.order__hr {
+  width: 100%;
+  color: #00000042;
+}
+
 .card {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
 }
