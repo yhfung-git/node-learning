@@ -1,16 +1,31 @@
-// Require mysql2 to be installed in oder to use Sequelize
-const { Sequelize } = require("sequelize");
+const { MongoClient } = require("mongodb");
+const { get } = require("../routes/admin");
 
 require("dotenv").config();
 
-const dbHost = process.env.DB_HOST;
-const dbUser = process.env.DB_USER;
-const dbName = process.env.DB_NAME;
-const dbPassword = process.env.DB_PASSWORD;
+let _db;
 
-const sequelize = new Sequelize(dbName, dbUser, dbPassword, {
-  host: dbHost,
-  dialect: "mysql",
-});
+const url = process.env.MONGODB_URL;
+const client = new MongoClient(url);
 
-module.exports = sequelize;
+const mongoConnect = async () => {
+  try {
+    await client.connect();
+    // console.log(client);
+    console.log("Successfully connected to Atlas!");
+    _db = client.db();
+  } catch (err) {
+    console.log("Error connecting to MongoDB:", err.stack);
+    throw err;
+  }
+};
+
+const getDb = () => {
+  if (!_db) {
+    throw new Error("Database not connected!");
+  }
+  return _db;
+};
+
+exports.mongoConnect = mongoConnect;
+exports.getDb = getDb;
