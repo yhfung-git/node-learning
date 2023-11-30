@@ -2,7 +2,7 @@ const Product = require("../models/product");
 
 exports.getIndex = async (req, res, next) => {
   try {
-    const products = await Product.findAll();
+    const products = await Product.fetchAll();
 
     res.render("shop/index", {
       pageTitle: "Shop",
@@ -17,7 +17,7 @@ exports.getIndex = async (req, res, next) => {
 
 exports.getProducts = async (req, res, next) => {
   try {
-    const products = await req.user.getProducts();
+    const products = await Product.fetchAll();
 
     res.render("shop/product-list", {
       pageTitle: "Your Products",
@@ -33,7 +33,12 @@ exports.getProducts = async (req, res, next) => {
 exports.getProduct = async (req, res, next) => {
   try {
     const productId = req.params.productId;
-    const product = await Product.findByPk(productId);
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      console.log("No product found!");
+      return res.redirect("/");
+    }
 
     res.render("shop/product-detail", {
       product: product,
@@ -44,6 +49,4 @@ exports.getProduct = async (req, res, next) => {
   } catch (err) {
     console.log(err);
   }
-  // An alternative way to get one of the products
-  // Product.findAll({ where: { id: productId } });
 };
