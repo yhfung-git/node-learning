@@ -27,8 +27,9 @@ exports.getAddProduct = (req, res, next) => {
 exports.postAddProduct = async (req, res, next) => {
   try {
     const { title, imageUrl, description, price } = req.body;
+    const userId = req.user._id;
 
-    const newProduct = new Product(title, imageUrl, description, price);
+    const newProduct = new Product(title, imageUrl, description, price, userId);
 
     const createdProduct = await newProduct.save();
 
@@ -76,8 +77,9 @@ exports.getEditProduct = async (req, res, next) => {
 exports.postEditProduct = async (req, res, next) => {
   try {
     const { productId, title, imageUrl, description, price } = req.body;
+    const userId = req.user._id;
 
-    const product = new Product(title, imageUrl, description, price);
+    const product = new Product(title, imageUrl, description, price, userId);
 
     const updatedProduct = await product.update(productId);
 
