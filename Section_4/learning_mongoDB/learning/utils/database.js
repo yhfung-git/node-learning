@@ -1,5 +1,4 @@
 const { MongoClient } = require("mongodb");
-const { get } = require("../routes/admin");
 
 require("dotenv").config();
 
@@ -27,5 +26,4 @@ const getDb = () => {
   return _db;
 };
 
-exports.mongoConnect = mongoConnect;
-exports.getDb = getDb;
+module.exports = { mongoConnect, getDb };

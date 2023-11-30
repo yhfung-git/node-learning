@@ -8,7 +8,7 @@ const app = express();
 const adminRoutes = require("./routes/admin");
 // const shopRoutes = require("./routes/shop");
 const errorsController = require("./controllers/errors");
-const mongoConnect = require("./utils/database").mongoConnect;
+const { mongoConnect } = require("./utils/database");
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));

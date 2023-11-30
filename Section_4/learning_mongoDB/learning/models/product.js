@@ -1,4 +1,4 @@
-const getDb = require("../utils/database").getDb;
+const { getDb } = require("../utils/database");
 class Product {
   constructor(title, imageUrl, description, price) {
     this.title = title;
