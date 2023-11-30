@@ -6,7 +6,7 @@ const expressLayout = require("express-ejs-layouts");
 const app = express();
 
 const adminRoutes = require("./routes/admin");
-// const shopRoutes = require("./routes/shop");
+const shopRoutes = require("./routes/shop");
 const errorsController = require("./controllers/errors");
 const { mongoConnect } = require("./utils/database");
 
@@ -28,7 +28,7 @@ app.set("layout", "./layouts/main-layout");
 // });
 
 app.use("/admin", adminRoutes);
-// app.use(shopRoutes);
+app.use(shopRoutes);
 
 app.use(errorsController.error404);
 
