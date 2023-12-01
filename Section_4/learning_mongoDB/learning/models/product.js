@@ -42,10 +42,10 @@ class Product {
     try {
       const db = await getDb();
       // the id passed will be a string, we need to convert it into an object id so it can be compared with _id, which is an object id provided by MongoDB
-      const objectId = new ObjectId(id);
+      const productId = new ObjectId(id);
       const product = await db
         .collection("products")
-        .findOne({ _id: objectId });
+        .findOne({ _id: productId });
 
       if (product) {
         return product;
@@ -58,11 +58,11 @@ class Product {
   async update(id) {
     try {
       const db = await getDb();
-      const objectId = new ObjectId(id);
+      const productId = new ObjectId(id);
 
       const updatedProduct = await db
         .collection("products")
-        .updateOne({ _id: objectId }, { $set: this });
+        .updateOne({ _id: productId }, { $set: this });
 
       if (updatedProduct) {
         return updatedProduct;
@@ -75,14 +75,17 @@ class Product {
   static async destroy(id) {
     try {
       const db = await getDb();
-      const objectId = new ObjectId(id);
+      const prodId = new ObjectId(id);
+
       const deletedProduct = await db
         .collection("products")
-        .deleteOne({ _id: objectId });
+        .deleteOne({ _id: prodId });
 
-      if (deletedProduct) {
-        return deletedProduct;
-      }
+      await db
+        .collection("users")
+        .updateMany({}, { $pull: { "cart.items": { productId: prodId } } });
+
+      return deletedProduct;
     } catch (err) {
       console.log(err);
     }
