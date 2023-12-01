@@ -21,7 +21,7 @@ app.set("layout", "./layouts/main-layout");
 app.use(async (req, res, next) => {
   try {
     const user = await User.findById("6568f9b451c24bb24270d748");
-    req.user = user;
+    req.user = new User(user._id, user.username, user.email, user.cart);
     next();
   } catch (err) {
     console.log(err);
