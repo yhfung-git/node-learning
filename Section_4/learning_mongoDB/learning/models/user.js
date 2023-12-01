@@ -83,6 +83,51 @@ class User {
     }
   }
 
+  async addOrder() {
+    try {
+      const db = await getDb();
+      const userId = new ObjectId(this._id);
+
+      const products = await this.getCart();
+      const addedToOrder = await db.collection("orders").insertOne({
+        products: products,
+        user: {
+          _id: userId,
+          username: this.username,
+        },
+      });
+
+      // clear the local cart items memory to provide immediate visual feedback
+      this.cart = { items: [] };
+
+      // clear the cart items from users database
+      await db
+        .collection("users")
+        .updateOne({ _id: userId }, { $set: { cart: { items: [] } } });
+
+      return addedToOrder;
+    } catch (err) {
+      console.error("Error adding cart items to order:", err);
+    }
+  }
+
+  async getOrders() {
+    try {
+      const db = await getDb();
+      const userId = new ObjectId(this._id);
+
+      // fetch the orders which belongs to the current user by comparing the user._id from orders with the current user id (this._id)
+      const orders = await db
+        .collection("orders")
+        .find({ "user._id": userId })
+        .toArray();
+
+      return orders;
+    } catch (err) {
+      console.error("Error getting orders:", err);
+    }
+  }
+
   static async findById(id) {
     try {
       const db = await getDb();
