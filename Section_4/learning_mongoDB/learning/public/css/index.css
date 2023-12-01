@@ -144,9 +144,8 @@ main {
   text-align: center;
   border-radius: 3px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
-  width: 5rem;
-  margin: 1rem auto;
-  padding: 0.5rem;
+  margin: 1.2rem auto;
+  padding: 0.7rem;
 }
 
 .order__hr {
