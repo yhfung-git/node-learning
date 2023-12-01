@@ -56,6 +56,33 @@ class User {
     }
   }
 
+  async getCart() {
+    try {
+      const db = await getDb();
+      // To fetch and store all the IDs from the cart.items
+      const productIds = this.cart.items.map((item) => item.productId);
+
+      const products = await db
+        .collection("products")
+        // Using MongoDB's $in Operator, this query searches for products whose _id matches any of the specified productIds.
+        .find({ _id: { $in: productIds } })
+        .toArray();
+
+      // Map over each product in the "products"
+      return products.map((product) => {
+        // Find the corresponding product's quantity
+        const { quantity } = this.cart.items.find((item) => {
+          return item.productId.equals(product._id);
+        });
+
+        // Return a new object for each product, including its original properties and the "quantity" from the cart
+        return { ...product, quantity };
+      });
+    } catch (err) {
+      console.error("Error getting the cart:", err);
+    }
+  }
+
   static async findById(id) {
     try {
       const db = await getDb();
@@ -68,6 +95,42 @@ class User {
       }
     } catch (err) {
       console.error("Error finding user:", err);
+    }
+  }
+
+  // async destroy(id) {
+  //   try {
+  //     // filter() = keep the item only when it returns true
+  //     const updatedCartItems = this.cart.items.filter((item) => {
+  //       // keep the items where the productId is NOT equal to the id
+  //       // if productId not equal to the id (which we want to delete), it returns true and it will be keep.
+  //       // if productId is equal to the id (which we want to delete), it returns false and it will be removed.
+  //       return !item.productId.equals(id);
+  //     });
+
+  //     const db = await getDb();
+  //     return db
+  //       .collection("users")
+  //       .updateOne(
+  //         { _id: new ObjectId(this._id) },
+  //         { $set: { cart: { items: updatedCartItems } } }
+  //       );
+  //   } catch (err) {
+  //     console.error("Error destroying product from cart:", err);
+  //   }
+  // }
+
+  async destroy(id) {
+    try {
+      const db = await getDb();
+      return db
+        .collection("users")
+        .updateOne(
+          { _id: new ObjectId(this._id) },
+          { $pull: { "cart.items": { productId: new ObjectId(id) } } }
+        );
+    } catch (err) {
+      console.log(err);
     }
   }
 }
