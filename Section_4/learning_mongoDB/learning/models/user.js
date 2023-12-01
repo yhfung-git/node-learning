@@ -6,7 +6,7 @@ class User {
     this._id = id;
     this.username = username;
     this.email = email;
-    this.cart = cart; // {items: []}
+    this.cart = cart ? cart : (cart = { items: [] });
   }
 
   async save() {
