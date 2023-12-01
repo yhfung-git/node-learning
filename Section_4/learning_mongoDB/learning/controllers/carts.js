@@ -1,9 +1,9 @@
 const Product = require("../models/product");
+const User = require("../models/user");
 
 exports.getCart = async (req, res, next) => {
   try {
-    const cart = await req.user.getCart();
-    const products = await cart.getProducts();
+    const products = await req.user.getCart();
 
     res.render("shop/cart", {
       pageTitle: "Your Cart",
@@ -19,23 +19,15 @@ exports.getCart = async (req, res, next) => {
 exports.postCart = async (req, res, next) => {
   try {
     const { productId } = req.body;
-    let product = await Product.findByPk(productId);
+    const product = await Product.findById(productId);
+    const addedProductToCart = await req.user.addToCart(product);
 
-    const cart = await req.user.getCart();
-    const [cartProduct] = await cart.getProducts({ where: { id: productId } });
-
-    let newQuantity = 1;
-
-    // check if the product exists in the cart, if yes, +1 quantity
-    if (cartProduct) {
-      const oldQuantity = cartProduct.cartItem.quantity;
-      newQuantity = oldQuantity + 1;
+    if (!addedProductToCart) {
+      console.log("Product adding to cart Failed!");
+      return res.redirect("/");
     }
 
-    await cart.addProduct(product, {
-      through: { quantity: newQuantity },
-    });
-
+    console.log("Product added to the cart!");
     res.redirect("/cart");
   } catch (err) {
     console.log(err);
@@ -44,13 +36,10 @@ exports.postCart = async (req, res, next) => {
 
 exports.postCartDeleteProduct = async (req, res, next) => {
   try {
-    const productId = req.body.productId;
+    const { productId } = req.body;
+    const deletedProductFromCart = await req.user.destroy(productId);
 
-    const cart = await req.user.getCart();
-    const [product] = await cart.getProducts({ where: { id: productId } });
-
-    const deletedCartItem = await product.cartItem.destroy();
-    if (!deletedCartItem) {
+    if (!deletedProductFromCart) {
       console.log("Delete Cart Item Failed!");
       return res.redirect("/cart");
     }
