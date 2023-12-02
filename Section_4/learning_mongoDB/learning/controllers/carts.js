@@ -4,6 +4,11 @@ exports.getCart = async (req, res, next) => {
   try {
     const products = await req.user.getCart();
 
+    if (products.length <= 0) {
+      await req.user.clearMismatches();
+      console.log("cleared Mismatches!");
+    }
+
     res.render("shop/cart", {
       pageTitle: "Your Cart",
       path: "/cart",

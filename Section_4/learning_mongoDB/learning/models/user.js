@@ -175,6 +175,22 @@ class User {
           { $pull: { "cart.items": { productId: new ObjectId(id) } } }
         );
     } catch (err) {
+      console.error("Error destroying product from cart:", err);
+    }
+  }
+
+  async clearMismatches() {
+    try {
+      const db = await getDb();
+      const productIds = this.cart.items.map((item) => item.productId);
+
+      return await db
+        .collection("users")
+        .updateOne(
+          { _id: new ObjectId(this._id) },
+          { $pull: { "cart.items": { productId: { $in: productIds } } } }
+        );
+    } catch (err) {
       console.log(err);
     }
   }
