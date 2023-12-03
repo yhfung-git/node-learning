@@ -2,7 +2,7 @@ const Product = require("../models/product");
 
 exports.getProducts = async (req, res, next) => {
   try {
-    const products = await Product.fetchAll();
+    const products = await Product.find();
 
     res.render("admin/product-list", {
       pageTitle: "Admin Products",
@@ -27,9 +27,13 @@ exports.getAddProduct = (req, res, next) => {
 exports.postAddProduct = async (req, res, next) => {
   try {
     const { title, imageUrl, description, price } = req.body;
-    const userId = req.user._id;
 
-    const newProduct = new Product(title, imageUrl, description, price, userId);
+    const newProduct = new Product({
+      title: title,
+      imageUrl: imageUrl,
+      description: description,
+      price: price,
+    });
 
     const createdProduct = await newProduct.save();
 
@@ -42,8 +46,6 @@ exports.postAddProduct = async (req, res, next) => {
     res.redirect("/admin/product-list");
   } catch (err) {
     console.error("Error creating/saving product:", err);
-    // Handle the error appropriately (redirect to an error page, send an error response, etc.)
-    // res.status(500).send("Internal Server Error");
   }
 };
 
@@ -77,15 +79,21 @@ exports.getEditProduct = async (req, res, next) => {
 exports.postEditProduct = async (req, res, next) => {
   try {
     const { productId, title, imageUrl, description, price } = req.body;
-    const userId = req.user._id;
 
-    const product = new Product(title, imageUrl, description, price, userId);
-
-    const updatedProduct = await product.update(productId);
+    const updatedProduct = await Product.findByIdAndUpdate(
+      productId,
+      {
+        title: title,
+        imageUrl: imageUrl,
+        description: description,
+        price: price,
+      },
+      { new: true, runValidators: true }
+    );
 
     if (!updatedProduct) {
       console.log("Update Product Failed!");
-      return res.redirect("/admin/product-list");
+      return res.redirect(`/admin/edit-product/${productId}?edit=true`);
     }
 
     console.log("Product Updated!");
@@ -99,7 +107,7 @@ exports.postDeleteProduct = async (req, res, next) => {
   try {
     const productId = req.body.productId;
 
-    const deletedProduct = await Product.destroy(productId);
+    const deletedProduct = await Product.findByIdAndDelete(productId);
 
     if (!deletedProduct) {
       console.log("Destroy Product Failed!");
