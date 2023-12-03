@@ -33,6 +33,7 @@ exports.postAddProduct = async (req, res, next) => {
       imageUrl: imageUrl,
       description: description,
       price: price,
+      userId: req.user._id,
     });
 
     const createdProduct = await newProduct.save();
