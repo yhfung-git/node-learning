@@ -68,4 +68,13 @@ userSchema.methods.destroy = async function (id) {
   }
 };
 
+userSchema.methods.clearCart = async function () {
+  try {
+    this.cart = { items: [] };
+    return await this.save();
+  } catch (err) {
+    console.error("Error clearing cart:", err);
+  }
+};
+
 module.exports = mongoose.model("User", userSchema);
