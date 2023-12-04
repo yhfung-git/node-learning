@@ -1,4 +1,5 @@
 const Product = require("../models/product");
+const User = require("../models/user");
 
 exports.getProducts = async (req, res, next) => {
   try {
@@ -106,14 +107,20 @@ exports.postEditProduct = async (req, res, next) => {
 
 exports.postDeleteProduct = async (req, res, next) => {
   try {
-    const productId = req.body.productId;
+    const prodId = req.body.productId;
 
-    const deletedProduct = await Product.findByIdAndDelete(productId);
+    const deletedProduct = await Product.findByIdAndDelete(prodId);
 
     if (!deletedProduct) {
       console.log("Destroy Product Failed!");
       return res.redirect("/admin/product-list");
     }
+
+    // remove the product from all the users' cart
+    await User.updateMany(
+      { "cart.items.productId": prodId },
+      { $pull: { "cart.items": { productId: prodId } } }
+    );
 
     console.log("Product Destroyed!");
     res.redirect("/admin/product-list");
