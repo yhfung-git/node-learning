@@ -11,6 +11,7 @@ const url = process.env.MONGODB_URL;
 
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
+const authRoutes = require("./routes/auth");
 const errorsController = require("./controllers/errors");
 const User = require("./models/user");
 
@@ -33,6 +34,7 @@ app.use(async (req, res, next) => {
 
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
+app.use(authRoutes);
 
 app.use(errorsController.error404);
 
