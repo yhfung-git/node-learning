@@ -14,7 +14,7 @@ exports.getLogin = async (req, res, next) => {
 
 exports.postLogin = async (req, res, next) => {
   try {
-    req.isLoggedIn = true;
+    res.cookie("isLoggedIn", "true");
     res.redirect("/");
   } catch (err) {
     console.log("post login error:", err);
