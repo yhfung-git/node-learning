@@ -6,7 +6,7 @@
       <% order.products.forEach(p => { %>
         <article class="card product-item">
           <header class="card__header">
-            <h1 class="product__title"><%= p.product.title %> (<%= p.quantity %>)</h1>
+            <h1 class="product__title"><%= p.product.title %></h1>
           </header>
           <div class="card__image">
             <img
@@ -16,7 +16,7 @@
           </div>
           <div class="card__content">
             <h2 class="product__price">
-              $<%= p.product.price %>
+              $<%= p.product.price %> x <%= p.quantity %>
             </h2>
             <p class="product__description">
               <%= p.product.description %>
@@ -25,7 +25,7 @@
         </article>
         <% }); %>
       </div>
-      <div class="total-price">TOTAL: $<%= totalPrice[index] %></div>
+      <div class="total-price">Total: $<%= totalPrice[index] %></div>
     <hr class="order__hr">
   <% }); %>
 <% } else { %>
