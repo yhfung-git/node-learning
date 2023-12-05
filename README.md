@@ -42,7 +42,7 @@
 
 - Dynamic Routes & Advanced Models
 
-### Section 4 ⏳
+### Section 4 ✅
 
 - Understanding SQL & NoSQL
 
@@ -54,7 +54,7 @@
 
 - Using Node.js with NoSQL (MongoDB) and Mongoose
 
-### Section 5 📌
+### Section 5 ⏳
 
 - Working with Sessions & Cookies
 
@@ -62,15 +62,25 @@
 
 - Sending E-Mails
 
+### Section 6 📌
+
 - Validating User Input
+
+- Error Handling
+
+### Section 7 📌
 
 - Working with Files and generating PDFs on the Server (on-the-fly)
 
-- File Up- and Download
+- File Up and Download
 
 - Data Pagination
 
+- Understanding Async Requests
+
 - Handling Payments with Stripe.js
+
+### Section 8 📌
 
 - Building REST APIs
 
@@ -84,11 +94,15 @@
 
 - File Upload in GraphQL APIs
 
+### Section 9 📌
+
 - Building a Realtime Node.js App with Websockets
 
-- Automated Testing (Unit Tests)
+- Working with GraphQL
 
 - Deploying a Node.js Application
+
+- Automated Testing (Unit Tests)
 
 - Using TypeScript with Node.js
 
