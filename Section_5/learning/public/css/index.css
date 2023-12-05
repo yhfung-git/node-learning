@@ -29,6 +29,7 @@ main {
 
 .main-header__nav {
   height: 100%;
+  width: 100%;
   display: none;
   align-items: center;
 }
@@ -159,7 +160,7 @@ main {
   font-weight: bolder;
   font-size: 1.5rem;
   margin: 1.2rem auto;
-  color:#00695c
+  color: #00695c;
 }
 
 .item-total-price {
@@ -256,6 +257,7 @@ main {
 @media (min-width: 768px) {
   .main-header__nav {
     display: flex;
+    justify-content: space-between;
   }
 
   #side-menu-toggle {
