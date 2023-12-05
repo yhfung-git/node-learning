@@ -29,6 +29,7 @@ exports.getCart = async (req, res, next) => {
       productCSS: true,
       itemPrice: itemPrice,
       totalPrice: totalPrice,
+      isLoggedIn: req.isLoggedIn,
     });
   } catch (err) {
     console.log(err);
