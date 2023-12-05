@@ -41,11 +41,22 @@ exports.getOrders = async (req, res, next) => {
   try {
     const orders = await Order.find({ "user.userId": req.user._id });
 
+    const orderPrices = orders.map((order) => {
+      return order.products.map((p) => {
+        return p.product.price * p.quantity;
+      });
+    });
+
+    const totalPrice = orderPrices.map((order) =>
+      order.reduce((accumulator, currentValue) => accumulator + currentValue)
+    );
+
     res.render("shop/orders", {
       pageTitle: "Your Orders",
       path: "/orders",
       orders: orders,
       productCSS: true,
+      totalPrice: totalPrice,
     });
   } catch (err) {
     console.log(err);

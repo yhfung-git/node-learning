@@ -1,6 +1,6 @@
 <h1>Your Orders</h1>
 <% if (orders.length > 0) { %>
-  <% orders.forEach(order => { %>
+  <% orders.forEach((order, index) => { %>
     <h2 class="order__id">#<%= order._id %></h2>
     <div class="grid">
       <% order.products.forEach(p => { %>
@@ -23,8 +23,9 @@
             </p>
           </div>
         </article>
-      <% }); %>
-    </div>
+        <% }); %>
+      </div>
+      <div class="total-price">TOTAL: $<%= totalPrice[index] %></div>
     <hr class="order__hr">
   <% }); %>
 <% } else { %>
