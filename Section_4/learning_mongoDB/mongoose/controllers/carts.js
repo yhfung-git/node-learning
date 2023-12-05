@@ -13,11 +13,21 @@ exports.getCart = async (req, res, next) => {
       return { ...product, quantity: item.quantity };
     });
 
+    const itemPrice = req.user.cart.items.map((item) => {
+      return item.productId.price * item.quantity;
+    });
+
+    const totalPrice = itemPrice.reduce(
+      (accumulator, currentValue) => accumulator + currentValue
+    );
+
     res.render("shop/cart", {
       pageTitle: "Your Cart",
       path: "/cart",
       products: products,
       productCSS: true,
+      itemPrice: itemPrice,
+      totalPrice: totalPrice,
     });
   } catch (err) {
     console.log(err);
