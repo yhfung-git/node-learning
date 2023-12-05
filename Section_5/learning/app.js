@@ -2,6 +2,7 @@ const path = require("path");
 
 const express = require("express");
 const expressLayout = require("express-ejs-layouts");
+const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 
 const app = express();
@@ -15,12 +16,19 @@ const authRoutes = require("./routes/auth");
 const errorsController = require("./controllers/errors");
 const User = require("./models/user");
 
+app.use(cookieParser());
+
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use(expressLayout);
 app.set("view engine", "ejs");
 app.set("layout", "./layouts/main-layout");
+
+app.use((req, res, next) => {
+  req.isLoggedIn = req.cookies.isLoggedIn === 'true';
+  next();
+});
 
 app.use(async (req, res, next) => {
   try {
