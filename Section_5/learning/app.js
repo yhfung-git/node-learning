@@ -26,7 +26,7 @@ app.set("view engine", "ejs");
 app.set("layout", "./layouts/main-layout");
 
 app.use((req, res, next) => {
-  req.isLoggedIn = req.cookies.isLoggedIn === 'true';
+  req.isLoggedIn = req.cookies.isLoggedIn === "true";
   next();
 });
 
