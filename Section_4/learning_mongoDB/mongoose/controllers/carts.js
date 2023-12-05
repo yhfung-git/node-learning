@@ -18,7 +18,8 @@ exports.getCart = async (req, res, next) => {
     });
 
     const totalPrice = itemPrice.reduce(
-      (accumulator, currentValue) => accumulator + currentValue
+      (accumulator, currentValue) => accumulator + currentValue,
+      0
     );
 
     res.render("shop/cart", {

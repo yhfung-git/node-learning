@@ -48,7 +48,7 @@ exports.getOrders = async (req, res, next) => {
     });
 
     const totalPrice = orderPrices.map((order) =>
-      order.reduce((accumulator, currentValue) => accumulator + currentValue)
+      order.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
     );
 
     res.render("shop/orders", {
