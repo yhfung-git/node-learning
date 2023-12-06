@@ -44,16 +44,21 @@ app.use(
 );
 
 app.use(async (req, res, next) => {
-  const userSession = req.session.user ?? {};
+  try {
+    const userSession = req.session.user ?? {};
 
-  const user = userSession.user
-    ? await User.findById(userSession.user._id)
-    : null;
+    const user = userSession.user
+      ? await User.findById(userSession.user._id)
+      : null;
 
-  req.user = user;
-  res.locals.isLoggedIn = !!userSession.isLoggedIn;
+    req.user = user;
+    res.locals.isLoggedIn = !!userSession.isLoggedIn;
 
-  next();
+    next();
+  } catch (err) {
+    console.error("Error in user session middleware:", err);
+    next(err);
+  }
 });
 
 app.use("/admin", adminRoutes);
