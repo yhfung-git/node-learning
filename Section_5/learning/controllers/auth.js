@@ -13,7 +13,7 @@ exports.getLogin = async (req, res, next) => {
 
 exports.postLogin = async (req, res, next) => {
   try {
-    res.cookie("isLoggedIn", "true");
+    req.session.isLoggedIn = true;
     res.redirect("/");
   } catch (err) {
     console.log("post login error:", err);
