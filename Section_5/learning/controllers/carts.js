@@ -1,9 +1,11 @@
 const Product = require("../models/product");
+const User = require("../models/user");
 
 exports.getCart = async (req, res, next) => {
   try {
     // Populate the "cart.items.productId" field to fetch details of products in the cart
-    const populatedUser = await req.user.populate("cart.items.productId");
+    const user = User.findById(req.user._id);
+    const populatedUser = await user.populate("cart.items.productId");
     // console.log(JSON.stringify(populatedUser, null, 2));
 
     // Extract the cart items from the populated user object and Map the cart items to a new array with additional details (quantity)
