@@ -5,7 +5,6 @@ exports.getLogin = async (req, res, next) => {
       path: "/login",
       formCSS: true,
       authCSS: true,
-      isLoggedIn: req.isLoggedIn,
     });
   } catch (err) {
     console.log("get login error:", err);

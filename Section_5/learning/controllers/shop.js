@@ -9,7 +9,6 @@ exports.getIndex = async (req, res, next) => {
       products: products,
       path: "/",
       productCSS: true,
-      isLoggedIn: req.isLoggedIn,
     });
   } catch (err) {
     console.log(err);
@@ -25,7 +24,6 @@ exports.getProducts = async (req, res, next) => {
       products: products,
       path: "/products",
       productCSS: true,
-      isLoggedIn: req.isLoggedIn,
     });
   } catch (err) {
     console.log(err);
@@ -47,7 +45,6 @@ exports.getProduct = async (req, res, next) => {
       pageTitle: product.title,
       path: "/products",
       productCSS: true,
-      isLoggedIn: req.isLoggedIn,
     });
   } catch (err) {
     console.log(err);

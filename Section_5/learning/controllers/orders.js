@@ -57,7 +57,6 @@ exports.getOrders = async (req, res, next) => {
       orders: orders,
       productCSS: true,
       totalPrice: totalPrice,
-      isLoggedIn: req.isLoggedIn,
     });
   } catch (err) {
     console.log(err);

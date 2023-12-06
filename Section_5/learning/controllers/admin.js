@@ -10,7 +10,6 @@ exports.getProducts = async (req, res, next) => {
       products: products,
       path: "/admin/product-list",
       productCSS: true,
-      isLoggedIn: req.isLoggedIn,
     });
   } catch (err) {
     console.log(err);
@@ -23,7 +22,6 @@ exports.getAddProduct = (req, res, next) => {
     path: "/admin/add-product",
     formCSS: true,
     editing: false,
-    isLoggedIn: req.isLoggedIn,
   });
 };
 
@@ -74,7 +72,6 @@ exports.getEditProduct = async (req, res, next) => {
       formCSS: true,
       editing: editMode,
       product: product,
-      isLoggedIn: req.isLoggedIn,
     });
   } catch (err) {
     console.log(err);
