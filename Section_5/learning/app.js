@@ -27,6 +27,7 @@ app.set("layout", "./layouts/main-layout");
 
 app.use((req, res, next) => {
   req.isLoggedIn = req.cookies.isLoggedIn === "true";
+  res.locals.isLoggedIn = req.isLoggedIn;
   next();
 });
 
