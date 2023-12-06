@@ -1,3 +1,5 @@
+const User = require("../models/user");
+
 exports.getLogin = async (req, res, next) => {
   try {
     res.render("auth/login", {
@@ -5,6 +7,7 @@ exports.getLogin = async (req, res, next) => {
       path: "/login",
       formCSS: true,
       authCSS: true,
+      isLoggedIn: false,
     });
   } catch (err) {
     console.log("get login error:", err);
@@ -13,7 +16,10 @@ exports.getLogin = async (req, res, next) => {
 
 exports.postLogin = async (req, res, next) => {
   try {
-    req.session.isLoggedIn = true;
+    const user = await User.findOne();
+
+    req.session.user = { isLoggedIn: true, user: user };
+
     res.redirect("/");
   } catch (err) {
     console.log("post login error:", err);
