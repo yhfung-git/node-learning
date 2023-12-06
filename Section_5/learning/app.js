@@ -43,20 +43,17 @@ app.use(
   })
 );
 
-app.use((req, res, next) => {
-  req.isLoggedIn = !!req.session.isLoggedIn;
-  res.locals.isLoggedIn = req.isLoggedIn;
-  next();
-});
-
 app.use(async (req, res, next) => {
-  try {
-    const user = await User.findOne();
-    req.user = user;
-    next();
-  } catch (err) {
-    console.log(err);
-  }
+  const userSession = req.session.user ?? {};
+
+  const user = userSession.user
+    ? await User.findById(userSession.user._id)
+    : null;
+
+  req.user = user;
+  res.locals.isLoggedIn = !!userSession.isLoggedIn;
+
+  next();
 });
 
 app.use("/admin", adminRoutes);
