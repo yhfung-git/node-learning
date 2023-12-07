@@ -9,7 +9,7 @@ const mongoose = require("mongoose");
 const app = express();
 
 require("dotenv").config();
-const mongoDbUrl = process.env.MONGODB_URL;
+const mongoDbUri = process.env.MONGODB_URI;
 const sessionSecret = process.env.SESSION_SECRET;
 
 const adminRoutes = require("./routes/admin");
@@ -26,7 +26,7 @@ app.set("view engine", "ejs");
 app.set("layout", "./layouts/main-layout");
 
 const store = new MongoDBStore({
-  uri: mongoDbUrl,
+  uri: mongoDbUri,
   collection: "mySessions",
 });
 
@@ -69,7 +69,7 @@ app.use(errorsController.error404);
 
 (async () => {
   try {
-    await mongoose.connect(mongoDbUrl);
+    await mongoose.connect(mongoDbUri);
 
     const existingUser = await User.findOne();
     if (!existingUser) {
