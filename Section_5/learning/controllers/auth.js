@@ -20,6 +20,10 @@ exports.postLogin = async (req, res, next) => {
 
     req.session.user = { isLoggedIn: true, user: user };
 
+    // Save the session and wait for it to complete
+    await req.session.save();
+
+    // Redirect after the session has been saved
     res.redirect("/");
   } catch (err) {
     console.log("post login error:", err);
