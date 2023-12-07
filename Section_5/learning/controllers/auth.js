@@ -25,3 +25,24 @@ exports.postLogin = async (req, res, next) => {
     console.log("post login error:", err);
   }
 };
+
+exports.postLogout = async (req, res, next) => {
+  try {
+    const sessionDeleted = await req.session.destroy();
+    const clearedCookie = await res.clearCookie("connect.sid");
+
+    if (!sessionDeleted) {
+      console.log("Error destroying session:", err);
+      return;
+    }
+
+    if (!clearedCookie) {
+      console.log("Error clearing cookie:", err);
+      return;
+    }
+
+    res.redirect("/");
+  } catch (err) {
+    console.log("post login error:", err);
+  }
+};
