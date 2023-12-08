@@ -12,23 +12,36 @@ exports.getLogin = async (req, res, next) => {
       isLoggedIn: false,
     });
   } catch (err) {
-    console.log("get login error:", err);
+    console.log("Error getting login page:", err);
   }
 };
 
 exports.postLogin = async (req, res, next) => {
   try {
-    const user = await User.findOne();
+    const { email, password } = req.body;
+    const user = await User.findOne({ email: email });
+
+    if (!user) {
+      console.log("No user found!");
+      return res.redirect("/login");
+    }
+
+    const match = await bcrypt.compare(password, user.password);
+
+    if (!match) {
+      console.log("Error comparing password!");
+      return res.redirect("/login");
+    }
 
     req.session.user = { isLoggedIn: true, user: user };
 
     // Save the session and wait for it to complete
     await req.session.save();
 
-    // Redirect after the session has been saved
+    console.log("Login successful!");
     res.redirect("/");
   } catch (err) {
-    console.log("post login error:", err);
+    console.log("Error posting login:", err);
   }
 };
 
@@ -49,7 +62,7 @@ exports.postLogout = async (req, res, next) => {
 
     res.redirect("/");
   } catch (err) {
-    console.log("post login error:", err);
+    console.log("Error posting logout:", err);
   }
 };
 
@@ -63,7 +76,7 @@ exports.getSignup = async (req, res, next) => {
       isLoggedIn: false,
     });
   } catch (err) {
-    console.log("Error getting sign up page:", err);
+    console.log("Error getting signup page:", err);
   }
 };
 
@@ -101,6 +114,6 @@ exports.postSignup = async (req, res, next) => {
     console.log("User created!");
     res.redirect("/login");
   } catch (err) {
-    console.log("Error getting sign up page:", err);
+    console.log("Error posting signup:", err);
   }
 };
