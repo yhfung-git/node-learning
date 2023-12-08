@@ -15,8 +15,11 @@ const sessionSecret = process.env.SESSION_SECRET;
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 const authRoutes = require("./routes/auth");
+
 const errorsController = require("./controllers/errors");
-const User = require("./models/user");
+
+const userSession = require("./middleware/user-session");
+const isAuth = require("./middleware/is-auth");
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
@@ -48,25 +51,11 @@ app.use(
   })
 );
 
-app.use(async (req, res, next) => {
-  try {
-    const userSession = req.session.user ?? {};
-
-    const user = userSession.user
-      ? await User.findById(userSession.user._id)
-      : null;
-
-    req.user = user;
-    res.locals.isLoggedIn = !!userSession.isLoggedIn;
-
-    next();
-  } catch (err) {
-    console.error("Error in user session middleware:", err);
-    next(err);
-  }
+app.use((req, res, next) => {
+  userSession(req, res, next);
 });
 
-app.use("/admin", adminRoutes);
+app.use("/admin", isAuth, adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
 
