@@ -16,7 +16,7 @@ exports.postCreateOrder = async (req, res, next) => {
       products: prods,
       user: {
         userId: req.user._id,
-        username: req.user.username,
+        username: req.user.username || "Anonymous",
       },
     });
 
