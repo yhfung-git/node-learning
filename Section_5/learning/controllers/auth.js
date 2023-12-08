@@ -1,3 +1,5 @@
+const bcrypt = require("bcrypt");
+
 const User = require("../models/user");
 
 exports.getLogin = async (req, res, next) => {
@@ -48,5 +50,57 @@ exports.postLogout = async (req, res, next) => {
     res.redirect("/");
   } catch (err) {
     console.log("post login error:", err);
+  }
+};
+
+exports.getSignup = async (req, res, next) => {
+  try {
+    res.render("auth/signup", {
+      pageTitle: "Signup",
+      path: "/signup",
+      formCSS: true,
+      authCSS: true,
+      isLoggedIn: false,
+    });
+  } catch (err) {
+    console.log("Error getting sign up page:", err);
+  }
+};
+
+exports.postSignup = async (req, res, next) => {
+  try {
+    const { email, password, confirmPassword } = req.body;
+
+    if (!email || !password || password !== confirmPassword) {
+      console.log("Invalid input data!");
+      return res.redirect("/signup");
+    }
+
+    const user = await User.findOne({ email: email });
+    if (user) {
+      console.log("Email existed!");
+      return res.redirect("/signup");
+    }
+
+    // Hash the password
+    const saltRounds = 12;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    if (!hashedPassword) {
+      console.log("Error hashing password");
+      return res.status(500).send({ error: "Internal server error" });
+    }
+
+    const newUser = new User({
+      email: email,
+      password: hashedPassword,
+      cart: { items: [] },
+    });
+
+    await newUser.save();
+    console.log("User created!");
+    res.redirect("/login");
+  } catch (err) {
+    console.log("Error getting sign up page:", err);
   }
 };
