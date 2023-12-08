@@ -51,9 +51,7 @@ app.use(
   })
 );
 
-app.use((req, res, next) => {
-  userSession(req, res, next);
-});
+app.use(userSession);
 
 app.use("/admin", isAuth, adminRoutes);
 app.use(shopRoutes);
