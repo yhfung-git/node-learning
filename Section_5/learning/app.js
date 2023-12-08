@@ -76,16 +76,6 @@ app.use(errorsController.error404);
   try {
     await mongoose.connect(mongoDbUri);
 
-    const existingUser = await User.findOne();
-    if (!existingUser) {
-      const newUser = new User({
-        username: "Howard",
-        email: "howard@gmail.com",
-        cart: { items: [] },
-      });
-      await newUser.save();
-    }
-
     app.listen(3000, () => {
       console.log("Server is running on port 3000!");
     });
