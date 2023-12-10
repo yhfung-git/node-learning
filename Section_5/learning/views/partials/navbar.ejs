@@ -25,6 +25,7 @@
     <% if (isLoggedIn) { %>
       <li class="main-header__item">
         <form action="/logout" method="POST">
+          <%- include("../partials/csrf-token-input") %>
           <button type="submit">Logout</button>
         </form>
       </li>

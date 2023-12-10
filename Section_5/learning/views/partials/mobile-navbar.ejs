@@ -23,7 +23,9 @@
       </li>
       <li class="mobile-nav__item">
         <a href="#" onclick="logout()">Logout</a>
-        <form action="/logout" method="POST" id="logoutForm"></form>
+        <form action="/logout" method="POST" id="logoutForm">
+          <%- include("../partials/csrf-token-input") %>
+        </form>
       </li>
     <% } else { %>
       <li class="mobile-nav__item">

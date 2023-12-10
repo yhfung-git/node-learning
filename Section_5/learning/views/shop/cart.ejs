@@ -23,6 +23,7 @@
         <div class="item-total-price">$<%= itemPrice[index] %></div>
         <form class="btn-cart-delete" action="/cart-delete-product" method="POST">
           <input type="hidden" name="productId" value="<%= product._id %>">
+          <%- include("../partials/csrf-token-input") %>
           <button class="btn btn-delete" type="submit">Delete</button>
         </form>
       </article>
@@ -30,6 +31,7 @@
   </div>
   <div class="total-price">Total: $<%= totalPrice %></div>
   <form action="/create-order" method="POST">
+    <%- include("../partials/csrf-token-input") %>
     <button class="btn" type="submit">Order Now</button>
   </form>
 <% } else { %>
