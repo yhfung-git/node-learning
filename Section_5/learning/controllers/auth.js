@@ -47,8 +47,12 @@ exports.postLogin = async (req, res, next) => {
 
 exports.postLogout = async (req, res, next) => {
   try {
+    // remove session id from database
     const sessionDeleted = await req.session.destroy();
+    // remove the session cookie from client's browser
     const clearedCookie = await res.clearCookie("connect.sid");
+    // remove the CSRF token from the client's browser
+    const clearedCsrfToken = await res.clearCookie("csrf-token");
 
     if (!sessionDeleted) {
       console.log("Error destroying session:", err);
@@ -56,6 +60,11 @@ exports.postLogout = async (req, res, next) => {
     }
 
     if (!clearedCookie) {
+      console.log("Error clearing cookie:", err);
+      return;
+    }
+
+    if (!clearedCsrfToken) {
       console.log("Error clearing cookie:", err);
       return;
     }
