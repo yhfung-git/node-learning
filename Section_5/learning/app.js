@@ -7,6 +7,7 @@ const MongoDBStore = require("connect-mongodb-session")(session);
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const { doubleCsrf } = require("csrf-csrf");
+const flash = require("connect-flash");
 
 const app = express();
 
@@ -23,6 +24,7 @@ const errorsController = require("./controllers/errors");
 
 const userSession = require("./middleware/user-session");
 const isAuth = require("./middleware/is-auth");
+const alerts = require("./middleware/alerts");
 
 const { options } = require("./configs/csrf-csrfOptions");
 const { doubleCsrfProtection } = doubleCsrf(options);
@@ -60,6 +62,8 @@ app.use(
 
 app.use(cookieParser(cookieParserSecret));
 app.use(doubleCsrfProtection);
+app.use(flash());
+app.use(alerts);
 app.use(userSession);
 app.use(generateToken);
 
