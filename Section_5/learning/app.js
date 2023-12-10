@@ -5,12 +5,15 @@ const expressLayout = require("express-ejs-layouts");
 const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
 const mongoose = require("mongoose");
+const cookieParser = require("cookie-parser");
+const { doubleCsrf } = require("csrf-csrf");
 
 const app = express();
 
 require("dotenv").config();
 const mongoDbUri = process.env.MONGODB_URI;
 const sessionSecret = process.env.SESSION_SECRET;
+const cookieParserSecret = process.env.COOKIE_PARSER_SECRET;
 
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
@@ -20,6 +23,10 @@ const errorsController = require("./controllers/errors");
 
 const userSession = require("./middleware/user-session");
 const isAuth = require("./middleware/is-auth");
+
+const { options } = require("./configs/csrf-csrfOptions");
+const { doubleCsrfProtection } = doubleCsrf(options);
+const generateToken = require("./middleware/generate-token");
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
@@ -51,7 +58,10 @@ app.use(
   })
 );
 
+app.use(cookieParser(cookieParserSecret));
+app.use(doubleCsrfProtection);
 app.use(userSession);
+app.use(generateToken);
 
 app.use("/admin", isAuth, adminRoutes);
 app.use(shopRoutes);
