@@ -261,6 +261,35 @@ main {
   color: #ffffff;
 }
 
+.alert {
+  margin: auto;
+  width: 90%;
+  border: 1px solid #a6c8e0;
+  border-radius: 3px;
+  background: #d3e8f5;
+  padding: 0.5rem;
+  text-align: center;
+  color: #1767a0;
+}
+
+.alert--error {
+  border: 1px solid #ff4d4f;
+  background: #ffe6e6;
+  color: #ff4d4f;
+}
+
+.alert--success {
+  border: 1px solid #52c41a;
+  background-color: #f6ffed;
+  color: #52c41a;
+}
+
+.alert--warning {
+  border: 1px solid #ffc53d;
+  background-color: #fff9db;
+  color: #cc9900;
+}
+
 @media (min-width: 768px) {
   .main-header__nav {
     display: flex;
@@ -269,5 +298,9 @@ main {
 
   #side-menu-toggle {
     display: none;
+  }
+
+  .alert {
+    width: 30rem;
   }
 }
