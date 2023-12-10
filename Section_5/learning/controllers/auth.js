@@ -9,7 +9,6 @@ exports.getLogin = async (req, res, next) => {
       path: "/login",
       formCSS: true,
       authCSS: true,
-      isLoggedIn: false,
     });
   } catch (err) {
     console.log("Error getting login page:", err);
@@ -82,7 +81,6 @@ exports.getSignup = async (req, res, next) => {
       path: "/signup",
       formCSS: true,
       authCSS: true,
-      isLoggedIn: false,
     });
   } catch (err) {
     console.log("Error getting signup page:", err);
