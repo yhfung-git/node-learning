@@ -51,12 +51,12 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store: store,
-    // cookie: {
-    //   httpOnly: true,
-    //   secure: true,
-    //   maxAge: 7 * 24 * 60 * 60 * 1000,
-    //   expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-    // },
+    cookie: {
+      httpOnly: true,
+      //   secure: true,
+      maxAge: 24 * 60 * 60 * 1000,
+      //   expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    },
   })
 );
 
