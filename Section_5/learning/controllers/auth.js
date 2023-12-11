@@ -4,11 +4,17 @@ const User = require("../models/user");
 
 exports.getLogin = async (req, res, next) => {
   try {
+    let message = "";
+    if (req.cookies.loggedOut) {
+      message = "You are successfully logged out!";
+      await res.clearCookie("loggedOut");
+    }
     res.render("auth/login", {
       pageTitle: "Login",
       path: "/login",
       formCSS: true,
       authCSS: true,
+      loggedOutMessage: message,
     });
   } catch (err) {
     console.log("Error getting login page:", err);
@@ -68,7 +74,8 @@ exports.postLogout = async (req, res, next) => {
       return;
     }
 
-    res.redirect("/");
+    res.cookie("loggedOut", true);
+    res.redirect("/login");
   } catch (err) {
     console.log("Error posting logout:", err);
   }
@@ -92,13 +99,16 @@ exports.postSignup = async (req, res, next) => {
     const { email, password, confirmPassword } = req.body;
 
     if (!email || !password || password !== confirmPassword) {
-      req.flash("error", "Invalid input or email registered");
+      req.flash("error", "Invalid input");
       return res.redirect("/signup");
     }
 
     const user = await User.findOne({ email: email });
     if (user) {
-      console.log("Email registered!");
+      req.flash(
+        "error",
+        "Email already registered, please enter a different email"
+      );
       return res.redirect("/signup");
     }
 
