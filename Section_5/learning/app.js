@@ -62,8 +62,10 @@ app.use(
 
 app.use(cookieParser(cookieParserSecret));
 app.use(doubleCsrfProtection);
+
 app.use(flash());
 app.use(alerts);
+
 app.use(userSession);
 app.use(generateToken);
 
