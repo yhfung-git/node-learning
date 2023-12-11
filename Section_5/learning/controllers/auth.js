@@ -21,7 +21,7 @@ exports.postLogin = async (req, res, next) => {
     const user = await User.findOne({ email: email });
 
     if (!user) {
-      console.log("No user found!");
+      req.flash("error", "Invalid Email or Password");
       return res.redirect("/login");
     }
 
@@ -37,7 +37,7 @@ exports.postLogin = async (req, res, next) => {
     // Save the session and wait for it to complete
     await req.session.save();
 
-    console.log("Login successful!");
+    req.flash("success", "You are successfully logged in!");
     res.redirect("/");
   } catch (err) {
     console.log("Error posting login:", err);
@@ -92,13 +92,13 @@ exports.postSignup = async (req, res, next) => {
     const { email, password, confirmPassword } = req.body;
 
     if (!email || !password || password !== confirmPassword) {
-      console.log("Invalid input data!");
+      req.flash("error", "Invalid input or email registered");
       return res.redirect("/signup");
     }
 
     const user = await User.findOne({ email: email });
     if (user) {
-      console.log("Email existed!");
+      console.log("Email registered!");
       return res.redirect("/signup");
     }
 
@@ -118,6 +118,10 @@ exports.postSignup = async (req, res, next) => {
     });
 
     await newUser.save();
+    req.flash(
+      "success",
+      "You have successfully signed up, you can now log in!"
+    );
     console.log("User created!");
     res.redirect("/login");
   } catch (err) {

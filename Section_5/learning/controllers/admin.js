@@ -29,6 +29,11 @@ exports.postAddProduct = async (req, res, next) => {
   try {
     const { title, imageUrl, description, price } = req.body;
 
+    if (!title || !imageUrl || !description || !price) {
+      req.flash("error", "Please provide all required information");
+      return res.redirect("/admin/add-product");
+    }
+
     const newProduct = new Product({
       title: title,
       imageUrl: imageUrl,
@@ -44,7 +49,7 @@ exports.postAddProduct = async (req, res, next) => {
       return res.redirect("/admin/add-product");
     }
 
-    console.log("Product Created!");
+    req.flash("success", "Product added successfully!");
     res.redirect("/admin/product-list");
   } catch (err) {
     console.error("Error creating/saving product:", err);
@@ -82,6 +87,11 @@ exports.postEditProduct = async (req, res, next) => {
   try {
     const { productId, title, imageUrl, description, price } = req.body;
 
+    if (!title || !imageUrl || !description || !price) {
+      req.flash("error", "Please provide all required information");
+      return res.redirect(`/admin/edit-product/${productId}?edit=true`);
+    }
+
     const updatedProduct = await Product.findByIdAndUpdate(
       productId,
       {
@@ -98,7 +108,7 @@ exports.postEditProduct = async (req, res, next) => {
       return res.redirect(`/admin/edit-product/${productId}?edit=true`);
     }
 
-    console.log("Product Updated!");
+    req.flash("success", "Product updated successfully!");
     res.redirect("/admin/product-list");
   } catch (err) {
     console.log(err);
@@ -122,7 +132,7 @@ exports.postDeleteProduct = async (req, res, next) => {
       { $pull: { "cart.items": { productId: prodId } } }
     );
 
-    console.log("Product Destroyed!");
+    req.flash("success", "Product deleted successfully!");
     res.redirect("/admin/product-list");
   } catch (err) {
     console.log(err);

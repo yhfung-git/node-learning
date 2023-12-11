@@ -47,7 +47,7 @@ exports.postCart = async (req, res, next) => {
       return res.redirect("/");
     }
 
-    console.log("Product added to the cart!");
+    req.flash("success", "Product added to your cart");
     res.redirect("/cart");
   } catch (err) {
     console.log(err);
@@ -64,7 +64,7 @@ exports.postCartDeleteProduct = async (req, res, next) => {
       return res.redirect("/cart");
     }
 
-    console.log("Product Removed From Cart!");
+    req.flash("success", "Product removed from your cart!");
     res.redirect("/cart");
   } catch (err) {
     console.log(err);

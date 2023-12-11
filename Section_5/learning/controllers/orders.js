@@ -23,14 +23,17 @@ exports.postCreateOrder = async (req, res, next) => {
     await order.save();
 
     if (!order) {
-      console.log("Create Order Failed!");
+      req.flash(
+        "error",
+        "Order not sent. Please contact us if you encounter any problems"
+      );
       res.redirect("/cart");
     }
 
     req.user.clearCart();
     console.log("Cart cleared!");
 
-    console.log("Order created!");
+    req.flash("success", "Order sent!");
     res.redirect("/orders");
   } catch (err) {
     console.log(err);
