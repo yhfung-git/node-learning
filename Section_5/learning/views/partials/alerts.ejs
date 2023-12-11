@@ -2,16 +2,28 @@
   <div class="alert alert--error">
     <%= alerts.error %>
   </div>
-<% } else if (alerts.success && alerts.success.length > 0) { %>
+<% } %>
+
+<% if (alerts.success && alerts.success.length > 0) { %>
   <div class="alert alert--success">
     <%= alerts.success %>
   </div>
-<% } else if (alerts.warning && alerts.warning.length > 0) { %>
+<% } %>
+
+<% if (alerts.warning && alerts.warning.length > 0) { %>
   <div class="alert alert--warning">
     <%= alerts.warning %>
   </div>
-<% } else if (alerts.info && alerts.info.length > 0) { %>
+<% } %>
+
+<% if (alerts.info && alerts.info.length > 0) { %>
   <div class="alert alert--info">
     <%= alerts.info %>
+  </div>
+<% } %>
+
+<% if (loggedOutMessage && loggedOutMessage.length > 0) { %>
+  <div class="alert alert--success">
+    <%= loggedOutMessage %>
   </div>
 <% } %>
