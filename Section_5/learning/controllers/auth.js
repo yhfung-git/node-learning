@@ -28,7 +28,7 @@ exports.postLogin = async (req, res, next) => {
     const match = await bcrypt.compare(password, user.password);
 
     if (!match) {
-      console.log("Error comparing password!");
+      req.flash("error", "Invalid Email or Password");
       return res.redirect("/login");
     }
 
