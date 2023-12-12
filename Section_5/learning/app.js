@@ -12,9 +12,7 @@ const flash = require("connect-flash");
 const app = express();
 
 require("dotenv").config();
-const mongoDbUri = process.env.MONGODB_URI;
-const sessionSecret = process.env.SESSION_SECRET;
-const cookieParserSecret = process.env.COOKIE_PARSER_SECRET;
+const { MONGODB_URI, SESSION_SECRET, COOKIE_PARSER_SECRET } = process.env;
 
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
@@ -38,7 +36,7 @@ app.set("view engine", "ejs");
 app.set("layout", "./layouts/main-layout");
 
 const store = new MongoDBStore({
-  uri: mongoDbUri,
+  uri: MONGODB_URI,
   collection: "mySessions",
 });
 
@@ -47,7 +45,7 @@ store.on("MongoDBStore error:", (err) => console.log(err));
 
 app.use(
   session({
-    secret: sessionSecret,
+    secret: SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     store: store,
@@ -60,7 +58,7 @@ app.use(
   })
 );
 
-app.use(cookieParser(cookieParserSecret));
+app.use(cookieParser(COOKIE_PARSER_SECRET));
 app.use(doubleCsrfProtection);
 
 app.use(flash());
@@ -77,7 +75,7 @@ app.use(errorsController.error404);
 
 (async () => {
   try {
-    await mongoose.connect(mongoDbUri);
+    await mongoose.connect(MONGODB_URI);
 
     app.listen(3000, () => {
       console.log("Server is running on port 3000!");
