@@ -3,9 +3,6 @@ const bcrypt = require("bcrypt");
 const User = require("../models/user");
 const { sendEmail } = require("../utils/emailService");
 
-const emailContent =
-  "<h3>Welcome to our store! We're thrilled to have you on board. Thank you for signing up and being a part of our community. Happy shopping!</h3>";
-
 exports.getLogin = async (req, res, next) => {
   try {
     let message = "";
@@ -158,14 +155,16 @@ exports.postSignup = async (req, res, next) => {
       "You have successfully signed up, you can now log in!"
     );
 
-    res.redirect("/login");
+    // Send email (to, subject, template, data)
+    const data = { username: username };
+    sendEmail(
+      email,
+      "Thank you for registering with our SHOP!",
+      "emailContent",
+      data
+    );
 
-    sendEmail({
-      from: "nodejs@online-shop.com",
-      to: email,
-      subject: "Thank you for registering with our store.",
-      html: emailContent,
-    });
+    res.redirect("/login");
   } catch (err) {
     console.log("Error posting signup:", err);
   }
