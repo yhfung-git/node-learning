@@ -4,7 +4,7 @@ const nodemailer = require("nodemailer");
 const { google } = require("googleapis");
 const OAuth2 = google.auth.OAuth2;
 
-const rootDir = require("../utils/path");
+const rootDir = require("./path");
 
 const {
   MAIL_USER,
