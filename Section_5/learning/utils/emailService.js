@@ -1,6 +1,10 @@
+const path = require("path");
+const ejs = require("ejs");
 const nodemailer = require("nodemailer");
 const { google } = require("googleapis");
 const OAuth2 = google.auth.OAuth2;
+
+const rootDir = require("../utils/path");
 
 const {
   MAIL_USER,
@@ -50,9 +54,31 @@ const createTransporter = async () => {
   }
 };
 
-const sendEmail = async (emailOptions) => {
+const sendEmail = async (to, subject, template, data) => {
   try {
+    // create transporter
     const emailTransporter = await createTransporter();
+
+    // handle email content
+    const templatePath = path.join(
+      rootDir,
+      "views",
+      "templates",
+      `${template}.ejs`
+    );
+
+    const emailContent = await ejs.renderFile(templatePath, data);
+
+    const emailOptions = {
+      from: "my-own-email@gmail.com",
+      to,
+      subject,
+      html: emailContent,
+    };
+
+    emailOptions.headers = { "Content-Type": "text/html" };
+
+    // send email
     await emailTransporter.sendMail(emailOptions);
   } catch (error) {
     throw new Error(`Error sending email: ${error.message}`);
