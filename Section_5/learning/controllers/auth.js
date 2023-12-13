@@ -100,9 +100,18 @@ exports.getSignup = async (req, res, next) => {
 
 exports.postSignup = async (req, res, next) => {
   try {
-    const { email, password, confirmPassword } = req.body;
+    const { firstName, lastName, username, email, password, confirmPassword } =
+      req.body;
 
-    if (!email || !password || password !== confirmPassword) {
+    const isInvalidInput =
+      !firstName ||
+      !lastName ||
+      !username ||
+      !email ||
+      !password ||
+      password !== confirmPassword;
+
+    if (isInvalidInput) {
       req.flash("error", "Invalid input");
       return res.redirect("/signup");
     }
@@ -112,6 +121,15 @@ exports.postSignup = async (req, res, next) => {
       req.flash(
         "error",
         "Email already registered, please enter a different email"
+      );
+      return res.redirect("/signup");
+    }
+
+    const existingUsername = await User.findOne({ username: username });
+    if (existingUsername) {
+      req.flash(
+        "error",
+        "Username already taken, please enter a different username"
       );
       return res.redirect("/signup");
     }
@@ -126,6 +144,9 @@ exports.postSignup = async (req, res, next) => {
     }
 
     const newUser = new User({
+      firstName: firstName,
+      lastName: lastName,
+      username: username,
       email: email,
       password: hashedPassword,
       cart: { items: [] },
