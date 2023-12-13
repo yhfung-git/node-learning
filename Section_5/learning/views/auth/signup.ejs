@@ -1,13 +1,35 @@
 <h1>Signup</h1>
 <form class="form-signup" action="/signup" method="POST">
   <div class="form-control">
-    <label for="email">E-mail: </label>
+    <label for="firstName">First Name: </label>
     <input
-      type="email"
-      name="email"
-      id="email"
-      placeholder="Enter your email"
+      type="text"
+      name="firstName"
+      id="firstName"
+      placeholder="Your first name"
     />
+  </div>
+  <div class="form-control">
+    <label for="lastName">Last Name: </label>
+    <input
+      type="text"
+      name="lastName"
+      id="lastName"
+      placeholder="Your last name"
+    />
+  </div>
+  <div class="form-control">
+    <label for="username">Username: </label>
+    <input
+      type="text"
+      name="username"
+      id="username"
+      placeholder="Your username"
+    />
+  </div>
+  <div class="form-control">
+    <label for="email">E-mail: </label>
+    <input type="email" name="email" id="email" placeholder="Your email" />
   </div>
   <div class="form-control">
     <label for="password">Password: </label>
@@ -15,7 +37,7 @@
       type="password"
       name="password"
       id="password"
-      placeholder="Enter your password"
+      placeholder="Your password"
     />
   </div>
   <div class="form-control">
