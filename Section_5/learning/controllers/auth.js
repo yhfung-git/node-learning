@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 
 const User = require("../models/user");
-const { sendEmail } = require("../utils/emailService");
+const { sendEmail } = require("../utils/email-service");
 
 exports.getLogin = async (req, res, next) => {
   try {
@@ -160,7 +160,7 @@ exports.postSignup = async (req, res, next) => {
     sendEmail(
       email,
       "Thank you for registering with our SHOP!",
-      "emailContent",
+      "email-content",
       data
     );
 
