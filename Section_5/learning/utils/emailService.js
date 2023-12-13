@@ -54,12 +54,9 @@ const createTransporter = async () => {
   }
 };
 
-const sendEmail = async (to, subject, template, data) => {
+const generateEmailOptions = async (to, subject, template, data) => {
   try {
-    // create transporter
-    const emailTransporter = await createTransporter();
-
-    // handle email content
+    // handle email content with a template
     const templatePath = path.join(
       rootDir,
       "views",
@@ -77,6 +74,25 @@ const sendEmail = async (to, subject, template, data) => {
     };
 
     emailOptions.headers = { "Content-Type": "text/html" };
+
+    return emailOptions;
+  } catch (err) {
+    throw new Error(`Error generating email options: ${err.message}`);
+  }
+};
+
+const sendEmail = async (to, subject, template, data) => {
+  try {
+    // create transporter
+    const emailTransporter = await createTransporter();
+
+    // Generate email options
+    const emailOptions = await generateEmailOptions(
+      to,
+      subject,
+      template,
+      data
+    );
 
     // send email
     await emailTransporter.sendMail(emailOptions);
