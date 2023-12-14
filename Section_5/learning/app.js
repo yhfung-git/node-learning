@@ -67,7 +67,7 @@ app.use(alerts);
 app.use(userSession);
 app.use(generateToken);
 
-app.use("/admin", isAuth, adminRoutes);
+app.use("/admin", isAuth(["admin"]), adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
 
