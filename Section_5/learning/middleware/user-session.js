@@ -10,6 +10,7 @@ module.exports = async (req, res, next) => {
 
     req.user = user;
     res.locals.isLoggedIn = !!userSession.isLoggedIn;
+    res.locals.isAdmin = !!user && userSession.user.role === "admin";
 
     next();
   } catch (err) {
