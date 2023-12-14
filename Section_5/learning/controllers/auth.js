@@ -1,4 +1,5 @@
 const bcrypt = require("bcrypt");
+const crypto = require("crypto");
 
 const User = require("../models/user");
 const { sendEmail } = require("../utils/email-service");
@@ -106,10 +107,11 @@ exports.postSignup = async (req, res, next) => {
       !username ||
       !email ||
       !password ||
+      !confirmPassword ||
       password !== confirmPassword;
 
     if (isInvalidInput) {
-      req.flash("error", "Invalid input");
+      req.flash("error", "Invalid input or password do not match");
       return res.redirect("/signup");
     }
 
@@ -167,5 +169,117 @@ exports.postSignup = async (req, res, next) => {
     res.redirect("/login");
   } catch (err) {
     console.log("Error posting signup:", err);
+  }
+};
+
+exports.getResetPassword = async (req, res, next) => {
+  try {
+    res.render("auth/reset-password", {
+      pageTitle: "Reset Password",
+      path: "/reset-password",
+      formCSS: true,
+      authCSS: true,
+    });
+  } catch (err) {
+    console.log("Error getting reset password page:", err);
+  }
+};
+
+exports.postResetPassword = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email: email });
+
+    if (!email || !user) {
+      req.flash("error", "No account with that email found");
+      return res.redirect("/reset-password");
+    }
+
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    user.resetToken = resetToken;
+    // Expires in 5 minutes
+    user.resetTokenExpiration = Date.now() + 300000;
+    const resetTokenUpdated = await user.save();
+
+    if (resetTokenUpdated) {
+      // Send email (to, subject, template, data)
+      const data = {
+        username: user.username,
+        linkPath: `http://localhost:3000/new-password/${resetToken}`,
+      };
+      sendEmail(email, "Password Reset", "email-reset-password", data);
+    }
+
+    req.flash("success", "Password reset email sent, please check your email");
+    res.redirect("/login");
+  } catch (err) {
+    console.log("Error resetting password:", err);
+  }
+};
+
+exports.getNewPassword = async (req, res, next) => {
+  try {
+    const resetToken = req.params.resetToken;
+    const user = await User.findOne({
+      resetToken: resetToken,
+      resetTokenExpiration: { $gt: new Date() },
+    });
+
+    if (!user) {
+      req.flash(
+        "error",
+        "The password reset link is either invalid or has expired. Please ensure you're using the latest password reset link or request a new one."
+      );
+      return res.redirect("/reset-password");
+    }
+
+    res.render("auth/new-password", {
+      pageTitle: "New Password",
+      path: "/new-password",
+      formCSS: true,
+      authCSS: true,
+      userId: user._id,
+      resetToken: resetToken,
+    });
+  } catch (err) {
+    console.log("Error getting new password page:", err);
+  }
+};
+
+exports.postNewPassword = async (req, res, next) => {
+  try {
+    const { newPassword, confirmPassword, userId, resetToken } = req.body;
+
+    const user = await User.findOne({
+      resetToken: resetToken,
+      resetTokenExpiration: { $gt: new Date() },
+      _id: userId,
+    });
+
+    if (!user) {
+      req.flash(
+        "error",
+        "The password reset link is either invalid or has expired. Please ensure you're using the latest password reset link or request a new one."
+      );
+      return res.redirect("/reset-password");
+    }
+
+    if (!newPassword || !confirmPassword || newPassword !== confirmPassword) {
+      req.flash("error", "Invalid input or password do not match");
+      return res.redirect(`/new-password/${resetToken}`);
+    }
+
+    // Hash new password
+    const saltRounds = 12;
+    const hashedNewPassword = await bcrypt.hash(newPassword, saltRounds);
+    user.password = hashedNewPassword;
+    user.resetToken = null;
+    user.resetTokenExpiration = null;
+    await user.save();
+
+    req.flash("success", "Your new password has been successfully updated!");
+    res.redirect("/login");
+  } catch (err) {
+    console.log("Error setting new password:", err);
   }
 };
