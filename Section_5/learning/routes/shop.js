@@ -5,21 +5,23 @@ const router = express.Router();
 const shopController = require("../controllers/shop");
 const cartsController = require("../controllers/carts");
 const ordersController = require("../controllers/orders");
+
 const isAuth = require("../middleware/is-auth");
+const isAuths = isAuth(["admin", "user"]);
 
-router.get("/cart", isAuth, cartsController.getCart);
+router.get("/cart", isAuths, cartsController.getCart);
 
-router.post("/cart", isAuth, cartsController.postCart);
+router.post("/cart", isAuths, cartsController.postCart);
 
 router.post(
   "/cart-delete-product",
-  isAuth,
+  isAuths,
   cartsController.postCartDeleteProduct
 );
 
-router.post("/create-order", isAuth, ordersController.postCreateOrder);
+router.post("/create-order", isAuths, ordersController.postCreateOrder);
 
-router.get("/orders", isAuth, ordersController.getOrders);
+router.get("/orders", isAuths, ordersController.getOrders);
 
 router.get("/products", shopController.getProducts);
 
