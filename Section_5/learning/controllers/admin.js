@@ -29,6 +29,14 @@ exports.postAddProduct = async (req, res, next) => {
   try {
     const { title, imageUrl, description, price } = req.body;
 
+    if (req.user.role !== "admin") {
+      req.flash(
+        "error",
+        "Oops! It looks like you need admin privileges to access this page"
+      );
+      return res.redirect("/");
+    }
+
     if (!title || !imageUrl || !description || !price) {
       req.flash("error", "Please provide all required information");
       return res.redirect("/admin/add-product");
@@ -87,6 +95,14 @@ exports.postEditProduct = async (req, res, next) => {
   try {
     const { productId, title, imageUrl, description, price } = req.body;
 
+    if (req.user.role !== "admin") {
+      req.flash(
+        "error",
+        "Oops! It looks like you need admin privileges to access this page"
+      );
+      return res.redirect("/");
+    }
+
     if (!title || !imageUrl || !description || !price) {
       req.flash("error", "Please provide all required information");
       return res.redirect(`/admin/edit-product/${productId}?edit=true`);
@@ -118,6 +134,14 @@ exports.postEditProduct = async (req, res, next) => {
 exports.postDeleteProduct = async (req, res, next) => {
   try {
     const prodId = req.body.productId;
+
+    if (req.user.role !== "admin") {
+      req.flash(
+        "error",
+        "Oops! It looks like you need admin privileges to access this page"
+      );
+      return res.redirect("/");
+    }
 
     const deletedProduct = await Product.findByIdAndDelete(prodId);
 
