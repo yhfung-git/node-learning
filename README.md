@@ -54,7 +54,7 @@
 
 - Using Node.js with NoSQL (MongoDB) and Mongoose
 
-### Section 5 ⏳
+### Section 5 ✅
 
 - Working with Sessions & Cookies
 
@@ -62,7 +62,7 @@
 
 - Sending E-Mails
 
-### Section 6 📌
+### Section 6 ⏳
 
 - Validating User Input
 
