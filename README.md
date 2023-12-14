@@ -54,7 +54,7 @@
 
 - Using Node.js with NoSQL (MongoDB) and Mongoose
 
-### Section 5 ✅
+### Section 5 ⏳
 
 - Working with Sessions & Cookies
 
@@ -62,13 +62,11 @@
 
 - Sending E-Mails
 
-### Section 6 ⏳
-
 - Validating User Input
 
 - Error Handling
 
-### Section 7 📌
+### Section 6 📌
 
 - Working with Files and generating PDFs on the Server (on-the-fly)
 
@@ -80,7 +78,7 @@
 
 - Handling Payments with Stripe.js
 
-### Section 8 📌
+### Section 7 📌
 
 - Building REST APIs
 
@@ -94,7 +92,7 @@
 
 - File Upload in GraphQL APIs
 
-### Section 9 📌
+### Section 8 📌
 
 - Building a Realtime Node.js App with Websockets
 
