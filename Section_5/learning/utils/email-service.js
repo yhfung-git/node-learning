@@ -67,7 +67,7 @@ const generateEmailOptions = async (to, subject, template, data) => {
     const emailContent = await ejs.renderFile(templatePath, data);
 
     const emailOptions = {
-      from: "my-own-email@gmail.com",
+      from: "'SHOP' my-own-email@gmail.com",
       to,
       subject,
       html: emailContent,
