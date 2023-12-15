@@ -21,3 +21,8 @@
   font-size: 16px;
   margin-right: 6px;
 }
+
+.email-info {
+  color: #555;
+  font-style: italic;
+}
