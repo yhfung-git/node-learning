@@ -7,7 +7,7 @@ module.exports = (roles) => {
 
     if (
       req.session.user &&
-      req.user.role === "user" &&
+      req.user.role !== "admin" &&
       req.originalUrl.startsWith("/admin")
     ) {
       req.flash(
