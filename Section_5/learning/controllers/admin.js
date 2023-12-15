@@ -29,7 +29,7 @@ exports.postAddProduct = async (req, res, next) => {
   try {
     const { title, imageUrl, description, price } = req.body;
 
-    if (req.user.role !== "admin") {
+    if (!req.session.user && req.user.role !== "admin") {
       req.flash(
         "error",
         "Oops! It looks like you need admin privileges to access this page"
@@ -95,7 +95,7 @@ exports.postEditProduct = async (req, res, next) => {
   try {
     const { productId, title, imageUrl, description, price } = req.body;
 
-    if (req.user.role !== "admin") {
+    if (!req.session.user && req.user.role !== "admin") {
       req.flash(
         "error",
         "Oops! It looks like you need admin privileges to access this page"
@@ -135,7 +135,7 @@ exports.postDeleteProduct = async (req, res, next) => {
   try {
     const prodId = req.body.productId;
 
-    if (req.user.role !== "admin") {
+    if (!req.session.user && req.user.role !== "admin") {
       req.flash(
         "error",
         "Oops! It looks like you need admin privileges to access this page"
