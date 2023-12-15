@@ -3,6 +3,7 @@ const crypto = require("crypto");
 
 const User = require("../models/user");
 const { sendEmail } = require("../utils/email-service");
+const { validationResult } = require("express-validator");
 
 exports.getLogin = async (req, res, next) => {
   try {
@@ -25,21 +26,23 @@ exports.getLogin = async (req, res, next) => {
 
 exports.postLogin = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    // Using Express Validator for validation
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const errorMsg = errors.array()[0].msg;
+
+      return res.status(422).render("auth/login", {
+        pageTitle: "Login",
+        path: "/login",
+        formCSS: true,
+        authCSS: true,
+        validationCSS: true,
+        alerts: { error: errorMsg },
+      });
+    }
+
+    const { email } = req.body;
     const user = await User.findOne({ email: email });
-
-    if (!user) {
-      req.flash("error", "Invalid Email or Password");
-      return res.redirect("/login");
-    }
-
-    const match = await bcrypt.compare(password, user.password);
-
-    if (!match) {
-      req.flash("error", "Invalid Email or Password");
-      return res.redirect("/login");
-    }
-
     req.session.user = { isLoggedIn: true, user: user };
 
     // Save the session and wait for it to complete
@@ -90,6 +93,7 @@ exports.getSignup = async (req, res, next) => {
       path: "/signup",
       formCSS: true,
       authCSS: true,
+      validationCSS: true,
     });
   } catch (err) {
     console.log("Error getting signup page:", err);
@@ -98,39 +102,21 @@ exports.getSignup = async (req, res, next) => {
 
 exports.postSignup = async (req, res, next) => {
   try {
-    const { firstName, lastName, username, email, password, confirmPassword } =
-      req.body;
+    const { firstName, lastName, username, email, password } = req.body;
 
-    const isInvalidInput =
-      !firstName ||
-      !lastName ||
-      !username ||
-      !email ||
-      !password ||
-      !confirmPassword ||
-      password !== confirmPassword;
+    // Using Express Validator for validation
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const errorMsg = errors.array()[0].msg;
 
-    if (isInvalidInput) {
-      req.flash("error", "Invalid input or password do not match");
-      return res.redirect("/signup");
-    }
-
-    const user = await User.findOne({ email: email });
-    if (user) {
-      req.flash(
-        "error",
-        "Email already registered, please enter a different email"
-      );
-      return res.redirect("/signup");
-    }
-
-    const existingUsername = await User.findOne({ username: username });
-    if (existingUsername) {
-      req.flash(
-        "error",
-        "Username already taken, please enter a different username"
-      );
-      return res.redirect("/signup");
+      return res.status(422).render("auth/signup", {
+        pageTitle: "Signup",
+        path: "/signup",
+        formCSS: true,
+        authCSS: true,
+        validationCSS: true,
+        alerts: { error: errorMsg },
+      });
     }
 
     // Hash the password
