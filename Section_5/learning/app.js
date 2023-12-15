@@ -22,11 +22,13 @@ const errorsController = require("./controllers/errors");
 
 const userSession = require("./middleware/user-session");
 const isAuth = require("./middleware/is-auth");
-const alerts = require("./middleware/alerts");
 
 const { options } = require("./configs/csrf-csrfOptions");
 const { doubleCsrfProtection } = doubleCsrf(options);
 const generateToken = require("./middleware/generate-token");
+
+const alerts = require("./middleware/alerts");
+const handleOldInput = require("./middleware/handle-old-input");
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
@@ -66,6 +68,7 @@ app.use(alerts);
 
 app.use(userSession);
 app.use(generateToken);
+app.use(handleOldInput);
 
 app.use("/admin", isAuth(["admin"]), adminRoutes);
 app.use(shopRoutes);
