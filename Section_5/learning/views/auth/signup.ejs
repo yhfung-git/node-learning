@@ -7,6 +7,7 @@
       name="firstName"
       id="firstName"
       placeholder="Your first name"
+      value="<%= oldInput.firstName %>"
     />
   </div>
   <div class="form-control">
@@ -16,6 +17,7 @@
       name="lastName"
       id="lastName"
       placeholder="Your last name"
+      value="<%= oldInput.lastName %>"
     />
   </div>
   <div class="form-control">
@@ -25,11 +27,18 @@
       name="username"
       id="username"
       placeholder="Your username"
+      value="<%= oldInput.username %>"
     />
   </div>
   <div class="form-control">
     <label for="email">E-mail: </label>
-    <input type="email" name="email" id="email" placeholder="Your email" />
+    <input
+      type="email"
+      name="email"
+      id="email"
+      placeholder="Your email"
+      value="<%= oldInput.email %>"
+    />
     <small class="email-info">example@example.com</small>
   </div>
   <div class="form-control">
@@ -39,6 +48,7 @@
       name="password"
       id="password"
       placeholder="Your password"
+      value="<%= oldInput.password %>"
     />
     <div class="password-info">
       <p>
@@ -61,6 +71,7 @@
       name="confirmPassword"
       id="confirmPassword"
       placeholder="Enter your password again"
+      value="<%= oldInput.confirmPassword %>"
     />
   </div>
   <%- include("../partials/csrf-token-input") %>
