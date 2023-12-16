@@ -3,53 +3,63 @@
   <div class="form-control">
     <label for="firstName">First Name: </label>
     <input
+      class="<%= errorMessages && errorMessages.firstName ? "invalid" : "" %>"
       type="text"
       name="firstName"
       id="firstName"
       placeholder="Your first name"
       value="<%= oldInput.firstName %>"
     />
+    <small class="error-info"><%= errorMessages && errorMessages.firstName ? errorMessages.firstName.msg : "" %></small>
   </div>
   <div class="form-control">
     <label for="lastName">Last Name: </label>
     <input
+      class="<%= errorMessages && errorMessages.lastName ? "invalid" : "" %>"
       type="text"
       name="lastName"
       id="lastName"
       placeholder="Your last name"
       value="<%= oldInput.lastName %>"
     />
+    <small class="error-info"><%= errorMessages && errorMessages.lastName ? errorMessages.lastName.msg : "" %></small>
   </div>
   <div class="form-control">
     <label for="username">Username: </label>
     <input
+      class="<%= errorMessages && errorMessages.username ? "invalid" : "" %>"
       type="text"
       name="username"
       id="username"
       placeholder="Your username"
       value="<%= oldInput.username %>"
     />
+    <small class="error-info"><%= errorMessages && errorMessages.username ? errorMessages.username.msg : "" %></small>
   </div>
   <div class="form-control">
     <label for="email">E-mail: </label>
     <input
+      class="<%= errorMessages && errorMessages.email ? "invalid" : "" %>"
       type="email"
       name="email"
       id="email"
       placeholder="Your email"
       value="<%= oldInput.email %>"
     />
-    <small class="email-info">example@example.com</small>
+    <small class="error-info"><%= errorMessages && errorMessages.email ? errorMessages.email.msg : "" %></small>
+    <div class="email-info">example@example.com</div>
   </div>
   <div class="form-control">
     <label for="password">Password: </label>
     <input
+      class="<%= errorMessages && errorMessages.password ? "invalid" : "" %>"
       type="password"
       name="password"
       id="password"
       placeholder="Your password"
       value="<%= oldInput.password %>"
     />
+    <small class="error-info"><%= errorMessages && errorMessages.password ? errorMessages.password.msg : "" %></small>
     <div class="password-info">
       <p>
         <span class="asterisks">**</span>Password should meet the following
@@ -67,12 +77,14 @@
   <div class="form-control">
     <label for="confirmPassword">Confirm Password: </label>
     <input
+      class="<%= errorMessages && errorMessages.confirmPassword ? "invalid" : "" %>"
       type="password"
       name="confirmPassword"
       id="confirmPassword"
       placeholder="Enter your password again"
       value="<%= oldInput.confirmPassword %>"
     />
+    <small class="error-info"><%= errorMessages && errorMessages.confirmPassword ? errorMessages.confirmPassword.msg : "" %></small>
   </div>
   <%- include("../partials/csrf-token-input") %>
   <button class="btn" type="submit">Signup</button>
