@@ -5,12 +5,15 @@ const User = require("../models/user");
 
 exports.checkSignup = [
   body("firstName")
+    .trim()
     .exists({ checkFalsy: true })
     .withMessage("You must enter your first name"),
   body("lastName")
+    .trim()
     .exists({ checkFalsy: true })
     .withMessage("You must enter your last name"),
   body("username")
+    .trim()
     .exists({ checkFalsy: true })
     .withMessage("You must enter your username")
     .custom(async (value) => {
@@ -21,6 +24,7 @@ exports.checkSignup = [
       return true;
     }),
   body("email")
+    .trim()
     .exists({ checkFalsy: true })
     .withMessage("You must enter your email")
     .isEmail()
@@ -31,8 +35,10 @@ exports.checkSignup = [
         throw new Error("Email already in use, please enter a different email");
       }
       return true;
-    }),
+    })
+    .normalizeEmail(),
   body("password")
+    .trim()
     .exists({ checkFalsy: true })
     .withMessage("You must enter your password following the requirements")
     .isStrongPassword({
@@ -44,6 +50,7 @@ exports.checkSignup = [
     })
     .withMessage("Your password does not meet the requirements"),
   body("confirmPassword")
+    .trim()
     .exists({ checkFalsy: true })
     .withMessage("You must re-enter your password for confirmation")
     .custom((value, { req }) => {
@@ -56,6 +63,7 @@ exports.checkSignup = [
 
 exports.checkLogin = [
   body("email")
+    .trim()
     .exists({ checkFalsy: true })
     .withMessage("You must enter your email")
     .isEmail()
@@ -66,8 +74,10 @@ exports.checkLogin = [
         throw new Error("Invalid email or password");
       }
       return true;
-    }),
+    })
+    .normalizeEmail(),
   body("password")
+    .trim()
     .exists({ checkFalsy: true })
     .withMessage("You must enter your password")
     .custom(async (value, { req }) => {
