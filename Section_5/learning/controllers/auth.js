@@ -94,6 +94,7 @@ exports.getSignup = async (req, res, next) => {
       formCSS: true,
       authCSS: true,
       validationCSS: true,
+      errorMessages: [],
     });
   } catch (err) {
     console.log("Error getting signup page:", err);
@@ -116,6 +117,7 @@ exports.postSignup = async (req, res, next) => {
         authCSS: true,
         validationCSS: true,
         alerts: { error: errorMsg },
+        errorMessages: errors.mapped(),
       });
     }
 
