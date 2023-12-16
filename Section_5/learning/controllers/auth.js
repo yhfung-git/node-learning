@@ -18,6 +18,7 @@ exports.getLogin = async (req, res, next) => {
       formCSS: true,
       authCSS: true,
       loggedOutMessage: message,
+      errorMessages: [],
     });
   } catch (err) {
     console.log("Error getting login page:", err);
@@ -38,6 +39,7 @@ exports.postLogin = async (req, res, next) => {
         authCSS: true,
         validationCSS: true,
         alerts: { error: errorMsg },
+        errorMessages: errors.mapped(),
       });
     }
 
