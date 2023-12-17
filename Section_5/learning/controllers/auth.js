@@ -169,6 +169,7 @@ exports.getResetPassword = async (req, res, next) => {
       path: "/reset-password",
       formCSS: true,
       authCSS: true,
+      errorMessages: [],
     });
   } catch (err) {
     console.log("Error getting reset password page:", err);
@@ -180,9 +181,35 @@ exports.postResetPassword = async (req, res, next) => {
     const { email } = req.body;
     const user = await User.findOne({ email: email });
 
-    if (!email || !user) {
-      req.flash("error", "No account with that email found");
-      return res.redirect("/reset-password");
+    // Using Express Validator for validation
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const errorMsg = errors.array()[0].msg;
+
+      return res.status(422).render("auth/reset-password", {
+        pageTitle: "Reset Password",
+        path: "/reset-password",
+        formCSS: true,
+        authCSS: true,
+        validationCSS: true,
+        alerts: { error: errorMsg },
+        errorMessages: errors.mapped(),
+      });
+    }
+
+    if (!user) {
+      return res.status(200).render("auth/reset-password", {
+        pageTitle: "Reset Password",
+        path: "/reset-password",
+        formCSS: true,
+        authCSS: true,
+        validationCSS: true,
+        alerts: {
+          success:
+            "Password reset initiated. Check your email for further instructions.",
+        },
+        errorMessages: [],
+      });
     }
 
     const resetToken = crypto.randomBytes(32).toString("hex");
@@ -200,8 +227,11 @@ exports.postResetPassword = async (req, res, next) => {
       sendEmail(email, "Password Reset", "email-reset-password", data);
     }
 
-    req.flash("success", "Password reset email sent, please check your email");
-    res.redirect("/login");
+    req.flash(
+      "success",
+      "Password reset initiated. Check your email for further instructions."
+    );
+    res.redirect("/reset-password");
   } catch (err) {
     console.log("Error resetting password:", err);
   }
