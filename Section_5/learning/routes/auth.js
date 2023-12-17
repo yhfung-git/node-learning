@@ -3,7 +3,11 @@ const express = require("express");
 const router = express.Router();
 
 const authController = require("../controllers/auth");
-const { checkSignup, checkLogin } = require("../utils/validators");
+const {
+  checkSignup,
+  checkLogin,
+  checkResetPassword,
+} = require("../utils/validators");
 
 router.get("/login", authController.getLogin);
 
@@ -17,7 +21,11 @@ router.post("/signup", checkSignup, authController.postSignup);
 
 router.get("/reset-password", authController.getResetPassword);
 
-router.post("/reset-password", authController.postResetPassword);
+router.post(
+  "/reset-password",
+  checkResetPassword,
+  authController.postResetPassword
+);
 
 router.get("/new-password/:resetToken", authController.getNewPassword);
 
