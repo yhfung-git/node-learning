@@ -89,3 +89,10 @@ exports.checkLogin = [
       return true;
     }),
 ];
+
+exports.checkResetPassword = body("email")
+  .trim()
+  .exists({ checkFalsy: true })
+  .withMessage("You must enter your email")
+  .isEmail()
+  .withMessage("You must enter a valid email");
