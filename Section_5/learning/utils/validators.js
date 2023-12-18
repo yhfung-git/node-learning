@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 
-const { body } = require("express-validator");
+const { body, param } = require("express-validator");
 const User = require("../models/user");
 
 exports.checkSignup = [
@@ -96,3 +96,71 @@ exports.checkResetPassword = body("email")
   .withMessage("You must enter your email")
   .isEmail()
   .withMessage("You must enter a valid email");
+
+exports.checkGetNewPassword = param(
+  "resetToken",
+  "The password reset link is either invalid or has expired. Please ensure you're using the latest password reset link or request a new one."
+)
+  .trim()
+  .exists({ checkFalsy: true })
+  .withMessage()
+  .custom(async (value) => {
+    const user = await User.findOne({
+      resetToken: value,
+      resetTokenExpiration: { $gt: new Date() },
+    });
+    if (!user) {
+      throw new Error();
+    }
+    return true;
+  });
+
+exports.checkPostNewPassword = [
+  body("newPassword")
+    .trim()
+    .exists({ checkFalsy: true })
+    .withMessage("You must enter your password following the requirements")
+    .isStrongPassword({
+      minlength: 8,
+      minLowercase: 1,
+      minUppercase: 1,
+      minSymbols: 1,
+      minNumbers: 1,
+    })
+    .withMessage("Your password does not meet the requirements"),
+  body("confirmPassword")
+    .trim()
+    .exists({ checkFalsy: true })
+    .withMessage("You must re-enter your password for confirmation")
+    .custom((value, { req }) => {
+      if (value !== req.body.newPassword) {
+        throw new Error("The confirmation password do not match");
+      }
+      return true;
+    }),
+];
+
+exports.checkAddProduct = [
+  body("title")
+    .trim()
+    .exists({ checkFalsy: true })
+    .withMessage("You must enter a title"),
+  body("imageUrl")
+    .trim()
+    .exists({ checkFalsy: true })
+    .withMessage("You must enter an image URL")
+    .isURL()
+    .withMessage("Invalid URL"),
+  body("price")
+    .trim()
+    .exists({ checkFalsy: true })
+    .withMessage("You must enter a price")
+    .isCurrency()
+    .withMessage("Price must be a valid number")
+    .isFloat({ min: 0.01 })
+    .withMessage("Price must be at least 0.01"),
+  body("description")
+    .trim()
+    .exists({ checkFalsy: true })
+    .withMessage("You must enter a description"),
+];
