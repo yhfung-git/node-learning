@@ -28,7 +28,7 @@ exports.getLogin = async (req, res, next) => {
 
 exports.postLogin = async (req, res, next) => {
   try {
-    // Use the validation middleware with additional parameters (req, res, next, view, pageTitle, path)
+    // req, res, next, view, pageTitle, path, additionalOptions
     const validationPassed = await handleValidationErrors(
       req,
       res,
@@ -104,7 +104,7 @@ exports.getSignup = async (req, res, next) => {
 
 exports.postSignup = async (req, res, next) => {
   try {
-    // Use the validation middleware with additional parameters (req, res, next, view, pageTitle, path)
+    // req, res, next, view, pageTitle, path, additionalOptions
     const validationPassed = await handleValidationErrors(
       req,
       res,
@@ -173,7 +173,7 @@ exports.getResetPassword = async (req, res, next) => {
 
 exports.postResetPassword = async (req, res, next) => {
   try {
-    // Use the validation middleware with additional parameters (req, res, next, view, pageTitle, path)
+    // req, res, next, view, pageTitle, path, additionalOptions
     const validationPassed = await handleValidationErrors(
       req,
       res,
@@ -230,6 +230,7 @@ exports.postResetPassword = async (req, res, next) => {
 
 exports.getNewPassword = async (req, res, next) => {
   try {
+    // req, res, next, view, pageTitle, path, additionalOptions
     const validationPassed = await handleValidationErrors(
       req,
       res,
@@ -281,22 +282,18 @@ exports.postNewPassword = async (req, res, next) => {
       return res.redirect("/reset-password");
     }
 
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      const errorMsg = errors.array()[0].msg;
+    // req, res, next, view, pageTitle, path, additionalOptions
+    const validationPassed = await handleValidationErrors(
+      req,
+      res,
+      next,
+      "auth/new-password",
+      "New Password",
+      "/new-password",
+      { userId: user._id, resetToken: resetToken }
+    );
 
-      return res.status(422).render("auth/new-password", {
-        pageTitle: "New Password",
-        path: "/new-password/",
-        formCSS: true,
-        authCSS: true,
-        validationCSS: true,
-        alerts: { error: errorMsg },
-        errorMessages: errors.mapped(),
-        userId: user._id,
-        resetToken: resetToken,
-      });
-    }
+    if (!validationPassed) return;
 
     if (!user || !errors.isEmpty()) return;
     // Hash new password
