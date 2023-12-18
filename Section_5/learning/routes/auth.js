@@ -7,6 +7,8 @@ const {
   checkSignup,
   checkLogin,
   checkResetPassword,
+  checkGetNewPassword,
+  checkPostNewPassword,
 } = require("../utils/validators");
 
 router.get("/login", authController.getLogin);
@@ -27,8 +29,16 @@ router.post(
   authController.postResetPassword
 );
 
-router.get("/new-password/:resetToken", authController.getNewPassword);
+router.get(
+  "/new-password/:resetToken",
+  checkGetNewPassword,
+  authController.getNewPassword
+);
 
-router.post("/new-password", authController.postNewPassword);
+router.post(
+  "/new-password",
+  checkPostNewPassword,
+  authController.postNewPassword
+);
 
 module.exports = router;
