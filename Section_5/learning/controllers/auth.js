@@ -293,9 +293,8 @@ exports.postNewPassword = async (req, res, next) => {
       { userId: user._id, resetToken: resetToken }
     );
 
-    if (!validationPassed) return;
-
-    if (!user || !errors.isEmpty()) return;
+    if (!validationPassed || !user) return;
+    
     // Hash new password
     const saltRounds = 12;
     const hashedNewPassword = await bcrypt.hash(newPassword, saltRounds);
