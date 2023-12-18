@@ -1,5 +1,7 @@
 const Product = require("../models/product");
 const User = require("../models/user");
+const { validationResult } = require("express-validator");
+const { handleValidationErrors } = require("../middleware/validation");
 
 exports.getProducts = async (req, res, next) => {
   try {
@@ -22,6 +24,7 @@ exports.getAddProduct = (req, res, next) => {
     path: "/admin/add-product",
     formCSS: true,
     editing: false,
+    errorMessages: [],
   });
 };
 
@@ -37,10 +40,18 @@ exports.postAddProduct = async (req, res, next) => {
       return res.redirect("/");
     }
 
-    if (!title || !imageUrl || !description || !price) {
-      req.flash("error", "Please provide all required information");
-      return res.redirect("/admin/add-product");
-    }
+    // req, res, next, view, pageTitle, path, additionalOptions
+    const validationPassed = await handleValidationErrors(
+      req,
+      res,
+      next,
+      "admin/add-product",
+      "Add Product",
+      "/admin/add-product",
+      { editing: false }
+    );
+
+    if (!validationPassed) return;
 
     const newProduct = new Product({
       title: title,
@@ -85,6 +96,7 @@ exports.getEditProduct = async (req, res, next) => {
       formCSS: true,
       editing: editMode,
       product: product,
+      errorMessages: [],
     });
   } catch (err) {
     console.log(err);
