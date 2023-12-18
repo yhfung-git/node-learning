@@ -1,9 +1,10 @@
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
+const { validationResult } = require("express-validator");
 
 const User = require("../models/user");
 const { sendEmail } = require("../utils/email-service");
-const { validationResult } = require("express-validator");
+const { handleValidationErrors } = require("../middleware/validation");
 
 exports.getLogin = async (req, res, next) => {
   try {
@@ -27,24 +28,22 @@ exports.getLogin = async (req, res, next) => {
 
 exports.postLogin = async (req, res, next) => {
   try {
-    // Using Express Validator for validation
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      const errorMsg = errors.array()[0].msg;
+    // Use the validation middleware with additional parameters (req, res, next, view, pageTitle, path)
+    const validationPassed = await handleValidationErrors(
+      req,
+      res,
+      next,
+      "auth/login",
+      "Login",
+      "/login"
+    );
 
-      return res.status(422).render("auth/login", {
-        pageTitle: "Login",
-        path: "/login",
-        formCSS: true,
-        authCSS: true,
-        validationCSS: true,
-        alerts: { error: errorMsg },
-        errorMessages: errors.mapped(),
-      });
-    }
+    if (!validationPassed) return;
 
     const { email } = req.body;
     const user = await User.findOne({ email: email });
+    if (!user) return;
+
     req.session.user = { isLoggedIn: true, user: user };
 
     // Save the session and wait for it to complete
@@ -105,23 +104,19 @@ exports.getSignup = async (req, res, next) => {
 
 exports.postSignup = async (req, res, next) => {
   try {
+    // Use the validation middleware with additional parameters (req, res, next, view, pageTitle, path)
+    const validationPassed = await handleValidationErrors(
+      req,
+      res,
+      next,
+      "auth/signup",
+      "Signup",
+      "/signup"
+    );
+
+    if (!validationPassed) return;
+
     const { firstName, lastName, username, email, password } = req.body;
-
-    // Using Express Validator for validation
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      const errorMsg = errors.array()[0].msg;
-
-      return res.status(422).render("auth/signup", {
-        pageTitle: "Signup",
-        path: "/signup",
-        formCSS: true,
-        authCSS: true,
-        validationCSS: true,
-        alerts: { error: errorMsg },
-        errorMessages: errors.mapped(),
-      });
-    }
 
     // Hash the password
     const saltRounds = 12;
@@ -178,24 +173,20 @@ exports.getResetPassword = async (req, res, next) => {
 
 exports.postResetPassword = async (req, res, next) => {
   try {
+    // Use the validation middleware with additional parameters (req, res, next, view, pageTitle, path)
+    const validationPassed = await handleValidationErrors(
+      req,
+      res,
+      next,
+      "auth/reset-password",
+      "Reset Password",
+      "/reset-password"
+    );
+
+    if (!validationPassed) return;
+
     const { email } = req.body;
     const user = await User.findOne({ email: email });
-
-    // Using Express Validator for validation
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      const errorMsg = errors.array()[0].msg;
-
-      return res.status(422).render("auth/reset-password", {
-        pageTitle: "Reset Password",
-        path: "/reset-password",
-        formCSS: true,
-        authCSS: true,
-        validationCSS: true,
-        alerts: { error: errorMsg },
-        errorMessages: errors.mapped(),
-      });
-    }
 
     if (!user) {
       return res.status(200).render("auth/reset-password", {
@@ -239,27 +230,33 @@ exports.postResetPassword = async (req, res, next) => {
 
 exports.getNewPassword = async (req, res, next) => {
   try {
+    const validationPassed = await handleValidationErrors(
+      req,
+      res,
+      next,
+      "auth/reset-password",
+      "Reset Password",
+      "/reset-password"
+    );
+
+    if (!validationPassed) return;
+
     const resetToken = req.params.resetToken;
     const user = await User.findOne({
       resetToken: resetToken,
       resetTokenExpiration: { $gt: new Date() },
     });
-
-    if (!user) {
-      req.flash(
-        "error",
-        "The password reset link is either invalid or has expired. Please ensure you're using the latest password reset link or request a new one."
-      );
-      return res.redirect("/reset-password");
-    }
+    if (!user) return;
 
     res.render("auth/new-password", {
       pageTitle: "New Password",
       path: "/new-password",
       formCSS: true,
       authCSS: true,
+      validationCSS: true,
       userId: user._id,
       resetToken: resetToken,
+      errorMessages: [],
     });
   } catch (err) {
     console.log("Error getting new password page:", err);
@@ -268,7 +265,7 @@ exports.getNewPassword = async (req, res, next) => {
 
 exports.postNewPassword = async (req, res, next) => {
   try {
-    const { newPassword, confirmPassword, userId, resetToken } = req.body;
+    const { newPassword, userId, resetToken } = req.body;
 
     const user = await User.findOne({
       resetToken: resetToken,
@@ -284,9 +281,21 @@ exports.postNewPassword = async (req, res, next) => {
       return res.redirect("/reset-password");
     }
 
-    if (!newPassword || !confirmPassword || newPassword !== confirmPassword) {
-      req.flash("error", "Invalid input or password do not match");
-      return res.redirect(`/new-password/${resetToken}`);
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const errorMsg = errors.array()[0].msg;
+
+      return res.status(422).render("auth/new-password", {
+        pageTitle: "New Password",
+        path: "/new-password/",
+        formCSS: true,
+        authCSS: true,
+        validationCSS: true,
+        alerts: { error: errorMsg },
+        errorMessages: errors.mapped(),
+        userId: user._id,
+        resetToken: resetToken,
+      });
     }
 
     // Hash new password
