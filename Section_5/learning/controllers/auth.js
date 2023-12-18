@@ -298,6 +298,7 @@ exports.postNewPassword = async (req, res, next) => {
       });
     }
 
+    if (!user || !errors.isEmpty()) return;
     // Hash new password
     const saltRounds = 12;
     const hashedNewPassword = await bcrypt.hash(newPassword, saltRounds);
