@@ -6,7 +6,8 @@ exports.handleValidationErrors = async (
   next,
   view,
   pageTitle,
-  path
+  path,
+  additionalOptions = {}
 ) => {
   try {
     const errors = validationResult(req);
@@ -21,6 +22,7 @@ exports.handleValidationErrors = async (
         validationCSS: true,
         alerts: { error: errorMsg },
         errorMessages: errors.mapped(),
+        ...additionalOptions,
       });
     }
     return true;
