@@ -7,7 +7,7 @@
       name="title"
       id="title"
       placeholder="Enter a product title"
-      value="<%= editing ? product.title : "" %>"
+      value="<%= (editing || errorMessages && errorMessages.title ? product.title : "") %>"
     />
     <small class="error-info"><%= errorMessages && errorMessages.title ? errorMessages.title.msg : "" %></small>
   </div>
@@ -19,7 +19,7 @@
       name="imageUrl"
       id="imageUrl"
       placeholder="Enter an image URL"
-      value="<%= editing ? product.imageUrl : "" %>"
+      value="<%= (editing || errorMessages && errorMessages.imageUrl ? product.imageUrl : "") %>"
     />
     <small class="error-info"><%= errorMessages && errorMessages.imageUrl ? errorMessages.imageUrl.msg : "" %></small>
   </div>
@@ -33,7 +33,7 @@
       min="0"
       step="0.01"
       placeholder="Enter a price"
-      value="<%= editing ? product.price : 0 %>"
+      value="<%= (editing || errorMessages && errorMessages.price ? product.price : 0) %>"
     />
     <small class="error-info"><%= errorMessages && errorMessages.price ? errorMessages.price.msg : "" %></small>
   </div>
@@ -45,7 +45,7 @@
       id="description"
       rows="5"
       placeholder="Enter a description of your product..."
-    ><%= editing ? product.description : "" %></textarea>
+    ><%= (editing || errorMessages && errorMessages.description ? product.description : "") %></textarea>
     <small class="error-info"><%= errorMessages && errorMessages.description ? errorMessages.description.msg : "" %></small>
   </div>
   <% if (editing) { %>
