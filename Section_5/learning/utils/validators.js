@@ -140,11 +140,15 @@ exports.checkPostNewPassword = [
     }),
 ];
 
-exports.checkAddProduct = [
+exports.checkProductInput = [
   body("title")
     .trim()
     .exists({ checkFalsy: true })
-    .withMessage("You must enter a title"),
+    .withMessage("You must enter a title")
+    .matches(/^[a-zA-Z0-9\s]+$/) // letters, numbers and whitespace
+    .withMessage("Title must only contain letters and numbers")
+    .isLength({ min: 5 })
+    .withMessage("You must enter at least 5 characters"),
   body("imageUrl")
     .trim()
     .exists({ checkFalsy: true })
@@ -162,5 +166,7 @@ exports.checkAddProduct = [
   body("description")
     .trim()
     .exists({ checkFalsy: true })
-    .withMessage("You must enter a description"),
+    .withMessage("You must enter a description")
+    .isLength({ min: 10 })
+    .withMessage("You must enter at least 10 characters"),
 ];
