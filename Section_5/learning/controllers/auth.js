@@ -1,6 +1,5 @@
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
-const { validationResult } = require("express-validator");
 
 const User = require("../models/user");
 const { sendEmail } = require("../utils/email-service");
@@ -294,7 +293,7 @@ exports.postNewPassword = async (req, res, next) => {
     );
 
     if (!validationPassed || !user) return;
-    
+
     // Hash new password
     const saltRounds = 12;
     const hashedNewPassword = await bcrypt.hash(newPassword, saltRounds);
