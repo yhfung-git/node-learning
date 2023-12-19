@@ -1,6 +1,6 @@
 module.exports = (roles) => {
   return (req, res, next) => {
-    if (!req.session.user) {
+    if (!req.session.user || !req.user) {
       req.flash("error", "Please log in before accessing the page");
       return res.redirect("/login");
     }
