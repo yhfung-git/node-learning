@@ -1,6 +1,5 @@
 const Product = require("../models/product");
 const User = require("../models/user");
-const { validationResult } = require("express-validator");
 const { handleValidationErrors } = require("../middleware/validation");
 
 exports.getProducts = async (req, res, next) => {
@@ -25,6 +24,7 @@ exports.getAddProduct = (req, res, next) => {
     formCSS: true,
     editing: false,
     errorMessages: [],
+    product: {},
   });
 };
 
@@ -48,7 +48,15 @@ exports.postAddProduct = async (req, res, next) => {
       "admin/add-product",
       "Add Product",
       "/admin/add-product",
-      { editing: false }
+      {
+        editing: false,
+        product: {
+          title: title,
+          imageUrl: imageUrl,
+          description: description,
+          price: price,
+        },
+      }
     );
 
     if (!validationPassed) return;
@@ -64,7 +72,10 @@ exports.postAddProduct = async (req, res, next) => {
     const createdProduct = await newProduct.save();
 
     if (!createdProduct) {
-      console.log("Create Product Failed!");
+      req.flash(
+        "error",
+        "Failed to add the product, please try again. If the issue persists, please contact us for assistance."
+      );
       return res.redirect("/admin/add-product");
     }
 
@@ -86,7 +97,7 @@ exports.getEditProduct = async (req, res, next) => {
     const productId = req.params.productId;
     const product = await Product.findById(productId);
     if (!product) {
-      console.log("Get Edit Product Failed!");
+      req.flash("error", "No product found");
       return res.redirect("/admin/product-list");
     }
 
@@ -115,10 +126,27 @@ exports.postEditProduct = async (req, res, next) => {
       return res.redirect("/");
     }
 
-    if (!title || !imageUrl || !description || !price) {
-      req.flash("error", "Please provide all required information");
-      return res.redirect(`/admin/edit-product/${productId}?edit=true`);
-    }
+    // req, res, next, view, pageTitle, path, additionalOptions
+    const validationPassed = await handleValidationErrors(
+      req,
+      res,
+      next,
+      "admin/edit-product",
+      `Edit ${title}`,
+      "/admin/edit-product",
+      {
+        editing: true,
+        product: {
+          title: title,
+          imageUrl: imageUrl,
+          description: description,
+          price: price,
+          _id: productId,
+        },
+      }
+    );
+
+    if (!validationPassed) return;
 
     const updatedProduct = await Product.findByIdAndUpdate(
       productId,
@@ -132,7 +160,10 @@ exports.postEditProduct = async (req, res, next) => {
     );
 
     if (!updatedProduct) {
-      console.log("Update Product Failed!");
+      req.flash(
+        "error",
+        "Failed to update the product, please try again. If the issue persists, please contact us for assistance."
+      );
       return res.redirect(`/admin/edit-product/${productId}?edit=true`);
     }
 
@@ -158,7 +189,10 @@ exports.postDeleteProduct = async (req, res, next) => {
     const deletedProduct = await Product.findByIdAndDelete(prodId);
 
     if (!deletedProduct) {
-      console.log("Destroy Product Failed!");
+      req.flash(
+        "error",
+        "Failed to delete the product, please try again. If the issue persists, please contact us for assistance."
+      );
       return res.redirect("/admin/product-list");
     }
 
