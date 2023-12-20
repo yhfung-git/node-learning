@@ -17,8 +17,7 @@ const { MONGODB_URI, SESSION_SECRET, COOKIE_PARSER_SECRET } = process.env;
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 const authRoutes = require("./routes/auth");
-
-const errorsController = require("./controllers/errors");
+const errorRoutes = require("./routes/error");
 
 const userSession = require("./middleware/user-session");
 const isAuth = require("./middleware/is-auth");
@@ -73,8 +72,14 @@ app.use(handleOldInput);
 app.use("/admin", isAuth(["admin"]), adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
+app.use(errorRoutes);
 
-app.use(errorsController.error404);
+app.use((error, req, res, next) => {
+  // res.status(error.httpStatusCode).render();
+  console.log(error);
+  const statusCode = error.httpStatusCode || 500;
+  res.redirect(`/${statusCode}`);
+});
 
 (async () => {
   try {
