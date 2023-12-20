@@ -9,6 +9,6 @@ module.exports = async (req, res, next) => {
 
     next();
   } catch (err) {
-    console.log("Error generating token:", err);
+    next(new Error(err));
   }
 };

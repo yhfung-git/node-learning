@@ -34,7 +34,6 @@ exports.postCreateOrder = async (req, res, next) => {
     }
 
     req.user.clearCart();
-    console.log("Cart cleared!");
 
     req.flash("success", "Order sent!");
     res.redirect("/orders");

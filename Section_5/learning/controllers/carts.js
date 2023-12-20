@@ -44,7 +44,7 @@ exports.postCart = async (req, res, next) => {
     const addedProductToCart = await req.user.addToCart(product);
 
     if (!addedProductToCart) {
-      console.log("Product adding to cart Failed!");
+      req.flash("error", "Failed to adding product into your cart");
       return res.redirect("/");
     }
 
@@ -62,7 +62,7 @@ exports.postCartDeleteProduct = async (req, res, next) => {
     const deletedProductFromCart = await req.user.destroy(productId);
 
     if (!deletedProductFromCart) {
-      console.log("Delete Cart Item Failed!");
+      req.flash("error", "Failed to deleting product from your cart");
       return res.redirect("/cart");
     }
 

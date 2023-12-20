@@ -39,7 +39,7 @@ exports.getProduct = async (req, res, next) => {
     const product = await Product.findById(productId);
 
     if (!product) {
-      console.log("No product found!");
+      req.flash("error", "Unable to fetch the product details");
       return res.redirect("/");
     }
 

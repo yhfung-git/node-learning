@@ -10,6 +10,6 @@ module.exports = async (req, res, next) => {
     res.locals.loggedOutMessage = !!req.cookies.loggedOut;
     next();
   } catch (err) {
-    console.log("Error from alerts middleware:", err);
+    next(new Error(err));
   }
 };

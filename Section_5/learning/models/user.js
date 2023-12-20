@@ -62,7 +62,7 @@ userSchema.methods.addToCart = async function (product) {
 
     return await this.save();
   } catch (err) {
-    console.error("Error adding product to cart:", err);
+    next(new Error(err));
   }
 };
 
@@ -75,8 +75,7 @@ userSchema.methods.destroy = async function (id) {
 
     if (productIndex === -1) {
       // Product not found, handle accordingly (return, throw an error, or log)
-      console.warn(`Product with ID ${id} not found in the cart.`);
-      return this;
+      return next(new Error(`Product with ID ${id} not found in the cart.`));
     }
 
     // Remove the product from the cart by filtering
@@ -86,7 +85,7 @@ userSchema.methods.destroy = async function (id) {
 
     return await this.save();
   } catch (err) {
-    console.error("Error destroying product to cart:", err);
+    next(new Error(err));
   }
 };
 
@@ -95,7 +94,7 @@ userSchema.methods.clearCart = async function () {
     this.cart = { items: [] };
     return await this.save();
   } catch (err) {
-    console.error("Error clearing cart:", err);
+    next(new Error(err));
   }
 };
 

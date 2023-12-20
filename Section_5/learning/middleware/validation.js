@@ -27,6 +27,6 @@ exports.handleValidationErrors = async (
     }
     return true;
   } catch (err) {
-    console.log("Error handling validation errors middleware:", err);
+    next(new Error(err));
   }
 };

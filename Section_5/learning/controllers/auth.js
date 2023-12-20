@@ -68,18 +68,15 @@ exports.postLogout = async (req, res, next) => {
     const clearedCsrfToken = await res.clearCookie("csrf-token");
 
     if (!sessionDeleted) {
-      console.log("Error destroying session:", err);
-      return;
+      return next(new Error("Failed to destroy session"));
     }
 
     if (!clearedCookie) {
-      console.log("Error clearing cookie:", err);
-      return;
+      return next(new Error("Failed to clear coookie"));
     }
 
     if (!clearedCsrfToken) {
-      console.log("Error clearing cookie:", err);
-      return;
+      return next(new Error("Failed to clear CSRF token"));
     }
 
     res.cookie("loggedOut", true);
@@ -127,8 +124,7 @@ exports.postSignup = async (req, res, next) => {
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     if (!hashedPassword) {
-      console.log("Error hashing password");
-      return res.status(500).send({ error: "Internal server error" });
+      return next(new Error("Failed to hashing the password"));
     }
 
     const newUser = new User({

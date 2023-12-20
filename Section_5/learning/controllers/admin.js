@@ -85,14 +85,13 @@ exports.getEditProduct = async (req, res, next) => {
   try {
     const editMode = req.query.edit;
     if (!editMode) {
-      console.log("Not Edit Mode");
       return res.redirect("/admin/product-list");
     }
 
     const productId = req.params.productId;
     const product = await Product.findById(productId);
     if (!product) {
-      req.flash("error", "No product found");
+      req.flash("error", "Unable to edit the product");
       return res.redirect("/admin/product-list");
     }
 
