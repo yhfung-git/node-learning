@@ -14,6 +14,6 @@ module.exports = async (req, res, next) => {
 
     next();
   } catch (err) {
-    throw new Error("Error in user session middleware:", err);
+    next(new Error(err));
   }
 };
