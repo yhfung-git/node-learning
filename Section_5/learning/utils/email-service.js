@@ -5,6 +5,7 @@ const { google } = require("googleapis");
 const OAuth2 = google.auth.OAuth2;
 
 const rootDir = require("./path");
+const errorHandler = require("../utils/error-handler");
 
 const {
   MAIL_USER,
@@ -50,7 +51,8 @@ const createTransporter = async () => {
 
     return transporter;
   } catch (err) {
-    throw new Error("Error creating transporter:", err);
+    // statusCode, errorMessage, next
+    errorHandler(500, err, next);
   }
 };
 
@@ -77,7 +79,8 @@ const generateEmailOptions = async (to, subject, template, data) => {
 
     return emailOptions;
   } catch (err) {
-    throw new Error("Error generating email options:", err);
+    // statusCode, errorMessage, next
+    errorHandler(500, err, next);
   }
 };
 
@@ -95,9 +98,10 @@ const sendEmail = async (to, subject, template, data) => {
     );
 
     // send email
-    await emailTransporter.sendMail(emailOptions);
+    emailTransporter.sendMail(emailOptions);
   } catch (err) {
-    throw new Error("Error sending email:", err);
+    // statusCode, errorMessage, next
+    errorHandler(500, err, next);
   }
 };
 
