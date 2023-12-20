@@ -1,5 +1,5 @@
 const Product = require("../models/product");
-const User = require("../models/user");
+const errorHandler = require("../utils/error-handler");
 
 exports.getCart = async (req, res, next) => {
   try {
@@ -32,7 +32,8 @@ exports.getCart = async (req, res, next) => {
       totalPrice: totalPrice,
     });
   } catch (err) {
-    console.log(err);
+    // statusCode, errorMessage, next
+    errorHandler(500, err, next);
   }
 };
 
@@ -50,7 +51,8 @@ exports.postCart = async (req, res, next) => {
     req.flash("success", "Product added to your cart");
     res.redirect("/cart");
   } catch (err) {
-    console.log(err);
+    // statusCode, errorMessage, next
+    errorHandler(500, err, next);
   }
 };
 
@@ -67,6 +69,7 @@ exports.postCartDeleteProduct = async (req, res, next) => {
     req.flash("success", "Product removed from your cart!");
     res.redirect("/cart");
   } catch (err) {
-    console.log(err);
+    // statusCode, errorMessage, next
+    errorHandler(500, err, next);
   }
 };

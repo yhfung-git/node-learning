@@ -1,4 +1,5 @@
 const Product = require("../models/product");
+const errorHandler = require("../utils/error-handler");
 
 exports.getIndex = async (req, res, next) => {
   try {
@@ -11,7 +12,8 @@ exports.getIndex = async (req, res, next) => {
       productCSS: true,
     });
   } catch (err) {
-    console.log(err);
+    // statusCode, errorMessage, next
+    errorHandler(500, err, next);
   }
 };
 
@@ -26,7 +28,8 @@ exports.getProducts = async (req, res, next) => {
       productCSS: true,
     });
   } catch (err) {
-    console.log(err);
+    // statusCode, errorMessage, next
+    errorHandler(500, err, next);
   }
 };
 
@@ -47,6 +50,7 @@ exports.getProduct = async (req, res, next) => {
       productCSS: true,
     });
   } catch (err) {
-    console.log(err);
+    // statusCode, errorMessage, next
+    errorHandler(500, err, next);
   }
 };

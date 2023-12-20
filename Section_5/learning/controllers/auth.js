@@ -4,6 +4,7 @@ const crypto = require("crypto");
 const User = require("../models/user");
 const { sendEmail } = require("../utils/email-service");
 const { handleValidationErrors } = require("../middleware/validation");
+const errorHandler = require("../utils/error-handler");
 
 exports.getLogin = async (req, res, next) => {
   try {
@@ -21,7 +22,8 @@ exports.getLogin = async (req, res, next) => {
       errorMessages: [],
     });
   } catch (err) {
-    console.log("Error getting login page:", err);
+    // statusCode, errorMessage, next
+    errorHandler(500, err, next);
   }
 };
 
@@ -51,7 +53,8 @@ exports.postLogin = async (req, res, next) => {
     req.flash("success", "You are successfully logged in!");
     res.redirect("/");
   } catch (err) {
-    console.log("Error posting login:", err);
+    // statusCode, errorMessage, next
+    errorHandler(500, err, next);
   }
 };
 
@@ -82,7 +85,8 @@ exports.postLogout = async (req, res, next) => {
     res.cookie("loggedOut", true);
     res.redirect("/login");
   } catch (err) {
-    console.log("Error posting logout:", err);
+    // statusCode, errorMessage, next
+    errorHandler(500, err, next);
   }
 };
 
@@ -97,7 +101,8 @@ exports.getSignup = async (req, res, next) => {
       errorMessages: [],
     });
   } catch (err) {
-    console.log("Error getting signup page:", err);
+    // statusCode, errorMessage, next
+    errorHandler(500, err, next);
   }
 };
 
@@ -152,7 +157,8 @@ exports.postSignup = async (req, res, next) => {
 
     res.redirect("/login");
   } catch (err) {
-    console.log("Error posting signup:", err);
+    // statusCode, errorMessage, next
+    errorHandler(500, err, next);
   }
 };
 
@@ -166,7 +172,8 @@ exports.getResetPassword = async (req, res, next) => {
       errorMessages: [],
     });
   } catch (err) {
-    console.log("Error getting reset password page:", err);
+    // statusCode, errorMessage, next
+    errorHandler(500, err, next);
   }
 };
 
@@ -223,7 +230,8 @@ exports.postResetPassword = async (req, res, next) => {
     );
     res.redirect("/reset-password");
   } catch (err) {
-    console.log("Error resetting password:", err);
+    // statusCode, errorMessage, next
+    errorHandler(500, err, next);
   }
 };
 
@@ -259,7 +267,8 @@ exports.getNewPassword = async (req, res, next) => {
       errorMessages: [],
     });
   } catch (err) {
-    console.log("Error getting new password page:", err);
+    // statusCode, errorMessage, next
+    errorHandler(500, err, next);
   }
 };
 
@@ -305,6 +314,7 @@ exports.postNewPassword = async (req, res, next) => {
     req.flash("success", "Your new password has been successfully updated!");
     res.redirect("/login");
   } catch (err) {
-    console.log("Error setting new password:", err);
+    // statusCode, errorMessage, next
+    errorHandler(500, err, next);
   }
 };

@@ -1,4 +1,5 @@
 const Order = require("../models/order");
+const errorHandler = require("../utils/error-handler");
 
 exports.postCreateOrder = async (req, res, next) => {
   try {
@@ -38,7 +39,8 @@ exports.postCreateOrder = async (req, res, next) => {
     req.flash("success", "Order sent!");
     res.redirect("/orders");
   } catch (err) {
-    console.log(err);
+    // statusCode, errorMessage, next
+    errorHandler(500, err, next);
   }
 };
 
@@ -64,6 +66,7 @@ exports.getOrders = async (req, res, next) => {
       totalPrice: totalPrice,
     });
   } catch (err) {
-    console.log(err);
+    // statusCode, errorMessage, next
+    errorHandler(500, err, next);
   }
 };

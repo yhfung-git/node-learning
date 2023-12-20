@@ -1,6 +1,7 @@
 const Product = require("../models/product");
 const User = require("../models/user");
 const { handleValidationErrors } = require("../middleware/validation");
+const errorHandler = require("../utils/error-handler");
 
 exports.getProducts = async (req, res, next) => {
   try {
@@ -13,7 +14,8 @@ exports.getProducts = async (req, res, next) => {
       productCSS: true,
     });
   } catch (err) {
-    console.log(err);
+    // statusCode, errorMessage, next
+    errorHandler(500, err, next);
   }
 };
 
@@ -48,15 +50,7 @@ exports.postAddProduct = async (req, res, next) => {
       "admin/add-product",
       "Add Product",
       "/admin/add-product",
-      {
-        editing: false,
-        product: {
-          title: title,
-          imageUrl: imageUrl,
-          description: description,
-          price: price,
-        },
-      }
+      { editing: false }
     );
 
     if (!validationPassed) return;
@@ -82,7 +76,8 @@ exports.postAddProduct = async (req, res, next) => {
     req.flash("success", "Product added successfully!");
     res.redirect("/admin/product-list");
   } catch (err) {
-    console.error("Error creating/saving product:", err);
+    // statusCode, errorMessage, next
+    errorHandler(500, err, next);
   }
 };
 
@@ -110,7 +105,8 @@ exports.getEditProduct = async (req, res, next) => {
       errorMessages: [],
     });
   } catch (err) {
-    console.log(err);
+    // statusCode, errorMessage, next
+    errorHandler(500, err, next);
   }
 };
 
@@ -170,7 +166,8 @@ exports.postEditProduct = async (req, res, next) => {
     req.flash("success", "Product updated successfully!");
     res.redirect("/admin/product-list");
   } catch (err) {
-    console.log(err);
+    // statusCode, errorMessage, next
+    errorHandler(500, err, next);
   }
 };
 
@@ -205,6 +202,7 @@ exports.postDeleteProduct = async (req, res, next) => {
     req.flash("success", "Product deleted successfully!");
     res.redirect("/admin/product-list");
   } catch (err) {
-    console.log(err);
+    // statusCode, errorMessage, next
+    errorHandler(500, err, next);
   }
 };
