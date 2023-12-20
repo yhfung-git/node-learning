@@ -42,7 +42,7 @@ const store = new MongoDBStore({
 });
 
 // Catch errors
-store.on("MongoDBStore error:", (err) => console.log(err));
+store.on("MongoDBStore error:", (err) => console.error(err));
 
 app.use(
   session({
@@ -65,8 +65,8 @@ app.use(doubleCsrfProtection);
 app.use(flash());
 app.use(alerts);
 
-app.use(userSession);
 app.use(generateToken);
+app.use(userSession);
 app.use(handleOldInput);
 
 app.use("/admin", isAuth(["admin"]), adminRoutes);
@@ -75,10 +75,12 @@ app.use(authRoutes);
 app.use(errorRoutes);
 
 app.use((error, req, res, next) => {
-  // res.status(error.httpStatusCode).render();
-  console.log(error);
-  const statusCode = error.httpStatusCode || 500;
-  res.redirect(`/${statusCode}`);
+  // const statusCode = Number(error.httpStatusCode) || 500;
+  // res.redirect(`/${statusCode}`);
+  res.status(500).render("errors/500", {
+    pageTitle: "Internal Server Error",
+    path: "/500",
+  });
 });
 
 (async () => {
