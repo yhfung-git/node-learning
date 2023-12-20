@@ -4,7 +4,6 @@ module.exports = (req, res, next) => {
 
     next();
   } catch (err) {
-    console.error("Error in handling old input middleware:", err);
-    next(err);
+    next(new Error(err));
   }
 };
