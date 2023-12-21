@@ -54,7 +54,7 @@
 
 - Using Node.js with NoSQL (MongoDB) and Mongoose
 
-### Section 5 ⏳
+### Section 5 ✅
 
 - Working with Sessions & Cookies
 
@@ -66,7 +66,7 @@
 
 - Error Handling
 
-### Section 6 📌
+### Section 6 ⏳
 
 - Working with Files and generating PDFs on the Server (on-the-fly)
 
