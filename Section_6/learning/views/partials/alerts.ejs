@@ -1,0 +1,29 @@
+<% if (alerts.error && alerts.error.length > 0) { %>
+  <div class="alert alert--error">
+    <%= alerts.error %>
+  </div>
+<% } %>
+
+<% if (alerts.success && alerts.success.length > 0) { %>
+  <div class="alert alert--success">
+    <%= alerts.success %>
+  </div>
+<% } %>
+
+<% if (alerts.warning && alerts.warning.length > 0) { %>
+  <div class="alert alert--warning">
+    <%= alerts.warning %>
+  </div>
+<% } %>
+
+<% if (alerts.info && alerts.info.length > 0) { %>
+  <div class="alert alert--info">
+    <%= alerts.info %>
+  </div>
+<% } %>
+
+<% if (loggedOutMessage && loggedOutMessage.length > 0) { %>
+  <div class="alert alert--success">
+    <%= loggedOutMessage %>
+  </div>
+<% } %>

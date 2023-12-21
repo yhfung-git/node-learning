@@ -1,0 +1,58 @@
+<form class="form-product" action="<%= path %>" method="POST">
+  <div class="form-control">
+    <label for="title">Title: </label>
+    <input
+      class="<%= errorMessages && errorMessages.title ? "invalid" : "" %>"
+      type="text"
+      name="title"
+      id="title"
+      placeholder="Enter a product title"
+      value="<%= (editing && !errorMessages.length > 0 && !errorMessages.title) ? product.title : oldInput.title %>"
+    />
+    <small class="error-info"><%= errorMessages && errorMessages.title ? errorMessages.title.msg : "" %></small>
+  </div>
+  <div class="form-control">
+    <label for="imageUrl">Image URL: </label>
+    <input
+      class="<%= errorMessages && errorMessages.imageUrl ? "invalid" : "" %>"
+      type="text"
+      name="imageUrl"
+      id="imageUrl"
+      placeholder="Enter an image URL"
+      value="<%= (editing && !errorMessages.length > 0 && !errorMessages.imageUrl) ? product.imageUrl : oldInput.imageUrl %>"
+    />
+    <small class="error-info"><%= errorMessages && errorMessages.imageUrl ? errorMessages.imageUrl.msg : "" %></small>
+  </div>
+  <div class="form-control">
+    <label for="price">Price: </label>
+    <input
+      class="<%= errorMessages && errorMessages.price ? "invalid" : "" %>"
+      type="number"
+      name="price"
+      id="price"
+      min="0"
+      step="0.01"
+      placeholder="Enter a price"
+      value="<%= (editing && !errorMessages.length > 0 && !errorMessages.price) ? product.price : oldInput.price %>"
+    />
+    <small class="error-info"><%= errorMessages && errorMessages.price ? errorMessages.price.msg : "" %></small>
+  </div>
+  <div class="form-control">
+    <label for="description">Description: </label>
+    <textarea
+      class="<%= errorMessages && errorMessages.description ? "invalid" : "" %>"
+      name="description"
+      id="description"
+      rows="5"
+      placeholder="Enter a description of your product..."
+    ><%= (editing && !errorMessages.length > 0 && !errorMessages.description) ? product.description : oldInput.description %></textarea>
+    <small class="error-info"><%= errorMessages && errorMessages.description ? errorMessages.description.msg : "" %></small>
+  </div>
+  <% if (editing) { %>
+    <input type="hidden" name="productId" value="<%= product._id %>">
+  <% } %>
+  <%- include("../partials/csrf-token-input") %>
+  <button class="btn" type="submit">
+    <%= editing ? "Update Product" : "Add Product" %>
+  </button>
+</form>
