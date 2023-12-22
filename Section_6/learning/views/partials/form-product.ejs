@@ -14,6 +14,7 @@
   <div class="form-control">
     <label for="image">Image: </label>
     <input
+      class="<%= errorMessages && errorMessages.image ? "invalid" : "" %>"
       type="file"
       name="image"
       id="image"
