@@ -149,12 +149,10 @@ exports.checkProductInput = [
     .withMessage("Title must only contain letters and numbers")
     .isLength({ min: 5 })
     .withMessage("You must enter at least 5 characters"),
-  body("imageUrl")
+  body("image")
     .trim()
     .exists({ checkFalsy: true })
-    .withMessage("You must enter an image URL")
-    .isURL()
-    .withMessage("Invalid URL"),
+    .withMessage("You must select an image"),
   body("price")
     .trim()
     .exists({ checkFalsy: true })
