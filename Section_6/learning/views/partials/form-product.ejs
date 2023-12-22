@@ -1,4 +1,4 @@
-<form class="form-product" action="<%= path %>" method="POST">
+<form class="form-product" action="<%= path %>" method="POST" enctype="multipart/form-data">
   <div class="form-control">
     <label for="title">Title: </label>
     <input
@@ -12,16 +12,13 @@
     <small class="error-info"><%= errorMessages && errorMessages.title ? errorMessages.title.msg : "" %></small>
   </div>
   <div class="form-control">
-    <label for="imageUrl">Image URL: </label>
+    <label for="image">Image: </label>
     <input
-      class="<%= errorMessages && errorMessages.imageUrl ? "invalid" : "" %>"
-      type="text"
-      name="imageUrl"
-      id="imageUrl"
-      placeholder="Enter an image URL"
-      value="<%= (editing && !errorMessages.length > 0 && !errorMessages.imageUrl) ? product.imageUrl : oldInput.imageUrl %>"
+      type="file"
+      name="image"
+      id="image"
     />
-    <small class="error-info"><%= errorMessages && errorMessages.imageUrl ? errorMessages.imageUrl.msg : "" %></small>
+    <small class="error-info"><%= errorMessages && errorMessages.image ? errorMessages.image.msg : "" %></small>
   </div>
   <div class="form-control">
     <label for="price">Price: </label>
