@@ -8,8 +8,7 @@ const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const { doubleCsrf } = require("csrf-csrf");
 const flash = require("connect-flash");
-
-const app = express();
+const multer = require("multer");
 
 require("dotenv").config();
 const { MONGODB_URI, SESSION_SECRET, COOKIE_PARSER_SECRET } = process.env;
@@ -29,13 +28,7 @@ const generateToken = require("./middleware/generate-token");
 const alerts = require("./middleware/alerts");
 const handleOldInput = require("./middleware/handle-old-input");
 
-app.use(express.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, "public")));
-
-app.use(expressLayout);
-app.set("view engine", "ejs");
-app.set("layout", "./layouts/main-layout");
-
+const app = express();
 const store = new MongoDBStore({
   uri: MONGODB_URI,
   collection: "mySessions",
@@ -43,6 +36,30 @@ const store = new MongoDBStore({
 
 // Catch errors
 store.on("MongoDBStore error:", (err) => console.error(err));
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "public/images");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+
+const fileFilter = (req, file, cb) => {
+  const acceptedImageTypes = ["image/png", "image/jpg", "image/jpeg"];
+  acceptedImageTypes.includes(file.mimetype) ? cb(null, true) : cb(null, false);
+};
+
+const upload = multer({ storage: storage, fileFilter: fileFilter });
+
+app.use(express.urlencoded({ extended: false }));
+app.use(upload.single("image"));
+app.use(express.static(path.join(__dirname, "public")));
+
+app.use(expressLayout);
+app.set("view engine", "ejs");
+app.set("layout", "./layouts/main-layout");
 
 app.use(
   session({
@@ -75,8 +92,8 @@ app.use(authRoutes);
 app.use(errorRoutes);
 
 app.use((error, req, res, next) => {
-  // const statusCode = Number(error.httpStatusCode) || 500;
-  // res.redirect(`/${statusCode}`);
+  console.log(error);
+  // res.redirect(500);
   res.status(500).render("errors/500", {
     pageTitle: "Internal Server Error",
     path: "/500",
