@@ -32,7 +32,8 @@ exports.getAddProduct = (req, res, next) => {
 
 exports.postAddProduct = async (req, res, next) => {
   try {
-    const { title, imageUrl, description, price } = req.body;
+    const { title, description, price } = req.body;
+    const image = req.file;
 
     if (!req.session.user && req.user.role !== "admin") {
       req.flash(
@@ -54,6 +55,8 @@ exports.postAddProduct = async (req, res, next) => {
     );
 
     if (!validationPassed) return;
+
+    const imageUrl = `/images/${image.filename}`;
 
     const newProduct = new Product({
       title: title,
@@ -111,7 +114,8 @@ exports.getEditProduct = async (req, res, next) => {
 
 exports.postEditProduct = async (req, res, next) => {
   try {
-    const { productId, title, imageUrl, description, price } = req.body;
+    const { productId, title, description, price } = req.body;
+    const image = req.file;
 
     if (!req.session.user && req.user.role !== "admin") {
       req.flash(
@@ -133,7 +137,6 @@ exports.postEditProduct = async (req, res, next) => {
         editing: true,
         product: {
           title: title,
-          imageUrl: imageUrl,
           description: description,
           price: price,
           _id: productId,
@@ -147,7 +150,7 @@ exports.postEditProduct = async (req, res, next) => {
       productId,
       {
         title: title,
-        imageUrl: imageUrl,
+        ...(image && { imageUrl: `/images/${image.filename}` }),
         description: description,
         price: price,
       },
