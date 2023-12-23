@@ -149,12 +149,6 @@ exports.checkProductInput = [
     .withMessage("Title must only contain letters and numbers")
     .isLength({ min: 5 })
     .withMessage("You must enter at least 5 characters"),
-  body("image").custom((value, { req }) => {
-    if (!req.file || !req.file.mimetype.startsWith("image")) {
-      throw new Error("No image found or uploaded file is not an image");
-    }
-    return true;
-  }),
   body("price")
     .trim()
     .exists({ checkFalsy: true })
@@ -170,3 +164,10 @@ exports.checkProductInput = [
     .isLength({ min: 10 })
     .withMessage("You must enter at least 10 characters"),
 ];
+
+exports.checkImage = body("image").custom((value, { req }) => {
+  if (!req.file || !req.file.mimetype.startsWith("image")) {
+    throw new Error("No image found or uploaded file is not an image");
+  }
+  return true;
+});
