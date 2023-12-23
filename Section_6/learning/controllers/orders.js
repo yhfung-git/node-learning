@@ -1,3 +1,6 @@
+const path = require("path");
+
+const rootDir = require("../utils/path");
 const Order = require("../models/order");
 const errorHandler = require("../utils/error-handler");
 
@@ -62,8 +65,34 @@ exports.getOrders = async (req, res, next) => {
       path: "/orders",
       orders: orders,
       productCSS: true,
+      orderCSS: true,
       totalPrice: totalPrice,
     });
+  } catch (err) {
+    // statusCode, errorMessage, next
+    errorHandler(500, err, next);
+  }
+};
+
+exports.getInvoice = async (req, res, next) => {
+  try {
+    const { orderId } = req.params;
+    const order = await Order.findById(orderId);
+
+    if (!order) return next(new Error("No order found"));
+
+    if (!order.user.userId.equals(req.user._id)) {
+      req.flash("error", "You are not authorized to download this invoice");
+      return res.redirect("/orders");
+    }
+
+    const invoiceName = `invoice-${orderId}.pdf`;
+    const invoicePath = path.join(rootDir, "data", "invoices", invoiceName);
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Disposition", `attachment; filename=${invoiceName}`);
+
+    res.sendFile(invoicePath);
   } catch (err) {
     // statusCode, errorMessage, next
     errorHandler(500, err, next);
