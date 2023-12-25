@@ -10,14 +10,16 @@
           </header>
           <div class="order__image">
             <img
-              src="<%= p.product.imageUrl %>"
+              src="images/default-image.png"
               alt="<%= p.product.title %>"
             />
           </div>
           <div class="card__content">
-            <h2 class="product__price">
+            <h3 class="product__price">
               $<%= p.product.price %> x <%= p.quantity %>
-            </h2>
+              =
+              $<%= p.product.price * p.quantity %>
+            </h3>
             <p class="product__description">
               <%= p.product.description %>
             </p>
