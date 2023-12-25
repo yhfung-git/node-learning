@@ -1,8 +1,10 @@
+const fs = require("fs");
 const path = require("path");
 
 const rootDir = require("../utils/path");
 const Order = require("../models/order");
 const errorHandler = require("../utils/error-handler");
+const generateInvoice = require("../utils/invoice-generator");
 
 exports.postCreateOrder = async (req, res, next) => {
   try {
@@ -86,13 +88,27 @@ exports.getInvoice = async (req, res, next) => {
       return res.redirect("/orders");
     }
 
+    const productPrices = order.products.map(
+      (p) => p.product.price * p.quantity
+    );
+    const totalPrice = productPrices.reduce(
+      (accumulator, currentValue) => accumulator + currentValue,
+      0
+    );
+
     const invoiceName = `invoice-${orderId}.pdf`;
     const invoicePath = path.join(rootDir, "data", "invoices", invoiceName);
 
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader("Content-Disposition", `attachment; filename=${invoiceName}`);
 
-    res.sendFile(invoicePath);
+    const invoiceConfig = { order, orderId, totalPrice };
+    const doc = await generateInvoice(invoiceConfig);
+
+    doc.pipe(res);
+    doc.pipe(fs.createWriteStream(invoicePath));
+
+    doc.end();
   } catch (err) {
     // statusCode, errorMessage, next
     errorHandler(500, err, next);
