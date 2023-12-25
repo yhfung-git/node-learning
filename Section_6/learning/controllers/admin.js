@@ -2,6 +2,7 @@ const Product = require("../models/product");
 const User = require("../models/user");
 const { handleValidationErrors } = require("../middleware/validation");
 const errorHandler = require("../utils/error-handler");
+const { deleteFile } = require("../utils/file-helper");
 
 exports.getProducts = async (req, res, next) => {
   try {
@@ -146,14 +147,23 @@ exports.postEditProduct = async (req, res, next) => {
 
     if (!validationPassed) return;
 
+    const product = await Product.findById(productId);
+    if (!product) throw new Error("Product no found");
+
+    const updatedFields = {
+      title: title,
+      description: description,
+      price: price,
+    };
+
+    if (image) {
+      deleteFile(product.imageUrl);
+      updatedFields.imageUrl = `/images/${image.filename}`;
+    }
+
     const updatedProduct = await Product.findByIdAndUpdate(
       productId,
-      {
-        title: title,
-        ...(image && { imageUrl: `/images/${image.filename}` }),
-        description: description,
-        price: price,
-      },
+      updatedFields,
       { new: true, runValidators: true }
     );
 
@@ -185,6 +195,10 @@ exports.postDeleteProduct = async (req, res, next) => {
       return res.redirect("/");
     }
 
+    const product = await Product.findById(prodId);
+    if (!product) throw new Error("Product no found");
+
+    deleteFile(product.imageUrl);
     const deletedProduct = await Product.findByIdAndDelete(prodId);
 
     if (!deletedProduct) {
