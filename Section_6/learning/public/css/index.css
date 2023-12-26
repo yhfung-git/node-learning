@@ -257,6 +257,31 @@ main {
   color: #ff0000;
 }
 
+.pagination {
+  margin-top: 1.5rem;
+  display: flex;
+}
+
+.pagination a {
+  display: flex;
+  text-decoration: none;
+  background: #ffffff;
+  border: 1px solid #00695c;
+  color: #00695c;
+  margin: 0 0.5rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  justify-content: center;
+  align-items: center;
+}
+
+.pagination a:hover,
+.pagination a:active {
+  color: #ffffff;
+  background: #00695c;
+}
+
 .alert {
   margin: auto;
   width: 90%;
