@@ -1,9 +1,10 @@
-exports.getPaginationInfo = async (page, itemPerPage, model) => {
+exports.getPaginationInfo = async (page, itemPerPage, model, baseUrl) => {
   try {
     const totalItems = await model.countDocuments();
     const totalPages = Math.ceil(totalItems / itemPerPage);
 
     const paginationInfo = {
+      baseUrl: baseUrl,
       currentPage: page,
       totalPages: totalPages,
       hasPreviousPage: page > 1,
