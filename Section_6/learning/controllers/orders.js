@@ -35,7 +35,7 @@ exports.postCreateOrder = async (req, res, next) => {
         "error",
         "Order not sent. Please contact us if you encounter any problems"
       );
-      res.redirect("/cart");
+      return res.redirect("/cart");
     }
 
     req.user.clearCart();
