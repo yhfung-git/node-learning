@@ -1,15 +1,25 @@
 const Product = require("../models/product");
 const errorHandler = require("../utils/error-handler");
+const { getPaginationInfo } = require("../utils/pagination-info");
 
 exports.getIndex = async (req, res, next) => {
   try {
-    const products = await Product.find();
+    const page = +req.query.page || 1;
+    const itemsPerPage = 3;
+
+    // page, itemPerPage, model
+    const paginationInfo = await getPaginationInfo(page, itemsPerPage, Product);
+
+    const products = await Product.find()
+      .skip((page - 1) * itemsPerPage)
+      .limit(itemsPerPage);
 
     res.render("shop/index", {
       pageTitle: "Shop",
       products: products,
       path: "/",
       productCSS: true,
+      pagination: paginationInfo,
     });
   } catch (err) {
     // statusCode, errorMessage, next
@@ -19,13 +29,22 @@ exports.getIndex = async (req, res, next) => {
 
 exports.getProducts = async (req, res, next) => {
   try {
-    const products = await Product.find();
+    const page = +req.query.page || 1;
+    const itemsPerPage = 3;
+
+    // page, itemPerPage, model
+    const paginationInfo = await getPaginationInfo(page, itemsPerPage, Product);
+
+    const products = await Product.find()
+      .skip((page - 1) * itemsPerPage)
+      .limit(itemsPerPage);
 
     res.render("shop/product-list", {
       pageTitle: "Your Products",
       products: products,
       path: "/products",
       productCSS: true,
+      pagination: paginationInfo,
     });
   } catch (err) {
     // statusCode, errorMessage, next

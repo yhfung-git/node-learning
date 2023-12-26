@@ -3,16 +3,26 @@ const User = require("../models/user");
 const { handleValidationErrors } = require("../middleware/validation");
 const errorHandler = require("../utils/error-handler");
 const { deleteFile } = require("../utils/file-helper");
+const { getPaginationInfo } = require("../utils/pagination-info");
 
 exports.getProducts = async (req, res, next) => {
   try {
-    const products = await Product.find();
+    const page = +req.query.page || 1;
+    const itemPerPage = 3;
+
+    // page, itemPerPage, model
+    const paginationInfo = await getPaginationInfo(page, itemPerPage, Product);
+
+    const products = await Product.find()
+      .skip((page - 1) * itemPerPage)
+      .limit(itemPerPage);
 
     res.render("admin/product-list", {
       pageTitle: "Admin Products",
       products: products,
       path: "/admin/product-list",
       productCSS: true,
+      pagination: paginationInfo,
     });
   } catch (err) {
     // statusCode, errorMessage, next
