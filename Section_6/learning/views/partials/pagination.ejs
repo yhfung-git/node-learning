@@ -1,13 +1,13 @@
 <section class="pagination">
   <% if (pagination.hasPreviousPage) { %>
-    <a href="<%= `${pagination.baseUrl}?page=${pagination.previousPage}` %>">&lt;</a>
+    <a href="?page=<%= pagination.previousPage %>">&lt;</a>
   <% } %>
 
   <% for (let i = 1; i <= pagination.totalPages; i++) { %>
-    <a class="<%= pagination.currentPage === i ? "active" : "" %>" href="<%= `${pagination.baseUrl}?page=${i}` %>"><%= i %></a>
+    <a class="<%= pagination.currentPage === i ? "active" : "" %>" href="?page=<%= i %>"><%= i %></a>
   <% } %>
 
   <% if (pagination.hasNextPage) { %>
-    <a href="<%= `${pagination.baseUrl}?page=${pagination.nextPage}` %>">&gt;</a>
+    <a href="?page=<%= pagination.nextPage %>">&gt;</a>
   <% } %>
 </section>
