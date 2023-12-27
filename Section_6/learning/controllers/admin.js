@@ -193,9 +193,9 @@ exports.postEditProduct = async (req, res, next) => {
   }
 };
 
-exports.postDeleteProduct = async (req, res, next) => {
+exports.deleteProduct = async (req, res, next) => {
   try {
-    const prodId = req.body.productId;
+    const prodId = req.params.productId;
 
     if (!req.session.user && req.user.role !== "admin") {
       req.flash(
@@ -206,17 +206,17 @@ exports.postDeleteProduct = async (req, res, next) => {
     }
 
     const product = await Product.findById(prodId);
-    if (!product) throw new Error("Product no found");
+    if (!product) {
+      return res.status(404).json({ error: "Product not found" });
+    }
 
     deleteFile(product.imageUrl);
     const deletedProduct = await Product.findByIdAndDelete(prodId);
 
     if (!deletedProduct) {
-      req.flash(
-        "error",
-        "Failed to delete the product, please try again. If the issue persists, please contact us for assistance."
-      );
-      return res.redirect("/admin/product-list");
+      return res
+        .status(400)
+        .json({ error: "Failed to delete the product, please try again." });
     }
 
     // remove the product from all the users' cart
@@ -225,10 +225,11 @@ exports.postDeleteProduct = async (req, res, next) => {
       { $pull: { "cart.items": { productId: prodId } } }
     );
 
-    req.flash("success", "Product deleted successfully!");
-    res.redirect("/admin/product-list");
+    res.status(200).json({ message: "Product deleted successfully!" });
   } catch (err) {
-    // statusCode, errorMessage, next
-    errorHandler(500, err, next);
+    console.error("Error in deleteProduct:", err);
+    res
+      .status(500)
+      .json({ error: "Internal server error. Please try again later." });
   }
 };
