@@ -14,9 +14,11 @@
     </header>
     <%- include('../partials/mobile-navbar') %>
     <main>
-      <%- include("../partials/alerts") %>
+      <div id="flash-messages-container">
+        <%- include("../partials/alerts") %>
+      </div>
       <%- body %>
     </main>
-    <script src="/js/main.js"></script>
+    <script type="module" src="/js/main.js"></script>
   </body>
 </html>
