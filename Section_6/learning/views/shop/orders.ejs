@@ -18,7 +18,7 @@
             <h3 class="product__price">
               $<%= p.product.price %> x <%= p.quantity %>
               =
-              $<%= p.product.price * p.quantity %>
+              $<%= (p.product.price * p.quantity).toFixed(2) %>
             </h3>
             <p class="product__description">
               <%= p.product.description %>
@@ -27,7 +27,7 @@
         </article>
       <% }); %>
     </div>
-    <div class="total-price">Total: $<%= totalPrice[index] %></div>
+    <div class="total-price">Total: $<%= totalPrice[index].toFixed(2) %></div>
     <a href="/orders/<%= order._id %>" class="btn">Download Invoice</a>
     <hr class="order__hr">
   <% }); %>

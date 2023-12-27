@@ -20,7 +20,7 @@
             <%= product.description %>
           </p>
         </div>
-        <div class="item-total-price">$<%= itemPrice[index] %></div>
+        <div class="item-total-price">$<%= itemPrice[index].toFixed(2) %></div>
         <form class="btn-cart-delete" action="/cart-delete-product" method="POST">
           <input type="hidden" name="productId" value="<%= product._id %>">
           <%- include("../partials/csrf-token-input") %>
@@ -29,7 +29,7 @@
       </article>
     <% }) %>
   </div>
-  <div class="total-price">Total: $<%= totalPrice %></div>
+  <div class="total-price">Total: $<%= totalPrice.toFixed(2) %></div>
   <form action="/create-order" method="POST">
     <%- include("../partials/csrf-token-input") %>
     <button class="btn" type="submit">Order Now</button>
