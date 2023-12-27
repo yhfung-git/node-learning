@@ -7,7 +7,12 @@ module.exports = {
     cookieOptions: {
       sameSite: "strict",
     },
-    getTokenFromRequest: (req) => req.body.csrfToken,
+    getTokenFromRequest: (req) => {
+      if (!/delete/i.test(req.method)) {
+        return req.body.csrfToken;
+      }
+      return req.headers["csrf-token"];
+    },
   },
 };
 
