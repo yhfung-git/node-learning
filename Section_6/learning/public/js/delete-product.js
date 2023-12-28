@@ -7,7 +7,7 @@ const deleteProduct = async ({
   productElement,
 }) => {
   try {
-    const response = await fetch(`${deleteUrl}${productId}`, {
+    const response = await fetch(`${deleteUrl}/${productId}`, {
       method: "DELETE",
       headers: {
         "csrf-token": csrfToken,
