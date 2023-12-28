@@ -24,7 +24,7 @@
           <a class="btn" href="/admin/edit-product/<%= product._id %>?edit=true">Edit</a>
           <input type="hidden" name="productId" value="<%= product._id %>">
           <%- include("../partials/csrf-token-input") %>
-          <button class="btn btn-delete" type="button" onclick="deleteProduct(this)">Delete</button>
+          <button class="btn btn-delete" type="button">Delete</button>
         </div>
       </article>
     <% }) %>
@@ -33,4 +33,3 @@
 <% } else { %>
   <p>No Products Found!</p>
 <% } %>
-<script type="module" src="/js/admin.js"></script>
