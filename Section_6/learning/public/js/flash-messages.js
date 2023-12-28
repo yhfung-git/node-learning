@@ -10,6 +10,8 @@ const displayFlashMessage = (messageType, message) => {
     "flash-messages-container"
   );
 
+  flashMessagesContainer.innerHTML = "";
+
   flashMessagesContainer.appendChild(flashMessage);
 };
 
