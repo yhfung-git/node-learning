@@ -19,11 +19,13 @@ router.post(
   cartsController.postCartDeleteProduct
 );
 
+router.get("/checkout", isAuths, cartsController.getCheckout);
+
 router.post("/create-order", isAuths, ordersController.postCreateOrder);
 
 router.get("/orders", isAuths, ordersController.getOrders);
 
-router.get("/orders/:orderId", isAuths, ordersController.getInvoice)
+router.get("/orders/:orderId", isAuths, ordersController.getInvoice);
 
 router.get("/products", shopController.getProducts);
 
