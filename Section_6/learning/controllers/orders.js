@@ -6,14 +6,11 @@ const Order = require("../models/order");
 const errorHandler = require("../utils/error-handler");
 const generateInvoice = require("../utils/invoice-generator");
 
-exports.postCreateOrder = async (req, res, next) => {
+exports.getCheckoutSuccess = async (req, res, next) => {
   try {
-    // Populate the "cart.items.productId" field to fetch details of products in the cart
     const populatedUser = await req.user.populate("cart.items.productId");
 
-    // Extract the cart items from the populated user object and Map the cart items to a new array
     const prods = populatedUser.cart.items.map((item) => {
-      // Using "._doc" retrieves the data of the product, and the spread operator "..." extracts the product data into a new object, which is then stored in the constant variable "prod".
       const prod = { ...item.productId._doc };
       return { product: prod, quantity: item.quantity };
     });
