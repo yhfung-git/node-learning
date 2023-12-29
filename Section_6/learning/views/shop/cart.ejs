@@ -30,10 +30,7 @@
     <% }) %>
   </div>
   <div class="total-price">Total: $<%= totalPrice.toFixed(2) %></div>
-  <form action="/create-order" method="POST">
-    <%- include("../partials/csrf-token-input") %>
-    <button class="btn" type="submit">Order Now</button>
-  </form>
+  <a class="btn" href="/checkout">Order Now</a>
 <% } else { %>
   <p>No Products in Cart!</p>
 <% } %>
