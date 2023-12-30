@@ -19,18 +19,7 @@
 <div class="order__total-price">
   Total: $<%= totalPrice.toFixed(2) %>
 </div>
-<div>
-  <button id="order-btn" class="btn">Pay Now</button>
-  <script src="https://js.stripe.com/v3/"></script>
-  <script>
-    const stripe = Stripe("<%= stripeApiKey %>");
-    const sessionId = "<%= sessionId %>";
-    const orderBtn = document.getElementById("order-btn");
-
-    orderBtn.addEventListener("click", () => {
-      stripe.redirectToCheckout({
-        sessionId: sessionId,
-      });
-    });
-  </script>
-</div>
+<form action="/checkout" method="POST">
+  <%- include("../partials/csrf-token-input") %>
+  <button type="submit" class="btn">Pay Now</button>
+</form>
