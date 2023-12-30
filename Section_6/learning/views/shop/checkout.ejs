@@ -10,7 +10,9 @@
         </h2>
         <p class="order__description"><%= product.description %></p>
       </div>
-      <div class="order__item-total-price">$<%= itemPrice[index].toFixed(2) %></div>
+      <div class="order__item-total-price">
+        $<%= itemPrice[index].toFixed(2) %>
+      </div>
     </article>
   <% }) %>
 </div>
@@ -18,7 +20,7 @@
   Total: $<%= totalPrice.toFixed(2) %>
 </div>
 <div>
-  <button id="order-btn" class="btn">Order</button>
+  <button id="order-btn" class="btn">Pay Now</button>
   <script src="https://js.stripe.com/v3/"></script>
   <script>
     const stripe = Stripe("<%= stripeApiKey %>");
