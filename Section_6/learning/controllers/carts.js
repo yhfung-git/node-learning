@@ -1,5 +1,7 @@
 const Product = require("../models/product");
 const errorHandler = require("../utils/error-handler");
+const { STRIPE_SECRET_KEY, STRIPE_API_KEY } = process.env;
+const stripe = require("stripe")(STRIPE_SECRET_KEY);
 
 exports.getCart = async (req, res, next) => {
   try {
@@ -68,6 +70,60 @@ exports.postCartDeleteProduct = async (req, res, next) => {
 
     req.flash("success", "Product removed from your cart!");
     res.redirect("/cart");
+  } catch (err) {
+    // statusCode, errorMessage, next
+    errorHandler(500, err, next);
+  }
+};
+
+exports.getCheckout = async (req, res, next) => {
+  try {
+    const populatedUser = await req.user.populate("cart.items.productId");
+
+    const products = populatedUser.cart.items.map((item) => {
+      const product = item.productId.toJSON();
+      return { ...product, quantity: item.quantity };
+    });
+
+    const itemPrice = req.user.cart.items.map((item) => {
+      return item.productId.price * item.quantity;
+    });
+
+    const totalPrice = itemPrice.reduce(
+      (accumulator, currentValue) => accumulator + currentValue,
+      0
+    );
+
+    const session = await stripe.checkout.sessions.create({
+      line_items: products.map((product) => {
+        return {
+          price_data: {
+            currency: "usd",
+            unit_amount: Math.ceil(product.price * 100),
+            product_data: {
+              name: product.title,
+              description: product.description,
+            },
+          },
+          quantity: product.quantity,
+        };
+      }),
+      mode: "payment",
+      success_url: `${req.protocol}://${req.get("host")}/checkout/success`,
+      cancel_url: `${req.protocol}://${req.get("host")}/checkout/cancel`,
+    });
+
+    res.render("shop/checkout", {
+      pageTitle: "Checkout",
+      path: "/checkout",
+      productCSS: true,
+      orderCSS: true,
+      products: products,
+      itemPrice: itemPrice,
+      totalPrice: totalPrice,
+      sessionId: session.id,
+      stripeApiKey: STRIPE_API_KEY,
+    });
   } catch (err) {
     // statusCode, errorMessage, next
     errorHandler(500, err, next);
