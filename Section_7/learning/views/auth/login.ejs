@@ -1,0 +1,28 @@
+<h1>Login</h1>
+<form class="form-login" action="/login" method="POST">
+  <div class="form-control">
+    <label for="email">E-mail: </label>
+    <input
+      class="<%= errorMessages.email || errorMessages.password ? "invalid" : "" %>"
+      type="email"
+      name="email"
+      id="email"
+      placeholder="Enter your email"
+      value="<%= oldInput.email %>"
+    />
+  </div>
+  <div class="form-control">
+    <label for="password">Password: </label>
+    <input
+      class="<%= errorMessages.password || errorMessages.email ? "invalid" : "" %>"
+      type="password"
+      name="password"
+      id="password"
+      placeholder="Enter your password"
+      value="<%= oldInput.password %>"
+    />
+  </div>
+  <%- include("../partials/csrf-token-input") %>
+  <button class="btn" type="submit">Login</button>
+</form>
+<a class="btn-forgot-password" href="/reset-password">Forgot Password?</a>

@@ -1,0 +1,25 @@
+<div class="order__grid">
+  <% products.forEach((product, index) => { %>
+    <article class="order__product-item">
+      <header class="order__header">
+        <h1 class="order__title"><%= product.title %></h1>
+      </header>
+      <div class="order__content">
+        <h2 class="order__price">
+          $<%= product.price %> x <%= product.quantity %>
+        </h2>
+        <p class="order__description"><%= product.description %></p>
+      </div>
+      <div class="order__item-total-price">
+        $<%= itemPrice[index].toFixed(2) %>
+      </div>
+    </article>
+  <% }) %>
+</div>
+<div class="order__total-price">
+  Total: $<%= totalPrice.toFixed(2) %>
+</div>
+<form action="/checkout" method="POST">
+  <%- include("../partials/csrf-token-input") %>
+  <button type="submit" class="btn">Pay Now</button>
+</form>

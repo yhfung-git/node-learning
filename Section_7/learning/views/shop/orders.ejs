@@ -1,0 +1,36 @@
+<h1>Your Orders</h1>
+<% if (orders.length > 0) { %>
+  <% orders.forEach((order, index) => { %>
+    <h2 class="order__id">#<%= order._id %></h2>
+    <div class="order__grid">
+      <% order.products.forEach(p => { %>
+        <article class="order__product-item">
+          <header class="order__header">
+            <h1 class="order__title"><%= p.product.title %></h1>
+          </header>
+          <div class="order__image">
+            <img
+              src="images/default-image.png"
+              alt="<%= p.product.title %>"
+            />
+          </div>
+          <div class="order__content">
+            <h3 class="order__price">
+              $<%= p.product.price %> x <%= p.quantity %>
+              =
+              $<%= (p.product.price * p.quantity).toFixed(2) %>
+            </h3>
+            <p class="order__description">
+              <%= p.product.description %>
+            </p>
+          </div>
+        </article>
+      <% }); %>
+    </div>
+    <div class="order__total-price">Total: $<%= totalPrice[index].toFixed(2) %></div>
+    <a href="/orders/<%= order._id %>" class="btn">Download Invoice</a>
+    <hr class="order__hr">
+  <% }); %>
+<% } else { %>
+  <p>No orders</p>
+<% } %>

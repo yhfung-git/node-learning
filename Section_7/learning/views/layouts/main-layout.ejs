@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= pageTitle %></title>
+    <%- include("../partials/css-import") %>
+    <% if (typeof pageRequiresStripe !== 'undefined' && pageRequiresStripe) { %>
+      <script src="https://js.stripe.com/v3/"></script>
+    <% } %>
+  </head>
+  <body>
+    <div class="backdrop"></div>
+    <header class="main-header">
+      <button id="side-menu-toggle">Menu</button>
+      <%- include("../partials/navbar") %>
+    </header>
+    <%- include('../partials/mobile-navbar') %>
+    <main>
+      <div id="flash-messages-container">
+        <%- include("../partials/alerts") %>
+      </div>
+      <%- body %>
+    </main>
+    <script type="module" src="/js/main.js"></script>
+  </body>
+</html>
