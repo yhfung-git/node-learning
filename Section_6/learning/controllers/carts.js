@@ -1,6 +1,6 @@
 const Product = require("../models/product");
 const errorHandler = require("../utils/error-handler");
-const { STRIPE_SECRET_KEY, STRIPE_API_KEY } = process.env;
+const { STRIPE_SECRET_KEY } = process.env;
 const stripe = require("stripe")(STRIPE_SECRET_KEY);
 
 exports.getCart = async (req, res, next) => {
@@ -94,9 +94,34 @@ exports.getCheckout = async (req, res, next) => {
       0
     );
 
+    res.render("shop/checkout", {
+      pageTitle: "Checkout",
+      path: "/checkout",
+      productCSS: true,
+      orderCSS: true,
+      products: products,
+      pageRequiresStripe: true,
+      itemPrice: itemPrice,
+      totalPrice: totalPrice,
+    });
+  } catch (err) {
+    // statusCode, errorMessage, next
+    errorHandler(500, err, next);
+  }
+};
+
+exports.postCheckout = async (req, res, next) => {
+  try {
+    const populatedUser = await req.user.populate("cart.items.productId");
+
+    const products = populatedUser.cart.items.map((item) => {
+      const product = item.productId.toJSON();
+      return { ...product, quantity: item.quantity };
+    });
+
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
-      payment_method_types: ["card"],
+      payment_method_types: ["card", "link"],
       line_items: products.map((product) => {
         return {
           price_data: {
@@ -112,19 +137,10 @@ exports.getCheckout = async (req, res, next) => {
       }),
       success_url: `${req.protocol}://${req.get("host")}/checkout/success`,
       cancel_url: `${req.protocol}://${req.get("host")}/checkout/cancel`,
+      automatic_tax: { enabled: true },
     });
 
-    res.render("shop/checkout", {
-      pageTitle: "Checkout",
-      path: "/checkout",
-      productCSS: true,
-      orderCSS: true,
-      products: products,
-      itemPrice: itemPrice,
-      totalPrice: totalPrice,
-      sessionId: session.id,
-      stripeApiKey: STRIPE_API_KEY,
-    });
+    res.redirect(303, session.url);
   } catch (err) {
     // statusCode, errorMessage, next
     errorHandler(500, err, next);
