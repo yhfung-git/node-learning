@@ -21,6 +21,8 @@ router.post(
 
 router.get("/checkout", isAuths, cartsController.getCheckout);
 
+router.post("/checkout", isAuths, cartsController.postCheckout);
+
 router.get("/checkout/cancel", isAuths, cartsController.getCheckout);
 
 router.get("/checkout/success", isAuths, ordersController.getCheckoutSuccess);
