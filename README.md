@@ -66,7 +66,7 @@
 
 - Error Handling
 
-### Section 6 ⏳
+### Section 6 ✅
 
 - Working with Files and generating PDFs on the Server (on-the-fly)
 
@@ -78,7 +78,7 @@
 
 - Handling Payments with Stripe.js
 
-### Section 7 📌
+### Section 7 ⏳
 
 - Building REST APIs
 
@@ -86,17 +86,15 @@
 
 - File Upload in REST APIs
 
-- Building GraphQL APIs
-
-- Authentication in GraphQL APIs
-
-- File Upload in GraphQL APIs
-
-### Section 8 📌
-
 - Building a Realtime Node.js App with Websockets
 
 - Working with GraphQL
+
+- Authentication in GraphQL
+
+- File Upload in GraphQL
+
+### Section 8 📌
 
 - Deploying a Node.js Application
 
