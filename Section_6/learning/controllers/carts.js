@@ -95,11 +95,13 @@ exports.getCheckout = async (req, res, next) => {
     );
 
     const session = await stripe.checkout.sessions.create({
+      mode: "payment",
+      payment_method_types: ["card"],
       line_items: products.map((product) => {
         return {
           price_data: {
             currency: "usd",
-            unit_amount: Math.ceil(product.price * 100),
+            unit_amount: product.price * 100,
             product_data: {
               name: product.title,
               description: product.description,
@@ -108,7 +110,6 @@ exports.getCheckout = async (req, res, next) => {
           quantity: product.quantity,
         };
       }),
-      mode: "payment",
       success_url: `${req.protocol}://${req.get("host")}/checkout/success`,
       cancel_url: `${req.protocol}://${req.get("host")}/checkout/cancel`,
     });
