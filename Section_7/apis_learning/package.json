@@ -1,5 +1,19 @@
 {
+  "name": "apis_learning",
+  "version": "1.0.0",
+  "description": "Section_7_APIs_Learning",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "author": "YHFung",
+  "license": "ISC",
   "dependencies": {
     "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "dotenv": "^16.3.1",
+    "nodemon": "^3.0.2"
   }
 }
