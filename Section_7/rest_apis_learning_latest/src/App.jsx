@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Fragment, useCallback } from "react";
-import { Route, Routes, Navigate, useNavigate } from "react-router-dom";
+import { Route, Routes, /*Navigate,*/ useNavigate } from "react-router-dom";
 
 import Layout from "./components/Layout";
 import Backdrop from "./components/Backdrop";
@@ -160,7 +160,7 @@ function App() {
         path="/:postId"
         element={<SinglePostPage userId={userId} token={token} />}
       />
-      <Route index element={<Navigate to="/" />} />
+      {/* <Route index element={<Navigate to="/" />} /> */}
     </Routes>
   ) : (
     <Routes>
@@ -172,7 +172,7 @@ function App() {
         path="/signup"
         element={<SignupPage onSignup={signupHandler} loading={authLoading} />}
       />
-      <Route index element={<Navigate to="/" />} />
+      {/* <Route index element={<Navigate to="/" />} /> */}
     </Routes>
   );
 
