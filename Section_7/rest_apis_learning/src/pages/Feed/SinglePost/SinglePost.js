@@ -14,6 +14,10 @@ class SinglePost extends Component {
 
   componentDidMount() {
     const postId = this.props.match.params.postId;
+    if (!postId) {
+      console.error('Post ID not found in URL params');
+      return;
+    }
     fetch('URL')
       .then(res => {
         if (res.status !== 200) {
