@@ -1,3 +1,4 @@
+const path = require("path");
 const express = require("express");
 const mongoose = require("mongoose");
 
@@ -9,6 +10,7 @@ const feedRoutes = require("./router/feed");
 const app = express();
 
 app.use(express.json());
+app.use("/images", express.static(path.join(__dirname, "images")));
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -21,6 +23,13 @@ app.use((req, res, next) => {
 });
 
 app.use("/feed", feedRoutes);
+
+app.use((error, req, res, next) => {
+  console.error(error);
+  const statusCode = error.statusCode || 500;
+  const message = error.message || "Internal Server Error";
+  res.status(statusCode).json({ message });
+});
 
 (async () => {
   try {
