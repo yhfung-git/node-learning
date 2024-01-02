@@ -1,3 +1,5 @@
+const { handleValidationErrors } = require("../middlewares/validation");
+
 exports.getPosts = async (req, res, next) => {
   try {
     res.status(200).json({
@@ -21,7 +23,12 @@ exports.getPosts = async (req, res, next) => {
 
 exports.createPost = async (req, res, next) => {
   try {
+    const validationPassed = await handleValidationErrors(req, res, next);
+
+    if (!validationPassed) return;
+
     const { title, content } = req.body;
+
     res.status(201).json({
       message: "Post created successfully!",
       post: {
