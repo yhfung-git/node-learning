@@ -1,6 +1,7 @@
 const path = require("path");
 const express = require("express");
 const mongoose = require("mongoose");
+const multer = require("multer");
 
 require("dotenv").config();
 const { MONGODB_URI } = process.env;
@@ -9,7 +10,24 @@ const feedRoutes = require("./router/feed");
 
 const app = express();
 
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "images");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+
+const fileFilter = (req, file, cb) => {
+  const acceptedImageTypes = ["image/png", "image/jpg", "image/jpeg"];
+  acceptedImageTypes.includes(file.mimetype) ? cb(null, true) : cb(null, false);
+};
+
+const upload = multer({ storage, fileFilter });
+
 app.use(express.json());
+app.use(upload.single("image"));
 app.use("/images", express.static(path.join(__dirname, "images")));
 
 app.use((req, res, next) => {
