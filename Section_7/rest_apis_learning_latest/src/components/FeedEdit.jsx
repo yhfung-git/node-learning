@@ -85,7 +85,7 @@ const FeedEdit = (props) => {
         updatedFormIsValid = updatedFormIsValid && updatedForm[inputName].valid;
       }
 
-      setFormIsValid((prevFormIsValid) => updatedFormIsValid);
+      setFormIsValid(updatedFormIsValid);
       return updatedForm;
     });
   };
