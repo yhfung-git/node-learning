@@ -67,16 +67,17 @@ const FeedEdit = (props) => {
 
     setPostForm((prevState) => {
       let isValid = true;
-      for (const validator of prevState.postForm[input].validators) {
+      for (const validator of prevState[input].validators) {
         isValid = isValid && validator(value);
       }
 
       const updatedForm = {
-        ...prevState.postForm,
+        ...prevState,
         [input]: {
-          ...prevState.postForm[input],
+          ...prevState[input],
           valid: isValid,
           value: files ? files[0] : value,
+          touched: true,
         },
       };
 
@@ -92,9 +93,9 @@ const FeedEdit = (props) => {
 
   const inputBlurHandler = (input) => {
     setPostForm((prevState) => ({
-      ...prevState.postForm,
+      ...prevState,
       [input]: {
-        ...prevState.postForm[input],
+        ...prevState[input],
         touched: true,
       },
     }));
