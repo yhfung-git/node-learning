@@ -5,14 +5,14 @@ exports.handleValidationErrors = async (req, res, next) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-      return res.status(422).json({
-        message: errors.array()[0].msg,
-        errors: errors.mapped(),
-      });
+      const error = new Error(errors.array()[0].msg);
+      error.statusCode = 422;
+      throw error;
     }
 
     return true;
   } catch (err) {
-    console.error(err);
+    if (!err.statusCode) err.statusCode = 500;
+    next(err);
   }
 };
