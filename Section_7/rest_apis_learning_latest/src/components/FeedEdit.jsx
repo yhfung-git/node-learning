@@ -36,27 +36,29 @@ const FeedEdit = (props) => {
 
   useEffect(() => {
     if (props.editing && props.selectedPost) {
-      const updatedPostForm = {
-        title: {
-          ...postForm.title,
-          value: props.selectedPost.title,
-          valid: true,
-        },
-        image: {
-          ...postForm.image,
-          value: props.selectedPost.imagePath,
-          valid: true,
-        },
-        content: {
-          ...postForm.content,
-          value: props.selectedPost.content,
-          valid: true,
-        },
-      };
-      setPostForm(updatedPostForm);
+      setPostForm((prevPostForm) => {
+        const updatedPostForm = {
+          title: {
+            ...prevPostForm.title,
+            value: props.selectedPost.title,
+            valid: true,
+          },
+          image: {
+            ...prevPostForm.image,
+            value: props.selectedPost.imagePath,
+            valid: true,
+          },
+          content: {
+            ...prevPostForm.content,
+            value: props.selectedPost.content,
+            valid: true,
+          },
+        };
+        return updatedPostForm;
+      });
       setFormIsValid(true);
     }
-  }, [postForm, props.editing, props.selectedPost]);
+  }, [props.editing, props.selectedPost]);
 
   const postInputChangeHandler = (input, value, files) => {
     if (files) {
