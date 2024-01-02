@@ -1,4 +1,5 @@
 const { handleValidationErrors } = require("../middlewares/validation");
+const { errorHandler } = require("../utils/errorHandler");
 const Post = require("../models/post");
 
 exports.getPosts = async (req, res, next) => {
@@ -38,7 +39,10 @@ exports.createPost = async (req, res, next) => {
     });
 
     const postSaved = await post.save();
-    if (!postSaved) return;
+    if (!postSaved) {
+      const error = errorHandler(500, "Failed to save the post");
+      throw error;
+    }
 
     res.status(201).json({
       message: "Post created successfully!",
