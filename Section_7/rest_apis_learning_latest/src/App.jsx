@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Fragment, useCallback } from "react";
-import { Route, Routes, /*Navigate,*/ useNavigate } from "react-router-dom";
+import { Route, Routes, Navigate, useNavigate } from "react-router-dom";
 
 import Layout from "./components/Layout";
 import Backdrop from "./components/Backdrop";
@@ -155,24 +155,30 @@ function App() {
 
   const routes = isAuth ? (
     <Routes>
-      <Route path="/" element={<FeedPage userId={userId} token={token} />} />
+      <Route
+        path="/"
+        exact
+        element={<FeedPage userId={userId} token={token} />}
+      />
       <Route
         path="/:postId"
         element={<SinglePostPage userId={userId} token={token} />}
       />
-      {/* <Route index element={<Navigate to="/" />} /> */}
+      <Route element={<Navigate to="/" />} />
     </Routes>
   ) : (
     <Routes>
       <Route
         path="/"
+        exact
         element={<LoginPage onLogin={loginHandler} loading={authLoading} />}
       />
       <Route
         path="/signup"
+        exact
         element={<SignupPage onSignup={signupHandler} loading={authLoading} />}
       />
-      {/* <Route index element={<Navigate to="/" />} /> */}
+      <Route element={<Navigate to="/" />} />
     </Routes>
   );
 
