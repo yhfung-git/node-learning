@@ -56,13 +56,7 @@ const FeedEdit = (props) => {
       setPostForm(updatedPostForm);
       setFormIsValid(true);
     }
-  }, [
-    postForm.content,
-    postForm.image,
-    postForm.title,
-    props.editing,
-    props.selectedPost,
-  ]);
+  }, [postForm, props.editing, props.selectedPost]);
 
   const postInputChangeHandler = (input, value, files) => {
     if (files) {
@@ -91,7 +85,7 @@ const FeedEdit = (props) => {
         updatedFormIsValid = updatedFormIsValid && updatedForm[inputName].valid;
       }
 
-      setFormIsValid(updatedFormIsValid);
+      setFormIsValid((prevFormIsValid) => updatedFormIsValid);
       return updatedForm;
     });
   };
