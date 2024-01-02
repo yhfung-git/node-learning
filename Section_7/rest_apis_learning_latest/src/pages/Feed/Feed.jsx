@@ -1,20 +1,20 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect, Fragment } from "react";
 
-import Post from '../../components/Post';
-import Button from '../../components/Button';
-import FeedEdit from '../../components/FeedEdit';
-import Input from '../../components/Input';
-import Paginator from '../../components/Paginator';
-import Loader from '../../components/Loader';
-import ErrorHandler from '../../components/ErrorHandler';
-import './Feed.css';
+import Post from "../../components/Post";
+import Button from "../../components/Button";
+import FeedEdit from "../../components/FeedEdit";
+import Input from "../../components/Input";
+import Paginator from "../../components/Paginator";
+import Loader from "../../components/Loader";
+import ErrorHandler from "../../components/ErrorHandler";
+import "./Feed.css";
 
 const Feed = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [posts, setPosts] = useState([]);
   const [totalPosts, setTotalPosts] = useState(0);
   const [editPost, setEditPost] = useState(null);
-  const [status, setStatus] = useState('');
+  const [status, setStatus] = useState("");
   const [postPage, setPostPage] = useState(1);
   const [postsLoading, setPostsLoading] = useState(true);
   const [editLoading, setEditLoading] = useState(false);
@@ -23,9 +23,9 @@ const Feed = () => {
   useEffect(() => {
     const fetchUserStatus = async () => {
       try {
-        const response = await fetch('URL');
+        const response = await fetch("URL");
         if (!response.ok) {
-          throw new Error('Failed to fetch user status.');
+          throw new Error("Failed to fetch user status.");
         }
         const resData = await response.json();
         setStatus(resData.status);
@@ -36,7 +36,7 @@ const Feed = () => {
 
     fetchUserStatus();
     loadPosts();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadPosts = (direction) => {
@@ -47,20 +47,20 @@ const Feed = () => {
 
     let page = postPage;
 
-    if (direction === 'next') {
+    if (direction === "next") {
       page++;
       setPostPage(page);
     }
 
-    if (direction === 'previous') {
+    if (direction === "previous") {
       page--;
       setPostPage(page);
     }
 
-    fetch('URL')
+    fetch("http://localhost:8080/feed/posts")
       .then((res) => {
         if (res.status !== 200) {
-          throw new Error('Failed to fetch posts.');
+          throw new Error("Failed to fetch posts.");
         }
         return res.json();
       })
@@ -74,7 +74,7 @@ const Feed = () => {
 
   const statusUpdateHandler = (event) => {
     event.preventDefault();
-    fetch('URL')
+    fetch("URL")
       .then((res) => {
         if (res.status !== 200 && res.status !== 201) {
           throw new Error("Can't update status!");
@@ -105,16 +105,26 @@ const Feed = () => {
   const finishEditHandler = (postData) => {
     setEditLoading(true);
     // Set up data (with image!)
-    let url = 'URL';
+    let url = "http://localhost:8080/feed/create-post";
+    let method = "POST";
 
     if (editPost) {
-      url = 'URL';
+      url = "URL";
     }
 
-    fetch(url)
+    fetch(url, {
+      method: method,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title: postData.title,
+        content: postData.content,
+      }),
+    })
       .then((res) => {
         if (res.status !== 200 && res.status !== 201) {
-          throw new Error('Creating or editing a post failed!');
+          throw new Error("Creating or editing a post failed!");
         }
         return res.json();
       })
@@ -131,7 +141,9 @@ const Feed = () => {
           let updatedPosts = [...prevPosts];
 
           if (editPost) {
-            const postIndex = prevPosts.findIndex((p) => p._id === editPost._id);
+            const postIndex = prevPosts.findIndex(
+              (p) => p._id === editPost._id
+            );
             updatedPosts[postIndex] = post;
           } else if (prevPosts.length < 2) {
             updatedPosts = prevPosts.concat(post);
@@ -159,10 +171,10 @@ const Feed = () => {
 
   const deletePostHandler = (postId) => {
     setPostsLoading(true);
-    fetch('URL')
+    fetch("URL")
       .then((res) => {
         if (res.status !== 200 && res.status !== 201) {
-          throw new Error('Deleting a post failed!');
+          throw new Error("Deleting a post failed!");
         }
         return res.json();
       })
@@ -216,17 +228,17 @@ const Feed = () => {
       </section>
       <section className="feed">
         {postsLoading && (
-          <div style={{ textAlign: 'center', marginTop: '2rem' }}>
+          <div style={{ textAlign: "center", marginTop: "2rem" }}>
             <Loader />
           </div>
         )}
         {posts.length <= 0 && !postsLoading ? (
-          <p style={{ textAlign: 'center' }}>No posts found.</p>
+          <p style={{ textAlign: "center" }}>No posts found.</p>
         ) : null}
         {!postsLoading && (
           <Paginator
-            onPrevious={() => loadPosts('previous')}
-            onNext={() => loadPosts('next')}
+            onPrevious={() => loadPosts("previous")}
+            onNext={() => loadPosts("next")}
             lastPage={Math.ceil(totalPosts / 2)}
             currentPage={postPage}
           >
@@ -235,7 +247,7 @@ const Feed = () => {
                 key={post._id}
                 id={post._id}
                 author={post.creator.name}
-                date={new Date(post.createdAt).toLocaleDateString('en-US')}
+                date={new Date(post.createdAt).toLocaleDateString("en-US")}
                 title={post.title}
                 image={post.imageUrl}
                 content={post.content}
