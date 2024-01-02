@@ -18,7 +18,9 @@ const SinglePost = () => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await fetch(`URL/${postId}`);
+        const response = await fetch(
+          `http://localhost:8080/feed/post/${postId}`
+        );
         if (!response.ok) {
           throw new Error("Failed to fetch status");
         }
@@ -28,7 +30,7 @@ const SinglePost = () => {
           author: resData.post.creator.name,
           date: new Date(resData.post.createdAt).toLocaleDateString("en-US"),
           content: resData.post.content,
-          image: resData.post.imageUrl, // assuming imageUrl is part of the response
+          image: `http://localhost:8080/${resData.post.imageUrl}`,
         });
       } catch (err) {
         console.error(err);
