@@ -4,20 +4,31 @@ const Post = require("../models/post");
 
 exports.getPosts = async (req, res, next) => {
   try {
-    res.status(200).json({
-      posts: [
-        {
-          _id: Date.now(),
-          title: "First Post",
-          content: "This is the FIRST post!",
-          imageUrl: "images/cards.jpg",
-          creator: {
-            name: "Howard",
-          },
-          createdAt: new Date(),
-        },
-      ],
-    });
+    const posts = await Post.find();
+
+    if (!posts.length) {
+      const error = errorHandler(404, "No posts found");
+      throw error;
+    }
+
+    res.status(200).json({ posts });
+  } catch (err) {
+    err.statusCode = err?.statusCode ?? 500;
+    next(err);
+  }
+};
+
+exports.getPost = async (req, res, next) => {
+  try {
+    const { postId } = req.params;
+    const post = await Post.findById(postId);
+
+    if (!post) {
+      const error = errorHandler(404, "No post found");
+      throw error;
+    }
+
+    res.status(200).json({ post });
   } catch (err) {
     err.statusCode = err?.statusCode ?? 500;
     next(err);
