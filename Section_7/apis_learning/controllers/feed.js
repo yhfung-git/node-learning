@@ -1,4 +1,5 @@
 const { handleValidationErrors } = require("../middlewares/validation");
+const Post = require("../models/post");
 
 exports.getPosts = async (req, res, next) => {
   try {
@@ -17,7 +18,8 @@ exports.getPosts = async (req, res, next) => {
       ],
     });
   } catch (err) {
-    console.error(err);
+    err.statusCode = err?.statusCode ?? 500;
+    next(err);
   }
 };
 
@@ -28,18 +30,22 @@ exports.createPost = async (req, res, next) => {
     if (!validationPassed) return;
 
     const { title, content } = req.body;
+    const post = new Post({
+      title,
+      content,
+      imageUrl: "images/cards.jpg",
+      creator: { name: "Howard" },
+    });
+
+    const postSaved = await post.save();
+    if (!postSaved) return;
 
     res.status(201).json({
       message: "Post created successfully!",
-      post: {
-        _id: Date.now(),
-        title,
-        content,
-        creator: { name: "Howard" },
-        createdAt: new Date(),
-      },
+      post: postSaved,
     });
   } catch (err) {
-    console.error(err);
+    err.statusCode = err?.statusCode ?? 500;
+    next(err);
   }
 };
