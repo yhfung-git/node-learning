@@ -1,4 +1,8 @@
 const express = require("express");
+const mongoose = require("mongoose");
+
+require("dotenv").config();
+const { MONGODB_URI } = process.env;
 
 const feedRoutes = require("./router/feed");
 
@@ -18,4 +22,14 @@ app.use((req, res, next) => {
 
 app.use("/feed", feedRoutes);
 
-app.listen(8080);
+(async () => {
+  try {
+    await mongoose.connect(MONGODB_URI);
+
+    app.listen(8080, () => {
+      console.log("Server is running on port 8080!");
+    });
+  } catch (err) {
+    console.error(err);
+  }
+})();
