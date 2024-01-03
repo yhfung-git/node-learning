@@ -16,4 +16,6 @@ router.post("/create-post", checkCreatePostInput, feedController.createPost);
 
 router.put("/post/:postId", checkUpdatePostInput, feedController.updatePost);
 
+router.delete("/post/:postId", feedController.deletePost);
+
 module.exports = router;
