@@ -1,17 +1,18 @@
-const fs = require("fs");
+const fs = require("fs").promises;
 const path = require("path");
 
 const rootDir = require("./path");
 const { errorHandler } = require("./errorHandler");
 
-exports.clearImage = (filePath) => {
-  const absolutePath = path.join(rootDir, filePath);
+exports.clearImage = async (filePath) => {
+  try {
+    const absolutePath = path.join(rootDir, filePath);
 
-  fs.unlink(absolutePath, (err) => {
-    if (err) {
-      const errorMessage = err.message || "Image not found";
-      const error = errorHandler(500, errorMessage);
-      throw error;
-    }
-  });
+    await fs.unlink(absolutePath);
+  } catch (err) {
+    const errorMessage =
+      err.message || "Image not found or failed to delete the image";
+    const error = errorHandler(500, errorMessage);
+    throw error;
+  }
 };
