@@ -19,6 +19,7 @@ const Feed = () => {
   const [postsLoading, setPostsLoading] = useState(true);
   const [editLoading, setEditLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     const fetchUserStatus = async () => {
@@ -37,7 +38,7 @@ const Feed = () => {
     fetchUserStatus();
     loadPosts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [currentPage]);
 
   const loadPosts = (direction) => {
     if (direction) {
@@ -47,17 +48,14 @@ const Feed = () => {
 
     let page = postPage;
 
-    if (direction === "next") {
-      page++;
-      setPostPage(page);
-    }
+    if (direction === "next") page++;
 
-    if (direction === "previous") {
-      page--;
-      setPostPage(page);
-    }
+    if (direction === "previous") page--;
 
-    fetch("http://localhost:8080/feed/posts")
+    setPostPage(page);
+    setCurrentPage(page);
+
+    fetch(`http://localhost:8080/feed/posts?page=${page}`)
       .then((res) => {
         if (res.status !== 200) {
           throw new Error("Failed to fetch posts.");
@@ -248,7 +246,7 @@ const Feed = () => {
           <Paginator
             onPrevious={() => loadPosts("previous")}
             onNext={() => loadPosts("next")}
-            lastPage={Math.ceil(totalPosts / 2)}
+            lastPage={Math.ceil(totalPosts / 3)}
             currentPage={postPage}
           >
             {posts.map((post) => (
