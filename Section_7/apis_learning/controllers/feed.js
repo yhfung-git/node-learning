@@ -5,14 +5,20 @@ const Post = require("../models/post");
 
 exports.getPosts = async (req, res, next) => {
   try {
-    const posts = await Post.find();
+    const page = +req.query.page || 1;
+    const itemPerPage = 3;
+    const totalItems = await Post.countDocuments();
+
+    const posts = await Post.find()
+      .skip((page - 1) * itemPerPage)
+      .limit(itemPerPage);
 
     if (!posts.length) {
       const error = errorHandler(404, "Posts not found");
       throw error;
     }
 
-    res.status(200).json({ posts });
+    res.status(200).json({ posts, totalItems });
   } catch (err) {
     err.statusCode = err?.statusCode ?? 500;
     next(err);
