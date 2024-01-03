@@ -151,6 +151,8 @@ const Feed = () => {
           return updatedPosts;
         });
 
+        loadPosts();
+
         setIsEditing(false);
         setEditPost(null);
         setEditLoading(false);
