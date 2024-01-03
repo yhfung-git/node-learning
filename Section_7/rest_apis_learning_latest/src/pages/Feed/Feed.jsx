@@ -65,7 +65,11 @@ const Feed = () => {
         return res.json();
       })
       .then((resData) => {
-        setPosts(resData.posts);
+        setPosts(
+          resData.posts.map((post) => {
+            return { ...post, imagePath: post.imageUrl };
+          })
+        );
         setTotalPosts(resData.totalItems);
         setPostsLoading(false);
       })
@@ -114,7 +118,8 @@ const Feed = () => {
     let method = "POST";
 
     if (editPost) {
-      url = "URL";
+      url = `http://localhost:8080/feed/post/${editPost._id}`;
+      method = "PUT";
     }
 
     fetch(url, {
@@ -128,6 +133,7 @@ const Feed = () => {
         return res.json();
       })
       .then((resData) => {
+        console.log(resData);
         const post = {
           _id: resData.post._id,
           title: resData.post.title,
