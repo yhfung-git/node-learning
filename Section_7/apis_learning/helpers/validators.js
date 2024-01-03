@@ -15,10 +15,10 @@ exports.checkCreatePostInput = [
     .withMessage("You must enter a content")
     .isLength({ min: 5 })
     .withMessage("You must enter at least 5 characters"),
-  // body("image").custom((value, { req }) => {
-  //   if (!req.file || !req.file.mimetype.startsWith("image")) {
-  //     throw new Error("No image found or uploaded file is not an image");
-  //   }
-  //   return true;
-  // }),
+  body("image").custom((value, { req }) => {
+    if (!req.file || !req.file.mimetype.startsWith("image")) {
+      throw new Error("No image provided or uploaded file is not an image");
+    }
+    return true;
+  }),
 ];

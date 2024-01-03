@@ -41,14 +41,6 @@ exports.createPost = async (req, res, next) => {
 
     if (!validationPassed) return;
 
-    if (!req.file || !req.file.mimetype.startsWith("image")) {
-      const error = errorHandler(
-        422,
-        "No image provided or uploaded file is not an image"
-      );
-      throw error;
-    }
-
     const imageUrl = `images/${req.file.filename}`;
     const { title, content } = req.body;
     const post = new Post({
