@@ -7,12 +7,13 @@ exports.handleValidationErrors = async (req, res, next) => {
 
     if (!errors.isEmpty()) {
       const error = errorHandler(422, errors.array()[0].msg);
+      error.data = errors.mapped();
       throw error;
     }
 
     return true;
   } catch (err) {
-    if (!err.statusCode) err.statusCode = 500;
+    err.statusCode = err?.statusCode ?? 500;
     next(err);
   }
 };
