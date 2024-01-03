@@ -1,4 +1,5 @@
 const { body } = require("express-validator");
+const User = require("../models/user");
 
 exports.checkUpdatePostInput = [
   body("title")
@@ -25,4 +26,42 @@ exports.checkCreatePostInput = [
     }
     return true;
   }),
+];
+
+exports.checkSignupInput = [
+  body("name")
+    .trim()
+    .exists({ checkFalsy: true })
+    .withMessage("You must enter a name")
+    .custom(async (value) => {
+      const name = await User.findOne({ name: value });
+      if (name) {
+        throw new Error(
+          "Name entered already in use, please enter a different name"
+        );
+      }
+      return true;
+    }),
+  body("email")
+    .trim()
+    .exists({ checkFalsy: true })
+    .withMessage("You must enter an email")
+    .isEmail()
+    .withMessage("You must enter a valid email")
+    .normalizeEmail()
+    .custom(async (value) => {
+      const email = await User.findOne({ email: value });
+      if (email) {
+        throw new Error(
+          "Email entered already in use, please enter a different email"
+        );
+      }
+      return true;
+    }),
+  body("password")
+    .trim()
+    .exists({ checkFalsy: true })
+    .withMessage("You must enter a password")
+    .isLength({ min: 5 })
+    .withMessage("Password must be at least 5 characters long"),
 ];
