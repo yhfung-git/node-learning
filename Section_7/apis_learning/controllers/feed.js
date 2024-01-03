@@ -1,5 +1,6 @@
 const { handleValidationErrors } = require("../middlewares/validation");
 const { errorHandler } = require("../utils/errorHandler");
+const { clearImage } = require("../utils/clearImage");
 const Post = require("../models/post");
 
 exports.getPosts = async (req, res, next) => {
@@ -7,7 +8,7 @@ exports.getPosts = async (req, res, next) => {
     const posts = await Post.find();
 
     if (!posts.length) {
-      const error = errorHandler(404, "No posts found");
+      const error = errorHandler(404, "Posts not found");
       throw error;
     }
 
@@ -24,7 +25,7 @@ exports.getPost = async (req, res, next) => {
     const post = await Post.findById(postId);
 
     if (!post) {
-      const error = errorHandler(404, "No post found");
+      const error = errorHandler(404, "Post not found");
       throw error;
     }
 
@@ -59,6 +60,54 @@ exports.createPost = async (req, res, next) => {
     res.status(201).json({
       message: "Post created successfully!",
       post: postSaved,
+    });
+  } catch (err) {
+    err.statusCode = err?.statusCode ?? 500;
+    next(err);
+  }
+};
+
+exports.updatePost = async (req, res, next) => {
+  try {
+    const validationPassed = await handleValidationErrors(req, res, next);
+
+    if (!validationPassed) return;
+
+    const { postId } = req.params;
+    const { title, content } = req.body;
+    const imageUrl =
+      req.file && req.file.mimetype.startsWith("image")
+        ? `images/${req.file.filename}`
+        : req.body.image;
+
+    if (!imageUrl) {
+      const error = errorHandler(
+        422,
+        "No image provided or uploaded file is not an image"
+      );
+      throw error;
+    }
+
+    const post = await Post.findById(postId);
+    if (!post) {
+      const error = errorHandler(404, "Post not found");
+      throw error;
+    }
+
+    if (imageUrl !== post.imageUrl) clearImage(post.imageUrl);
+
+    post.set({ title, content, imageUrl });
+
+    const updatedPost = await post.save();
+
+    if (!updatedPost) {
+      const error = errorHandler(500, "Failed to update the post");
+      throw error;
+    }
+
+    res.status(200).json({
+      message: "Post updated successfully!",
+      post: updatedPost,
     });
   } catch (err) {
     err.statusCode = err?.statusCode ?? 500;
