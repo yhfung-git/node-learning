@@ -29,19 +29,6 @@ exports.checkCreatePostInput = [
 ];
 
 exports.checkSignupInput = [
-  body("name")
-    .trim()
-    .exists({ checkFalsy: true })
-    .withMessage("You must enter a name")
-    .custom(async (value) => {
-      const name = await User.findOne({ name: value });
-      if (name) {
-        throw new Error(
-          "Name entered already in use, please enter a different name"
-        );
-      }
-      return true;
-    }),
   body("email")
     .trim()
     .exists({ checkFalsy: true })
@@ -58,6 +45,20 @@ exports.checkSignupInput = [
       }
       return true;
     }),
+  body("name")
+    .trim()
+    .exists({ checkFalsy: true })
+    .withMessage("You must enter a name")
+    .custom(async (value) => {
+      const name = await User.findOne({ name: value });
+      if (name) {
+        throw new Error(
+          "Name entered already in use, please enter a different name"
+        );
+      }
+      return true;
+    }),
+
   body("password")
     .trim()
     .exists({ checkFalsy: true })
