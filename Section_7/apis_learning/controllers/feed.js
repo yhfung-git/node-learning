@@ -2,6 +2,7 @@ const { handleValidationErrors } = require("../middlewares/validation");
 const { errorHandler } = require("../utils/errorHandler");
 const { clearImage } = require("../utils/clearImage");
 const Post = require("../models/post");
+const User = require("../models/user");
 
 exports.getPosts = async (req, res, next) => {
   try {
@@ -12,8 +13,6 @@ exports.getPosts = async (req, res, next) => {
     const posts = await Post.find()
       .skip((page - 1) * itemPerPage)
       .limit(itemPerPage);
-
-    if (!posts.length) throw errorHandler(404, "Posts not found");
 
     res.status(200).json({ posts, totalItems });
   } catch (err) {
@@ -48,15 +47,24 @@ exports.createPost = async (req, res, next) => {
       title,
       content,
       imageUrl,
-      creator: { name: "Howard" },
+      creator: req.userId,
     });
 
     const postSaved = await post.save();
     if (!postSaved) throw errorHandler(500, "Failed to save the post");
 
+    const user = await User.findById(req.userId);
+    if (!user) throw errorHandler(404, "User not found");
+
+    user.posts.push(post);
+    const userSaved = await user.save();
+    if (!userSaved)
+      throw errorHandler(500, "Failed to save new post to the user");
+
     res.status(201).json({
       message: "Post created successfully!",
       post: postSaved,
+      creator: { _id: user._id, name: user.name },
     });
   } catch (err) {
     err.statusCode = err?.statusCode ?? 500;
