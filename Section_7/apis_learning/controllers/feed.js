@@ -13,10 +13,7 @@ exports.getPosts = async (req, res, next) => {
       .skip((page - 1) * itemPerPage)
       .limit(itemPerPage);
 
-    if (!posts.length) {
-      const error = errorHandler(404, "Posts not found");
-      throw error;
-    }
+    if (!posts.length) throw errorHandler(404, "Posts not found");
 
     res.status(200).json({ posts, totalItems });
   } catch (err) {
@@ -28,12 +25,9 @@ exports.getPosts = async (req, res, next) => {
 exports.getPost = async (req, res, next) => {
   try {
     const { postId } = req.params;
-    const post = await Post.findById(postId);
 
-    if (!post) {
-      const error = errorHandler(404, "Post not found");
-      throw error;
-    }
+    const post = await Post.findById(postId);
+    if (!post) throw errorHandler(404, "Post not found");
 
     res.status(200).json({ post });
   } catch (err) {
@@ -58,10 +52,7 @@ exports.createPost = async (req, res, next) => {
     });
 
     const postSaved = await post.save();
-    if (!postSaved) {
-      const error = errorHandler(500, "Failed to save the post");
-      throw error;
-    }
+    if (!postSaved) throw errorHandler(500, "Failed to save the post");
 
     res.status(201).json({
       message: "Post created successfully!",
@@ -86,30 +77,21 @@ exports.updatePost = async (req, res, next) => {
         ? `images/${req.file.filename}`
         : req.body.image;
 
-    if (!imageUrl) {
-      const error = errorHandler(
+    if (!imageUrl)
+      throw errorHandler(
         422,
         "No image provided or uploaded file is not an image"
       );
-      throw error;
-    }
 
     const post = await Post.findById(postId);
-    if (!post) {
-      const error = errorHandler(404, "Post not found");
-      throw error;
-    }
+    if (!post) throw errorHandler(404, "Post not found");
 
     if (imageUrl !== post.imageUrl) await clearImage(post.imageUrl);
 
     post.set({ title, content, imageUrl });
 
     const updatedPost = await post.save();
-
-    if (!updatedPost) {
-      const error = errorHandler(500, "Failed to update the post");
-      throw error;
-    }
+    if (!updatedPost) throw errorHandler(500, "Failed to update the post");
 
     res.status(200).json({
       message: "Post updated successfully!",
@@ -126,18 +108,12 @@ exports.deletePost = async (req, res, next) => {
     const { postId } = req.params;
 
     const post = await Post.findById(postId);
-    if (!post) {
-      const error = errorHandler(404, "Post not found");
-      throw error;
-    }
+    if (!post) throw errorHandler(404, "Post not found");
 
     await clearImage(post.imageUrl);
 
     const deletedPost = await Post.findByIdAndDelete(postId);
-    if (!deletedPost) {
-      const error = errorHandler(500, "Failed to delete the post");
-      throw error;
-    }
+    if (!deletedPost) throw errorHandler(500, "Failed to delete the post");
 
     res.status(200).json({
       message: "Post deleted successfully!",
