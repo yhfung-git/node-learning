@@ -5,6 +5,8 @@ const { checkSignupInput } = require("../helpers/validators");
 
 const router = express.Router();
 
-router.put("/signup", checkSignupInput, authController.signup);
+router.post("/signup", checkSignupInput, authController.signup);
+
+router.post("/login", authController.login);
 
 module.exports = router;
