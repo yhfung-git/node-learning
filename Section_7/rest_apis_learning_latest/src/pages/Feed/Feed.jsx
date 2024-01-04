@@ -9,7 +9,7 @@ import Loader from "../../components/Loader";
 import ErrorHandler from "../../components/ErrorHandler";
 import "./Feed.css";
 
-const Feed = () => {
+const Feed = ({ userId, token }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [posts, setPosts] = useState([]);
   const [totalPosts, setTotalPosts] = useState(0);
@@ -55,7 +55,11 @@ const Feed = () => {
     setPostPage(page);
     setCurrentPage(page);
 
-    fetch(`http://localhost:8080/feed/posts?page=${page}`)
+    fetch(`http://localhost:8080/feed/posts?page=${page}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
       .then((res) => {
         if (res.status !== 200) {
           throw new Error("Failed to fetch posts.");
@@ -123,6 +127,9 @@ const Feed = () => {
     fetch(url, {
       method: method,
       body: formData,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     })
       .then((res) => {
         if (res.status !== 200 && res.status !== 201) {
@@ -178,6 +185,9 @@ const Feed = () => {
     setPostsLoading(true);
     fetch(`http://localhost:8080/feed/post/${postId}`, {
       method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     })
       .then((res) => {
         if (res.status !== 200 && res.status !== 201) {
