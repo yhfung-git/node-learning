@@ -12,9 +12,7 @@ exports.clearImage = async (filePath) => {
   } catch (err) {
     const errorMessage =
       err.message || "Image not found or failed to delete the image";
-    {
-      const error = errorHandler(500, errorMessage);
-      throw error;
-    }
+
+    throw errorHandler(500, errorMessage);
   }
 };
