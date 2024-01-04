@@ -60,7 +60,7 @@ exports.createPost = async (req, res, next) => {
     user.posts.push(post);
     const userSaved = await user.save();
     if (!userSaved)
-      throw errorHandler(500, "Failed to save new post to the user");
+      throw errorHandler(500, "Failed to save new post to user's posts");
 
     res.status(201).json({
       message: "Post created successfully!",
@@ -95,10 +95,15 @@ exports.updatePost = async (req, res, next) => {
     const post = await Post.findById(postId);
     if (!post) throw errorHandler(404, "Post not found");
 
-    if (imageUrl !== post.imageUrl) await clearImage(post.imageUrl);
+    if (post.creator.toString() !== req.userId)
+      throw errorHandler(403, "Not authorized to update this post");
+
+    if (imageUrl !== post.imageUrl) {
+      const clearedImage = await clearImage(post.imageUrl);
+      if (!clearedImage) throw errorHandler(500, "Failed to clear image");
+    }
 
     post.set({ title, content, imageUrl });
-
     const updatedPost = await post.save();
     if (!updatedPost) throw errorHandler(500, "Failed to update the post");
 
@@ -119,7 +124,18 @@ exports.deletePost = async (req, res, next) => {
     const post = await Post.findById(postId);
     if (!post) throw errorHandler(404, "Post not found");
 
-    await clearImage(post.imageUrl);
+    if (post.creator.toString() !== req.userId)
+      throw errorHandler(403, "Not authorized to delete this post");
+
+    const clearedImage = await clearImage(post.imageUrl);
+    if (!clearedImage) throw errorHandler(500, "Failed to clear image");
+
+    const updated = await User.updateMany(
+      { posts: postId },
+      { $pull: { posts: postId } }
+    );
+    if (updated.modifiedCount === 0)
+      throw errorHandler(500, "Failed to delete post from users' posts");
 
     const deletedPost = await Post.findByIdAndDelete(postId);
     if (!deletedPost) throw errorHandler(500, "Failed to delete the post");
