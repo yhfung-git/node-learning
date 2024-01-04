@@ -24,7 +24,14 @@ const Feed = ({ userId, token }) => {
   useEffect(() => {
     const fetchUserStatus = async () => {
       try {
-        const response = await fetch("URL");
+        const response = await fetch(
+          `http://localhost:8080/user/status/${userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         if (!response.ok) {
           throw new Error("Failed to fetch user status.");
         }
@@ -80,7 +87,14 @@ const Feed = ({ userId, token }) => {
 
   const statusUpdateHandler = (event) => {
     event.preventDefault();
-    fetch("URL")
+    fetch(`http://localhost:8080/user/status/${userId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ status }),
+    })
       .then((res) => {
         if (res.status !== 200 && res.status !== 201) {
           throw new Error("Can't update status!");
