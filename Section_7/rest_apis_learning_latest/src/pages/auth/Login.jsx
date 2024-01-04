@@ -1,41 +1,43 @@
 /* eslint-disable react/prop-types */
-import React, { useState, useCallback } from 'react';
+import React, { useState } from "react";
 
-import Input from '../../components/Input';
-import Button from '../../components/Button';
-import { required, length, email } from '../../util/validators';
-import Auth from './Auth';
+import Input from "../../components/Input";
+import Button from "../../components/Button";
+import { required, length, email } from "../../util/validators";
+import Auth from "./Auth";
 
 const Login = (props) => {
   const [loginForm, setLoginForm] = useState({
-    email: {
-      value: '',
-      valid: false,
-      touched: false,
-      validators: [required, email],
+    loginForm: {
+      email: {
+        value: "",
+        valid: false,
+        touched: false,
+        validators: [required, email],
+      },
+      password: {
+        value: "",
+        valid: false,
+        touched: false,
+        validators: [required, length({ min: 5 })],
+      },
     },
-    password: {
-      value: '',
-      valid: false,
-      touched: false,
-      validators: [required, length({ min: 5 })],
-    },
-    formIsValid: false,
   });
 
-  const inputChangeHandler = useCallback((input, value) => {
+  const inputChangeHandler = (input, value) => {
     setLoginForm((prevLoginForm) => {
       let isValid = true;
-      for (const validator of prevLoginForm[input].validators) {
+      for (const validator of prevLoginForm.loginForm[input].validators) {
         isValid = isValid && validator(value);
       }
 
       const updatedForm = {
-        ...prevLoginForm,
+        ...prevLoginForm.loginForm,
         [input]: {
-          ...prevLoginForm[input],
+          ...prevLoginForm.loginForm[input],
           valid: isValid,
           value: value,
+          touched: true,
         },
       };
 
@@ -45,58 +47,50 @@ const Login = (props) => {
       }
 
       return {
-        ...updatedForm,
+        loginForm: updatedForm,
         formIsValid: formIsValid,
       };
     });
-  }, []);
+  };
 
-  const inputBlurHandler = useCallback(
-    (input) => {
-      setLoginForm((prevLoginForm) => {
-        return {
-          ...prevLoginForm,
+  const inputBlurHandler = (input) => {
+    setLoginForm((prevLoginForm) => {
+      return {
+        loginForm: {
+          ...prevLoginForm.loginForm,
           [input]: {
-            ...prevLoginForm[input],
+            ...prevLoginForm.loginForm[input],
             touched: true,
           },
-        };
-      });
-    },
-    []
-  );
+        },
+      };
+    });
+  };
 
   return (
     <Auth>
-      <form
-        onSubmit={(e) =>
-          props.onLogin(e, {
-            email: loginForm.email.value,
-            password: loginForm.password.value,
-          })
-        }
-      >
+      <form onSubmit={(e) => props.onLogin(e, loginForm)}>
         <Input
           id="email"
           label="Your E-Mail"
           type="email"
           control="input"
-          onChange={(value) => inputChangeHandler('email', value)}
-          onBlur={() => inputBlurHandler('email')}
-          value={loginForm.email.value}
-          valid={loginForm.email.valid}
-          touched={loginForm.email.touched}
+          onChange={inputChangeHandler}
+          onBlur={() => inputBlurHandler("email")}
+          value={loginForm.loginForm["email"].value}
+          valid={loginForm.loginForm["email"].valid}
+          touched={loginForm.loginForm["email"].touched}
         />
         <Input
           id="password"
           label="Password"
           type="password"
           control="input"
-          onChange={(value) => inputChangeHandler('password', value)}
-          onBlur={() => inputBlurHandler('password')}
-          value={loginForm.password.value}
-          valid={loginForm.password.valid}
-          touched={loginForm.password.touched}
+          onChange={inputChangeHandler}
+          onBlur={() => inputBlurHandler("password")}
+          value={loginForm.loginForm["password"].value}
+          valid={loginForm.loginForm["password"].valid}
+          touched={loginForm.loginForm["password"].touched}
         />
         <Button design="raised" type="submit" loading={props.loading}>
           Login
