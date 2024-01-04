@@ -66,3 +66,10 @@ exports.checkSignupInput = [
     .isLength({ min: 5 })
     .withMessage("Password must be at least 5 characters long"),
 ];
+
+exports.checkStatusInput = [
+  body("status")
+    .trim()
+    .exists({ checkFalsy: true })
+    .withMessage("You must enter a status"),
+];
