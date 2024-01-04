@@ -7,19 +7,30 @@ module.exports = async (req, res, next) => {
     if (req.method === "OPTIONS") next();
 
     const auth = await req.get("Authorization");
-    if (!auth) throw errorHandler(401, "Not authenticated");
+    if (!auth) {
+      const error = errorHandler(401, "Not authenticated");
+      throw error;
+    }
 
     const token = await auth.split(" ")[1];
-    if (!token) throw errorHandler(401, "Invalid token");
+    if (!token) {
+      const error = errorHandler(401, "Invalid token");
+      throw error;
+    }
 
     const decoded = jwt.verify(token, JWT_PRIVATE_KEY, {
       ignoreExpiration: false,
     });
-    if (!decoded) throw errorHandler(401, "Not authenticated");
+    if (!decoded) {
+      const error = errorHandler(401, "Not authenticated");
+      throw error;
+    }
 
     const currentTimestamp = Math.floor(Date.now() / 1000);
-    if (decoded.exp && decoded.exp < currentTimestamp)
-      throw errorHandler(401, "Token has expired");
+    if (decoded.exp && decoded.exp < currentTimestamp) {
+      const error = errorHandler(401, "Token has expired");
+      throw error;
+    }
 
     req.userId = decoded.userId;
     next();
