@@ -122,7 +122,7 @@ function App() {
     event.preventDefault();
     setAuthLoading(true);
     fetch("http://localhost:8080/auth/signup", {
-      method: "PUT",
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
