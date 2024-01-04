@@ -9,6 +9,7 @@ exports.clearImage = async (filePath) => {
     const absolutePath = path.join(rootDir, filePath);
 
     await fs.unlink(absolutePath);
+    return true;
   } catch (err) {
     const errorMessage =
       err.message || "Image not found or failed to delete the image";
