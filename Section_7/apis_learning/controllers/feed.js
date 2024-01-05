@@ -1,3 +1,4 @@
+const { getIO } = require("../socket");
 const { handleValidationErrors } = require("../middlewares/validation");
 const { errorHandler } = require("../utils/errorHandler");
 const { clearImage } = require("../utils/clearImage");
@@ -11,6 +12,7 @@ exports.getPosts = async (req, res, next) => {
     const totalItems = await Post.countDocuments();
 
     const posts = await Post.find()
+      .sort({ createdAt: -1 })
       .skip((page - 1) * itemPerPage)
       .limit(itemPerPage)
       .populate("creator");
@@ -61,6 +63,8 @@ exports.createPost = async (req, res, next) => {
     const userSaved = await user.save();
     if (!userSaved)
       throw errorHandler(500, "Failed to save new post to user's posts");
+
+    getIO().emit("posts", { action: "create", post: postSaved });
 
     res.status(201).json({
       message: "Post created successfully!",
