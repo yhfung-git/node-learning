@@ -64,7 +64,13 @@ exports.createPost = async (req, res, next) => {
     if (!userSaved)
       throw errorHandler(500, "Failed to save new post to user's posts");
 
-    getIO().emit("posts", { action: "create", post: postSaved });
+    getIO().emit("posts", {
+      action: "create",
+      post: {
+        ...postSaved._doc,
+        creator: { _id: req.userId, name: user.name, key: user._id },
+      },
+    });
 
     res.status(201).json({
       message: "Post created successfully!",
