@@ -6,7 +6,7 @@ exports.status = async (req, res, next) => {
   try {
     const { userId } = req.params;
 
-    const user = await User.findOne({ _id: userId });
+    const user = await User.findById(userId);
     if (!user) throw errorHandler(404, "User not found");
 
     if (user._id.toString() !== req.userId)
@@ -28,7 +28,7 @@ exports.updateStatus = async (req, res, next) => {
     const { userId } = req.params;
     const newStatus = req.body.status;
 
-    const user = await User.findOne({ _id: userId });
+    const user = await User.findById(userId);
     if (!user) throw errorHandler(404, "User not found");
 
     if (user._id.toString() !== req.userId)
