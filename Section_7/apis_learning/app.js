@@ -2,6 +2,8 @@ const path = require("path");
 const express = require("express");
 const mongoose = require("mongoose");
 const multer = require("multer");
+const { createServer } = require("http");
+const { init } = require("./socket");
 
 require("dotenv").config();
 const { MONGODB_URI } = process.env;
@@ -60,7 +62,13 @@ app.use((error, req, res, next) => {
   try {
     await mongoose.connect(MONGODB_URI);
 
-    app.listen(8080, () => {
+    const server = createServer(app);
+    const io = init(server);
+    io.on("connection", (socket) => {
+      console.log("Client connected!");
+    });
+
+    server.listen(8080, () => {
       console.log("Server is running on port 8080!");
     });
   } catch (err) {
