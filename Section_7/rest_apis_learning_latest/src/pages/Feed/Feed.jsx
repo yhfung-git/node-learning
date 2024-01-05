@@ -1,4 +1,5 @@
 import React, { useState, useEffect, Fragment } from "react";
+import { io } from "socket.io-client";
 
 import Post from "../../components/Post";
 import Button from "../../components/Button";
@@ -22,6 +23,16 @@ const Feed = ({ userId, token }) => {
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
+    const socket = io("http://localhost:8080");
+
+    socket.on("connect", () => {
+      console.log("Socket connected!");
+    });
+
+    socket.on("posts", (data) => {
+      if (data.action === "create") addPost(data.post);
+    });
+
     const fetchUserStatus = async () => {
       try {
         const response = await fetch(
@@ -46,6 +57,21 @@ const Feed = ({ userId, token }) => {
     loadPosts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage]);
+
+  const addPost = (post) => {
+    setPosts((prevPosts) => {
+      const updatedPosts = [...prevPosts];
+      if (postPage === 1) {
+        if (prevPosts.length >= 3) {
+          updatedPosts.pop();
+        }
+        updatedPosts.unshift(post);
+      }
+      return updatedPosts;
+    });
+
+    setTotalPosts((prevTotalPosts) => prevTotalPosts + 1);
+  };
 
   const loadPosts = (direction) => {
     if (direction) {
@@ -75,9 +101,11 @@ const Feed = ({ userId, token }) => {
       })
       .then((resData) => {
         setPosts(
-          resData.posts.map((post) => {
-            return { ...post, imagePath: post.imageUrl };
-          })
+          resData.posts.map((post) => ({
+            ...post,
+            imagePath: post.imageUrl,
+            key: post._id,
+          }))
         );
         setTotalPosts(resData.totalItems);
         setPostsLoading(false);
@@ -169,18 +197,15 @@ const Feed = ({ userId, token }) => {
               (p) => p._id === editPost._id
             );
             updatedPosts[postIndex] = post;
-          } else if (prevPosts.length < 2) {
-            updatedPosts = prevPosts.concat(post);
           }
 
           return updatedPosts;
         });
 
-        loadPosts();
-
         setIsEditing(false);
         setEditPost(null);
         setEditLoading(false);
+        loadPosts();
       })
       .catch((err) => {
         console.log(err);
