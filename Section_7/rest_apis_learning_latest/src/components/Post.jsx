@@ -1,10 +1,12 @@
 import React from "react";
 
 import Button from "./Button";
+// import Image from "./Image";
 import "./styles/Post.css";
 
 const post = (props) => {
   const isCreator = props.currentUser === props.author._id;
+  // const imageUrl = `http://localhost:8080/${props.image}`;
 
   return (
     <article className="post">
@@ -15,9 +17,9 @@ const post = (props) => {
         <h1 className="post__title">{props.title}</h1>
       </header>
       {/* <div className="post__image">
-      <Image imageUrl={props.image} contain />
-    </div>
-    <div className="post__content">{props.content}</div> */}
+        <Image imageUrl={imageUrl} contain />
+      </div>
+      <div className="post__content">{props.content}</div> */}
       <div className="post__actions">
         <Button mode="flat" link={props.id}>
           View
