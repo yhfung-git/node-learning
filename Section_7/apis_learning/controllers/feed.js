@@ -102,10 +102,10 @@ exports.updatePost = async (req, res, next) => {
         "No image provided or uploaded file is not an image"
       );
 
-    const post = await Post.findById(postId);
+    const post = await Post.findById(postId).populate("creator");
     if (!post) throw errorHandler(404, "Post not found");
 
-    if (post.creator.toString() !== req.userId)
+    if (post.creator._id.toString() !== req.userId)
       throw errorHandler(403, "Not authorized to update this post");
 
     if (imageUrl !== post.imageUrl) {
@@ -116,6 +116,8 @@ exports.updatePost = async (req, res, next) => {
     post.set({ title, content, imageUrl });
     const updatedPost = await post.save();
     if (!updatedPost) throw errorHandler(500, "Failed to update the post");
+
+    getIO().emit("posts", { action: "update", post: updatedPost });
 
     res.status(200).json({
       message: "Post updated successfully!",
