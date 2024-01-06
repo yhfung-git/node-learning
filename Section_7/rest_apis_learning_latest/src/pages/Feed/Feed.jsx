@@ -31,6 +31,7 @@ const Feed = ({ userId, token }) => {
 
     socket.on("posts", (data) => {
       if (data.action === "create") addPost(data.post);
+      if (data.action === "update") updatePost(data.post);
     });
 
     const fetchUserStatus = async () => {
@@ -71,6 +72,12 @@ const Feed = ({ userId, token }) => {
     });
 
     setTotalPosts((prevTotalPosts) => prevTotalPosts + 1);
+  };
+
+  const updatePost = (post) => {
+    setPosts((prevPosts) =>
+      prevPosts.map((p) => (p._id === post._id ? post : p))
+    );
   };
 
   const loadPosts = (direction) => {
@@ -181,27 +188,6 @@ const Feed = ({ userId, token }) => {
       })
       .then((resData) => {
         console.log(resData);
-        const post = {
-          _id: resData.post._id,
-          title: resData.post.title,
-          content: resData.post.content,
-          creator: resData.post.creator,
-          createdAt: resData.post.createdAt,
-        };
-
-        setPosts((prevPosts) => {
-          let updatedPosts = [...prevPosts];
-
-          if (editPost) {
-            const postIndex = prevPosts.findIndex(
-              (p) => p._id === editPost._id
-            );
-            updatedPosts[postIndex] = post;
-          }
-
-          return updatedPosts;
-        });
-
         setIsEditing(false);
         setEditPost(null);
         setEditLoading(false);
