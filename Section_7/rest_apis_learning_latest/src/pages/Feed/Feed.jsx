@@ -32,6 +32,7 @@ const Feed = ({ userId, token }) => {
     socket.on("posts", (data) => {
       if (data.action === "create") addPost(data.post);
       if (data.action === "update") updatePost(data.post);
+      if (data.action === "delete") loadPosts();
     });
 
     const fetchUserStatus = async () => {
@@ -79,6 +80,10 @@ const Feed = ({ userId, token }) => {
       prevPosts.map((p) => (p._id === post._id ? post : p))
     );
   };
+
+  // const deletePost = (postId) => {
+  //   setPosts((prevPosts) => prevPosts.filter((p) => p._id !== postId));
+  // };
 
   const loadPosts = (direction) => {
     if (direction) {
@@ -222,7 +227,6 @@ const Feed = ({ userId, token }) => {
       })
       .then((resData) => {
         console.log(resData);
-        setPosts((prevPosts) => prevPosts.filter((p) => p._id !== postId));
         setPostsLoading(false);
       })
       .catch((err) => {
