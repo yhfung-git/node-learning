@@ -1,4 +1,3 @@
-const { getIO } = require("../socket");
 const { handleValidationErrors } = require("../middlewares/validation");
 const { errorHandler } = require("../utils/errorHandler");
 const { clearImage } = require("../utils/clearImage");
@@ -64,14 +63,6 @@ exports.createPost = async (req, res, next) => {
     if (!userSaved)
       throw errorHandler(500, "Failed to save new post to user's posts");
 
-    getIO().emit("posts", {
-      action: "create",
-      post: {
-        ...postSaved._doc,
-        creator: { _id: req.userId, name: user.name, key: user._id },
-      },
-    });
-
     res.status(201).json({
       message: "Post created successfully!",
       post: postSaved,
@@ -117,8 +108,6 @@ exports.updatePost = async (req, res, next) => {
     const updatedPost = await post.save();
     if (!updatedPost) throw errorHandler(500, "Failed to update the post");
 
-    getIO().emit("posts", { action: "update", post: updatedPost });
-
     res.status(200).json({
       message: "Post updated successfully!",
       post: updatedPost,
@@ -151,8 +140,6 @@ exports.deletePost = async (req, res, next) => {
 
     const deletedPost = await Post.findByIdAndDelete(postId);
     if (!deletedPost) throw errorHandler(500, "Failed to delete the post");
-
-    getIO().emit("posts", { action: "delete", postId });
 
     res.status(200).json({
       message: "Post deleted successfully!",

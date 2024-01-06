@@ -2,17 +2,9 @@ const path = require("path");
 const express = require("express");
 const mongoose = require("mongoose");
 const multer = require("multer");
-const { createServer } = require("http");
-const { init } = require("./socket");
 
 require("dotenv").config();
 const { MONGODB_URI } = process.env;
-
-const isAuth = require("./middlewares/isAuth");
-
-const feedRoutes = require("./routes/feed");
-const authRoutes = require("./routes/auth");
-const userRoutes = require("./routes/user");
 
 const app = express();
 
@@ -46,10 +38,6 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/feed", isAuth, feedRoutes);
-app.use("/user", isAuth, userRoutes);
-app.use("/auth", authRoutes);
-
 app.use((error, req, res, next) => {
   console.error(error);
   const statusCode = error.statusCode || 500;
@@ -62,13 +50,7 @@ app.use((error, req, res, next) => {
   try {
     await mongoose.connect(MONGODB_URI);
 
-    const server = createServer(app);
-    const io = init(server);
-    io.on("connection", (socket) => {
-      console.log("Client connected!");
-    });
-
-    server.listen(8080, () => {
+    app.listen(8080, () => {
       console.log("Server is running on port 8080!");
     });
   } catch (err) {
