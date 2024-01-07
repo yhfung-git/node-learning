@@ -18,6 +18,13 @@ const schema = buildSchema(`
   type RootMutation {
     createUser(userInput: UserInputData!): User!
     login(email: String!, password: String!): AuthData!
+    createPost(postInput: PostInputData): Post!
+  }
+
+  input PostInputData {
+    title: String!
+    imageUrl: String!
+    content: String!
   }
 
   input UserInputData {
