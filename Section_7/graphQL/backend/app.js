@@ -12,6 +12,8 @@ const { MONGODB_URI } = process.env;
 const schema = require("./graphql/schema");
 const rootValue = require("./graphql/resolvers");
 
+const { formatError } = require("./helpers/formatError");
+
 const app = express();
 
 const storage = multer.diskStorage({
@@ -44,7 +46,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.all("/graphql", createHandler({ schema, rootValue }));
+app.all("/graphql", createHandler({ schema, rootValue, formatError }));
 app.get("/playground", expressPlayground({ endpoint: "/graphql" }));
 
 app.use((error, req, res, next) => {
