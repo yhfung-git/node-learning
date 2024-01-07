@@ -10,8 +10,14 @@ const schema = buildSchema(`
     greeting: String
   }
 
+  type AuthData {
+    token: String!
+    userId: String!
+  }
+
   type RootMutation {
     createUser(userInput: UserInputData!): User!
+    login(email: String!, password: String!): AuthData!
   }
 
   input UserInputData {
