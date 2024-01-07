@@ -2,9 +2,15 @@ const path = require("path");
 const express = require("express");
 const mongoose = require("mongoose");
 const multer = require("multer");
+const { createHandler } = require("graphql-http/lib/use/express");
+const expressPlayground =
+  require("graphql-playground-middleware-express").default;
 
 require("dotenv").config();
 const { MONGODB_URI } = process.env;
+
+const schema = require("./graphql/schema");
+const rootValue = require("./graphql/resolvers");
 
 const app = express();
 
@@ -37,6 +43,9 @@ app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   next();
 });
+
+app.all("/graphql", createHandler({ schema, rootValue }));
+app.get("/playground", expressPlayground({ endpoint: "/graphql" }));
 
 app.use((error, req, res, next) => {
   console.error(error);
