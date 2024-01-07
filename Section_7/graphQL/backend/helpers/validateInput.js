@@ -18,3 +18,24 @@ exports.validateSignupInput = (email, password, name) => {
 
   return errors;
 };
+
+exports.validateCreatePostInput = (title, imageUrl, content) => {
+  const errors = [];
+
+  if (
+    validator.isEmpty(title) ||
+    !validator.matches(title, /^[a-zA-Z0-9\s]+$/) ||
+    !validator.isLength(title, { min: 5 })
+  )
+    errors.push({
+      message:
+        "The title must consist only of letters and numbers, and it should be at least 5 characters long",
+    });
+
+  if (validator.isEmpty(content) || !validator.isLength(content, { min: 5 }))
+    errors.push({
+      message: "You must enter content at least 5 characters long",
+    });
+
+  return errors;
+};
