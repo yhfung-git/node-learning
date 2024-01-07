@@ -1,4 +1,7 @@
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+
+const { JWT_PRIVATE_KEY } = process.env;
 
 const User = require("../models/user");
 const { throwError } = require("../helpers/throwError");
@@ -33,6 +36,27 @@ const rootValue = {
         updatedAt: newUserCreated.updatedAt.toISOString(),
       };
     } catch (err) {
+      console.error("Signup error:", err);
+      throw err;
+    }
+  },
+  login: async ({ email, password }) => {
+    try {
+      const user = await User.findOne({ email });
+      if (!user) throwError(401, "Invalid email or password");
+
+      const matched = await bcrypt.compare(password, user.password);
+      if (!matched) throwError(401, "Invalid email or password");
+
+      const userId = user._id.toString();
+      const token = jwt.sign({ email: user.email, userId }, JWT_PRIVATE_KEY, {
+        expiresIn: "1h",
+        algorithm: "HS256",
+      });
+
+      return { token, userId };
+    } catch (err) {
+      console.error("Signup error:", err);
       throw err;
     }
   },
