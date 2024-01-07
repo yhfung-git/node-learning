@@ -1,5 +1,4 @@
 import React, { useState, useEffect, Fragment } from "react";
-import { io } from "socket.io-client";
 
 import Post from "../../components/Post";
 import Button from "../../components/Button";
@@ -23,18 +22,6 @@ const Feed = ({ userId, token }) => {
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    const socket = io("http://localhost:8080");
-
-    socket.on("connect", () => {
-      console.log("Socket connected!");
-    });
-
-    socket.on("posts", (data) => {
-      if (data.action === "create") addPost(data.post);
-      if (data.action === "update") updatePost(data.post);
-      if (data.action === "delete") loadPosts();
-    });
-
     const fetchUserStatus = async () => {
       try {
         const response = await fetch(
@@ -59,31 +46,6 @@ const Feed = ({ userId, token }) => {
     loadPosts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage]);
-
-  const addPost = (post) => {
-    setPosts((prevPosts) => {
-      const updatedPosts = [...prevPosts];
-      if (postPage === 1) {
-        if (prevPosts.length >= 3) {
-          updatedPosts.pop();
-        }
-        updatedPosts.unshift(post);
-      }
-      return updatedPosts;
-    });
-
-    setTotalPosts((prevTotalPosts) => prevTotalPosts + 1);
-  };
-
-  const updatePost = (post) => {
-    setPosts((prevPosts) =>
-      prevPosts.map((p) => (p._id === post._id ? post : p))
-    );
-  };
-
-  // const deletePost = (postId) => {
-  //   setPosts((prevPosts) => prevPosts.filter((p) => p._id !== postId));
-  // };
 
   const loadPosts = (direction) => {
     if (direction) {
