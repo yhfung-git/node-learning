@@ -80,27 +80,40 @@ function App() {
   function loginHandler(event, authData) {
     event.preventDefault();
     setAuthLoading(true);
-    fetch("http://localhost:8080/auth/login", {
+    const graphqlQuery = {
+      query: `
+        mutation {
+          login(
+            email: "${authData.loginForm.email.value}",
+            password: "${authData.loginForm.password.value}"
+          )
+          {
+            token
+            userId
+          }
+        }
+      `,
+    };
+    fetch("http://localhost:8080/graphql", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        email: authData.loginForm.email.value,
-        password: authData.loginForm.password.value,
-      }),
+      body: JSON.stringify(graphqlQuery),
     })
       .then(function (res) {
-        if (res.status === 422) {
-          throw new Error("Validation failed.");
-        }
-        if (res.status !== 200 && res.status !== 201) {
-          console.log("Error!");
-          throw new Error("Could not authenticate you!");
-        }
         return res.json();
       })
       .then(function (resData) {
+        if (resData.errors) {
+          const errorMessage = resData.errors[0].message;
+          throw new Error(errorMessage);
+        }
+
+        if (!resData.data || !resData.data.login) {
+          throw new Error("Could not authenticate you!");
+        }
+
         console.log(resData);
         setIsAuth(true);
         setToken(resData.token);
