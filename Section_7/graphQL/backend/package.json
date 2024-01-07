@@ -18,7 +18,8 @@
     "graphql-playground-middleware-express": "^1.7.23",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.0.3",
-    "multer": "^1.4.5-lts.1"
+    "multer": "^1.4.5-lts.1",
+    "validator": "^13.11.0"
   },
   "devDependencies": {
     "dotenv": "^16.3.1",
