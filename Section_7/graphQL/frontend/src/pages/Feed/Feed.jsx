@@ -70,7 +70,7 @@ const Feed = ({ userId, token }) => {
               title
               content
               imageUrl
-              creator { name }
+              creator { name, _id }
               createdAt
             }
             totalPosts
@@ -155,40 +155,51 @@ const Feed = ({ userId, token }) => {
   const finishEditHandler = (postData) => {
     setEditLoading(true);
 
-    // const formData = new FormData();
-    // formData.append("title", postData.title);
-    // formData.append("content", postData.content);
-    // formData.append("image", postData.image);
+    const formData = new FormData();
+    formData.append("image", postData.image);
+    if (editPost) formData.append("oldImagePath", editPost.imagePath);
 
-    let graphqlQuery = {
-      query: `
-        mutation {
-          createPost(
-            postInput: {
-              title: "${postData.title}",
-              content: "${postData.content}",
-              imageUrl: "images/1704491613933-0baaaa1bcfd14aa18ea131f261ff976e.jpeg"
-            }
-          ) {
-            _id
-            title
-            content
-            imageUrl
-            creator { name }
-            createdAt
-          }
-        }
-      `,
-    };
-
-    fetch("http://localhost:8080/graphql", {
-      method: "POST",
-      body: JSON.stringify(graphqlQuery),
+    fetch("http://localhost:8080/post-image", {
+      method: "PUT",
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
       },
+      body: formData,
     })
+      .then((res) => res.json())
+      .then((fileResData) => {
+        const imageUrl = fileResData.imagePath;
+
+        let graphqlQuery = {
+          query: `
+            mutation {
+              createPost(
+                postInput: {
+                  title: "${postData.title}",
+                  content: "${postData.content}",
+                  imageUrl: "${imageUrl}"
+                }
+              ) {
+                _id
+                title
+                content
+                imageUrl
+                creator { name _id }
+                createdAt
+              }
+            }
+          `,
+        };
+
+        return fetch("http://localhost:8080/graphql", {
+          method: "POST",
+          body: JSON.stringify(graphqlQuery),
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+      })
       .then((res) => {
         return res.json();
       })
@@ -207,24 +218,31 @@ const Feed = ({ userId, token }) => {
           _id: resData.data.createPost._id,
           title: resData.data.createPost.title,
           content: resData.data.createPost.content,
+          imagePath: resData.data.createPost.imageUrl,
           creator: resData.data.createPost.creator,
           createdAt: resData.data.createPost.createdAt,
         };
 
         setPosts((prevState) => {
           let updatedPosts = [...prevState];
-          if (prevState.editPost) {
+          if (editPost) {
             const postIndex = prevState.findIndex(
-              (p) => p._id === prevState.editPost._id
+              (p) => p._id === editPost._id
             );
             updatedPosts[postIndex] = post;
-          } else {
-            updatedPosts.pop();
+          }
+
+          if (postPage === 1) {
+            if (prevState.length >= 3) {
+              updatedPosts.pop();
+            }
             updatedPosts.unshift(post);
           }
+
           return updatedPosts;
         });
 
+        setTotalPosts((prevTotalPosts) => prevTotalPosts + 1);
         setIsEditing(false);
         setEditPost(null);
         setEditLoading(false);
