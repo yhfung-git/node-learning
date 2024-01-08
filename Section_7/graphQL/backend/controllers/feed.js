@@ -14,7 +14,7 @@ exports.getPosts = async (req, res, next) => {
       .sort({ createdAt: -1 })
       .skip((page - 1) * itemPerPage)
       .limit(itemPerPage)
-      .populate("creator");
+      .populate("creator", "name");
 
     res.status(200).json({ posts, totalItems });
   } catch (err) {
@@ -27,7 +27,7 @@ exports.getPost = async (req, res, next) => {
   try {
     const { postId } = req.params;
 
-    const post = await Post.findById(postId).populate("creator");
+    const post = await Post.findById(postId).populate("creator", "name");
     if (!post) throw errorHandler(404, "Post not found");
 
     res.status(200).json({ post });
@@ -93,7 +93,7 @@ exports.updatePost = async (req, res, next) => {
         "No image provided or uploaded file is not an image"
       );
 
-    const post = await Post.findById(postId).populate("creator");
+    const post = await Post.findById(postId).populate("creator", "name");
     if (!post) throw errorHandler(404, "Post not found");
 
     if (post.creator._id.toString() !== req.userId)
