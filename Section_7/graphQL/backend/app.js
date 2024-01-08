@@ -14,6 +14,8 @@ const rootValue = require("./graphql/resolvers");
 
 const { formatError } = require("./helpers/formatError");
 const auth = require("./middlewares/auth");
+const { clearImage } = require("./utils/clearImage");
+const { throwError } = require("./helpers/throwError");
 
 const app = express();
 
@@ -49,6 +51,23 @@ app.use((req, res, next) => {
 });
 
 app.use(auth);
+
+app.put("/post-image", async (req, res, next) => {
+  if (!req.isAuth) throwError(401, "Not authenticated!");
+
+  if (!req.file) return res.status(200).json({ message: "No image provided!" });
+
+  const { oldImagePath } = req.body;
+  if (oldImagePath) {
+    const clearedImage = await clearImage(oldImagePath);
+    if (!clearedImage) throwError(500, "Failed to clear image");
+  }
+
+  return res
+    .status(201)
+    .json({ message: "Image stored", imagePath: req.file.path });
+});
+
 app.use("/graphql", (req, res) =>
   createHandler({
     schema,
