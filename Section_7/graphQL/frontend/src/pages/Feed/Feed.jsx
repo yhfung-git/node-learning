@@ -56,32 +56,60 @@ const Feed = ({ userId, token }) => {
     let page = postPage;
 
     if (direction === "next") page++;
-
     if (direction === "previous") page--;
 
     setPostPage(page);
     setCurrentPage(page);
 
-    fetch(`http://localhost:8080/feed/posts?page=${page}`, {
+    const graphqlQuery = {
+      query: `
+        {
+          getPosts(page: ${page}) {
+            posts {
+              _id
+              title
+              content
+              imageUrl
+              creator { name }
+              createdAt
+            }
+            totalPosts
+          }
+        }
+      `,
+    };
+
+    fetch("http://localhost:8080/graphql", {
+      method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
+      body: JSON.stringify(graphqlQuery),
     })
       .then((res) => {
-        if (res.status !== 200) {
-          throw new Error("Failed to fetch posts.");
-        }
         return res.json();
       })
       .then((resData) => {
+        if (resData.errors) {
+          const errorMessage = resData.errors[0].message;
+          throw new Error(errorMessage);
+        }
+
+        if (!resData.data || !resData.data.getPosts) {
+          throw new Error("Failed to fetch posts.");
+        }
+
+        console.log(resData.data.getPosts);
+        const { posts, totalPosts } = resData.data.getPosts;
         setPosts(
-          resData.posts.map((post) => ({
+          posts.map((post) => ({
             ...post,
             imagePath: post.imageUrl,
             key: post._id,
           }))
         );
-        setTotalPosts(resData.totalItems);
+        setTotalPosts(totalPosts);
         setPostsLoading(false);
       })
       .catch(catchError);
@@ -89,8 +117,8 @@ const Feed = ({ userId, token }) => {
 
   const statusUpdateHandler = (event) => {
     event.preventDefault();
-    fetch(`http://localhost:8080/user/status/${userId}`, {
-      method: "PUT",
+    fetch("http://localhost:8080/graphql", {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
@@ -175,17 +203,32 @@ const Feed = ({ userId, token }) => {
         }
 
         console.log(resData);
-        // const post = {
-        //   _id: resData.data.createPost._id,
-        //   title: resData.data.createPost.title,
-        //   content: resData.data.createPost.content,
-        //   creator: resData.data.createPost.creator,
-        //   createdAt: resData.data.createPost.createdAt,
-        // };
+        const post = {
+          _id: resData.data.createPost._id,
+          title: resData.data.createPost.title,
+          content: resData.data.createPost.content,
+          creator: resData.data.createPost.creator,
+          createdAt: resData.data.createPost.createdAt,
+        };
+
+        setPosts((prevState) => {
+          let updatedPosts = [...prevState];
+          if (prevState.editPost) {
+            const postIndex = prevState.findIndex(
+              (p) => p._id === prevState.editPost._id
+            );
+            updatedPosts[postIndex] = post;
+          } else {
+            updatedPosts.pop();
+            updatedPosts.unshift(post);
+          }
+          return updatedPosts;
+        });
+
         setIsEditing(false);
         setEditPost(null);
         setEditLoading(false);
-        loadPosts();
+        // loadPosts();
       })
       .catch((err) => {
         console.log(err);
