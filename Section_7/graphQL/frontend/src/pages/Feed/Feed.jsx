@@ -127,34 +127,61 @@ const Feed = ({ userId, token }) => {
   const finishEditHandler = (postData) => {
     setEditLoading(true);
 
-    const formData = new FormData();
-    formData.append("title", postData.title);
-    formData.append("content", postData.content);
-    formData.append("image", postData.image);
+    // const formData = new FormData();
+    // formData.append("title", postData.title);
+    // formData.append("content", postData.content);
+    // formData.append("image", postData.image);
 
-    let url = "http://localhost:8080/feed/create-post";
-    let method = "POST";
+    let graphqlQuery = {
+      query: `
+        mutation {
+          createPost(
+            postInput: {
+              title: "${postData.title}",
+              content: "${postData.content}",
+              imageUrl: "images/1704491613933-0baaaa1bcfd14aa18ea131f261ff976e.jpeg"
+            }
+          ) {
+            _id
+            title
+            content
+            imageUrl
+            creator { name }
+            createdAt
+          }
+        }
+      `,
+    };
 
-    if (editPost) {
-      url = `http://localhost:8080/feed/post/${editPost._id}`;
-      method = "PUT";
-    }
-
-    fetch(url, {
-      method: method,
-      body: formData,
+    fetch("http://localhost:8080/graphql", {
+      method: "POST",
+      body: JSON.stringify(graphqlQuery),
       headers: {
         Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
     })
       .then((res) => {
-        if (res.status !== 200 && res.status !== 201) {
-          throw new Error("Creating or editing a post failed!");
-        }
         return res.json();
       })
       .then((resData) => {
+        if (resData.errors) {
+          const errorMessage = resData.errors[0].message;
+          throw new Error(errorMessage);
+        }
+
+        if (!resData.data || !resData.data.createPost) {
+          throw new Error("Failed to create post!");
+        }
+
         console.log(resData);
+        // const post = {
+        //   _id: resData.data.createPost._id,
+        //   title: resData.data.createPost.title,
+        //   content: resData.data.createPost.content,
+        //   creator: resData.data.createPost.creator,
+        //   createdAt: resData.data.createPost.createdAt,
+        // };
         setIsEditing(false);
         setEditPost(null);
         setEditLoading(false);
