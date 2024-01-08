@@ -41,7 +41,7 @@ const rootValue = {
         updatedAt: newUserCreated.updatedAt.toISOString(),
       };
     } catch (err) {
-      console.error("Signup error:", err);
+      console.error("createUser resolvers error:", err);
       throw err;
     }
   },
@@ -61,7 +61,7 @@ const rootValue = {
 
       return { token, userId };
     } catch (err) {
-      console.error("Signup error:", err);
+      console.error("login resolvers error:", err);
       throw err;
     }
   },
@@ -99,7 +99,36 @@ const rootValue = {
         updatedAt: newPostCreated.updatedAt.toISOString(),
       };
     } catch (err) {
-      console.error("Signup error:", err);
+      console.error("createPost resolvers error:", err);
+      throw err;
+    }
+  },
+  getPosts: async ({ page }, { req }) => {
+    try {
+      if (!req.isAuth) throwError(401, "Not authenticated!");
+
+      if (!page) page = 1;
+      const itemPerPage = 3;
+      const totalPosts = await Post.countDocuments();
+
+      const getPosts = await Post.find()
+        .sort({ createdAt: -1 })
+        .skip((page - 1) * itemPerPage)
+        .limit(itemPerPage)
+        .populate("creator", "name");
+
+      const posts = getPosts.map((post) => {
+        return {
+          ...post._doc,
+          _id: post._id.toString(),
+          createdAt: post.createdAt.toISOString(),
+          updatedAt: post.updatedAt.toISOString(),
+        };
+      });
+
+      return { posts, totalPosts };
+    } catch (err) {
+      console.error("getPosts resolvers error:", err);
       throw err;
     }
   },
