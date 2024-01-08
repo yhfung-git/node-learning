@@ -13,6 +13,7 @@ const schema = require("./graphql/schema");
 const rootValue = require("./graphql/resolvers");
 
 const { formatError } = require("./helpers/formatError");
+const auth = require("./middlewares/auth");
 
 const app = express();
 
@@ -47,7 +48,15 @@ app.use((req, res, next) => {
   next();
 });
 
-app.all("/graphql", createHandler({ schema, rootValue, formatError }));
+app.use(auth);
+app.use("/graphql", (req, res) =>
+  createHandler({
+    schema,
+    rootValue,
+    formatError,
+    context: { req, res },
+  })(req, res)
+);
 app.get("/playground", expressPlayground({ endpoint: "/graphql" }));
 
 app.use((error, req, res, next) => {
