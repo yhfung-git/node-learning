@@ -3,9 +3,14 @@ const jwt = require("jsonwebtoken");
 
 const { JWT_PRIVATE_KEY } = process.env;
 
-const User = require("../models/user");
+const {
+  validateSignupInput,
+  validateCreatePostInput,
+} = require("../helpers/validateInput");
 const { throwError } = require("../helpers/throwError");
-const { validateSignupInput } = require("../helpers/validateInput");
+
+const User = require("../models/user");
+const Post = require("../models/post");
 
 const rootValue = {
   createUser: async (args, req) => {
@@ -55,6 +60,44 @@ const rootValue = {
       });
 
       return { token, userId };
+    } catch (err) {
+      console.error("Signup error:", err);
+      throw err;
+    }
+  },
+  createPost: async (args, { req }) => {
+    try {
+      if (!req.isAuth) throwError(401, "Not authenticated!");
+
+      const { title, imageUrl, content } = args.postInput;
+
+      const errors = validateCreatePostInput(title, imageUrl, content);
+      if (errors.length > 0) throwError(422, "Invalid input", errors);
+
+      const user = await User.findById(req.userId);
+      if (!user) throwError(401, "Unauthorized access.");
+
+      const newPost = new Post({
+        title,
+        imageUrl,
+        content,
+        creator: user,
+      });
+
+      const newPostCreated = await newPost.save();
+      if (!newPostCreated) throwError(500, "Failed to save new post");
+
+      user.posts.push(newPostCreated);
+      const savedUserPost = await user.save();
+      if (!savedUserPost)
+        throwError(500, "Failed to save new post to user's posts");
+
+      return {
+        ...newPostCreated._doc,
+        _id: newPostCreated._id.toString(),
+        createdAt: newPostCreated.createdAt.toISOString(),
+        updatedAt: newPostCreated.updatedAt.toISOString(),
+      };
     } catch (err) {
       console.error("Signup error:", err);
       throw err;
