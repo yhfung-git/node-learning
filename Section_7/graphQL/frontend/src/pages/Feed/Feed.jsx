@@ -168,6 +168,7 @@ const Feed = ({ userId, token }) => {
     })
       .then((res) => res.json())
       .then((fileResData) => {
+        console.log(fileResData);
         const imageUrl = fileResData.imagePath;
 
         let graphqlQuery = {
@@ -238,6 +239,8 @@ const Feed = ({ userId, token }) => {
             }
             updatedPosts.unshift(post);
           }
+
+          if (postPage > 1) loadPosts();
 
           return updatedPosts;
         });
