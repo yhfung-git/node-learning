@@ -7,7 +7,12 @@ const schema = buildSchema(`
   }
 
   type RootQuery {
-    greeting: String
+    getPosts(page: Int): PostData!
+  }
+
+  type PostData {
+    posts: [Post!]!
+    totalPosts: Int!
   }
 
   type AuthData {
