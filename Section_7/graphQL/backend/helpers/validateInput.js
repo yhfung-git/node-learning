@@ -19,7 +19,7 @@ exports.validateSignupInput = (email, password, name) => {
   return errors;
 };
 
-exports.validateCreatePostInput = (title, imageUrl, content) => {
+exports.validatePostInput = (title, imageUrl, content) => {
   const errors = [];
 
   if (
@@ -36,6 +36,9 @@ exports.validateCreatePostInput = (title, imageUrl, content) => {
     errors.push({
       message: "You must enter content at least 5 characters long",
     });
+
+  if (validator.isEmpty(imageUrl))
+    errors.push({ message: "No image or invalid image URL provided" });
 
   return errors;
 };
