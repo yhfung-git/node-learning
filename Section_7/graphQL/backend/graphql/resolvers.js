@@ -5,7 +5,7 @@ const { JWT_PRIVATE_KEY } = process.env;
 
 const {
   validateSignupInput,
-  validateCreatePostInput,
+  validatePostInput,
 } = require("../helpers/validateInput");
 const { throwError } = require("../helpers/throwError");
 
@@ -69,13 +69,13 @@ const rootValue = {
     try {
       if (!req.isAuth) throwError(401, "Not authenticated!");
 
-      const { title, imageUrl, content } = args.postInput;
-
-      const errors = validateCreatePostInput(title, imageUrl, content);
-      if (errors.length > 0) throwError(422, "Invalid input", errors);
-
       const user = await User.findById(req.userId);
       if (!user) throwError(401, "Unauthorized access.");
+
+      const { title, imageUrl, content } = args.postInput;
+
+      const errors = validatePostInput(title, imageUrl, content);
+      if (errors.length > 0) throwError(422, "Invalid input", errors);
 
       const newPost = new Post({
         title,
@@ -144,6 +144,41 @@ const rootValue = {
         _id: post._id.toString(),
         createdAt: post.createdAt.toISOString(),
         updatedAt: post.updatedAt.toISOString(),
+      };
+    } catch (err) {
+      console.error("getPost resolvers error:", err);
+      throw err;
+    }
+  },
+  updatePost: async ({ postId, updatePostInput }, { req }) => {
+    try {
+      if (!req.isAuth) throwError(401, "Not authenticated!");
+
+      const post = await Post.findById(postId).populate("creator", "name");
+      if (!post) throwError(404, "Post not found");
+
+      if (post.creator._id.toString() !== req.userId) {
+        throwError(403, "Not authorized to update this post");
+      }
+
+      const { title, content } = updatePostInput;
+      const imageUrl =
+        updatePostInput.imageUrl !== "undefined"
+          ? updatePostInput.imageUrl
+          : post.imageUrl;
+
+      const errors = validatePostInput(title, imageUrl, content);
+      if (errors.length > 0) throwError(422, "Invalid input", errors);
+
+      post.set({ title, content, imageUrl });
+      const updatedPost = await post.save();
+      if (!updatedPost) throwError(500, "Failed to update the post");
+
+      return {
+        ...updatedPost._doc,
+        _id: updatedPost._id.toString(),
+        createdAt: updatedPost.createdAt.toISOString(),
+        updatedAt: updatedPost.updatedAt.toISOString(),
       };
     } catch (err) {
       console.error("getPost resolvers error:", err);
