@@ -298,21 +298,41 @@ const Feed = ({ userId, token }) => {
 
   const deletePostHandler = (postId) => {
     setPostsLoading(true);
-    fetch(`http://localhost:8080/feed/post/${postId}`, {
-      method: "DELETE",
+
+    const graphqlQuery = {
+      query: `
+        mutation {
+          deletePost(postId: "${postId}") {
+            message
+            success
+          }
+        }
+      `,
+    };
+    fetch("http://localhost:8080/graphql", {
+      method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
+      body: JSON.stringify(graphqlQuery),
     })
       .then((res) => {
-        if (res.status !== 200 && res.status !== 201) {
-          throw new Error("Deleting a post failed!");
-        }
         return res.json();
       })
       .then((resData) => {
+        if (resData.errors) {
+          const errorMessage = resData.errors[0].message;
+          throw new Error(errorMessage);
+        }
+
+        if (!resData.data || !resData.data.deletePost) {
+          throw new Error("Delete post failed!");
+        }
+
         console.log(resData);
         setPostsLoading(false);
+        loadPosts();
       })
       .catch((err) => {
         console.log(err);
