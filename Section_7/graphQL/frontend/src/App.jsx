@@ -114,7 +114,6 @@ function App() {
           throw new Error("Could not authenticate you!");
         }
 
-        console.log(resData);
         setIsAuth(true);
         setToken(resData.data.login.token);
         setAuthLoading(false);
@@ -177,7 +176,6 @@ function App() {
           throw new Error("User creation failed!");
         }
 
-        console.log(resData);
         setIsAuth(false);
         setAuthLoading(false);
         navigate("/");

@@ -158,8 +158,6 @@ const Feed = ({ userId, token }) => {
         if (!resData.data || !resData.data.updateStatus) {
           throw new Error("Update status failed!");
         }
-
-        console.log(resData);
       })
       .catch(catchError);
   };
@@ -358,7 +356,6 @@ const Feed = ({ userId, token }) => {
           throw new Error("Delete post failed!");
         }
 
-        console.log(resData);
         setPostsLoading(false);
         loadPosts();
       })
