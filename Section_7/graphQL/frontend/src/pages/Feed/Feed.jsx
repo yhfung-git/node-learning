@@ -100,7 +100,6 @@ const Feed = ({ userId, token }) => {
           throw new Error("Failed to fetch posts.");
         }
 
-        console.log(resData.data.getPosts);
         const { posts, totalPosts } = resData.data.getPosts;
         setPosts(
           posts.map((post) => ({
@@ -168,7 +167,6 @@ const Feed = ({ userId, token }) => {
     })
       .then((res) => res.json())
       .then((fileResData) => {
-        console.log(fileResData);
         const imageUrl = fileResData.imagePath;
 
         let graphqlQuery = {
@@ -192,6 +190,30 @@ const Feed = ({ userId, token }) => {
           `,
         };
 
+        if (editPost) {
+          graphqlQuery = {
+            query: `
+              mutation {
+                updatePost(
+                  updatePostInput: {
+                    title: "${postData.title}",
+                    content: "${postData.content}",
+                    imageUrl: "${imageUrl}"
+                  },
+                  postId: "${editPost._id}"
+                ) {
+                  _id
+                  title
+                  content
+                  imageUrl
+                  creator { name _id }
+                  createdAt
+                }
+              }
+            `,
+          };
+        }
+
         return fetch("http://localhost:8080/graphql", {
           method: "POST",
           body: JSON.stringify(graphqlQuery),
@@ -205,23 +227,33 @@ const Feed = ({ userId, token }) => {
         return res.json();
       })
       .then((resData) => {
+        let resDataField = "createPost";
+        if (editPost) resDataField = "updatePost";
+
         if (resData.errors) {
           const errorMessage = resData.errors[0].message;
           throw new Error(errorMessage);
         }
 
-        if (!resData.data || !resData.data.createPost) {
-          throw new Error("Failed to create post!");
+        if (resDataField === "createPost") {
+          if (!resData.data || !resData.data.createPost) {
+            throw new Error("Failed to create post!");
+          }
         }
 
-        console.log(resData);
+        if (resDataField === "updatePost") {
+          if (!resData.data || !resData.data.updatePost) {
+            throw new Error("Failed to update post!");
+          }
+        }
+
         const post = {
-          _id: resData.data.createPost._id,
-          title: resData.data.createPost.title,
-          content: resData.data.createPost.content,
-          imagePath: resData.data.createPost.imageUrl,
-          creator: resData.data.createPost.creator,
-          createdAt: resData.data.createPost.createdAt,
+          _id: resData.data[resDataField]._id,
+          title: resData.data[resDataField].title,
+          content: resData.data[resDataField].content,
+          imagePath: resData.data[resDataField].imageUrl,
+          creator: resData.data[resDataField].creator,
+          createdAt: resData.data[resDataField].createdAt,
         };
 
         setPosts((prevState) => {
@@ -231,13 +263,13 @@ const Feed = ({ userId, token }) => {
               (p) => p._id === editPost._id
             );
             updatedPosts[postIndex] = post;
-          }
-
-          if (postPage === 1) {
-            if (prevState.length >= 3) {
-              updatedPosts.pop();
+          } else {
+            if (postPage === 1) {
+              if (prevState.length >= 3) {
+                updatedPosts.pop();
+              }
+              updatedPosts.unshift(post);
             }
-            updatedPosts.unshift(post);
           }
 
           if (postPage > 1) loadPosts();
