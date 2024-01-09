@@ -11,6 +11,19 @@ const schema = buildSchema(`
     getPost(postId: ID!): Post!
   }
 
+  type RootMutation {
+    createUser(userInput: UserInputData!): User!
+    login(email: String!, password: String!): AuthData!
+    createPost(postInput: PostInputData): Post!
+    updatePost(updatePostInput: PostInputData, postId: ID!): Post!
+    deletePost(postId: ID!): DeletePostData!
+  }
+
+  type DeletePostData {
+    success: Boolean!
+    message: String
+  }
+
   type PostData {
     posts: [Post!]!
     totalPosts: Int!
@@ -19,13 +32,6 @@ const schema = buildSchema(`
   type AuthData {
     token: String!
     userId: String!
-  }
-
-  type RootMutation {
-    createUser(userInput: UserInputData!): User!
-    login(email: String!, password: String!): AuthData!
-    createPost(postInput: PostInputData): Post!
-    updatePost(updatePostInput: PostInputData, postId: ID!): Post!
   }
 
   input PostInputData {
