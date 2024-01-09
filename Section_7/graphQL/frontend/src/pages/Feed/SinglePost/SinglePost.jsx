@@ -18,24 +18,42 @@ const SinglePost = ({ userId, token }) => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:8080/feed/post/${postId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const graphqlQuery = {
+          query: `
+            {
+              getPost(postId: "${postId}") {
+                title
+                imageUrl
+                content
+                creator { name _id }
+                createdAt
+              }
+            }
+          `,
+        };
+        const response = await fetch("http://localhost:8080/graphql", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(graphqlQuery),
+        });
+
         if (!response.ok) {
-          throw new Error("Failed to fetch status");
+          throw new Error("Failed to fetch the post");
         }
+
         const resData = await response.json();
+        const { title, content, imageUrl, creator, createdAt } =
+          resData.data.getPost;
+
         setPost({
-          title: resData.post.title,
-          author: resData.post.creator.name,
-          date: new Date(resData.post.createdAt).toLocaleDateString("en-US"),
-          content: resData.post.content,
-          image: `http://localhost:8080/${resData.post.imageUrl}`,
+          title: title,
+          content: content,
+          author: creator.name,
+          image: `http://localhost:8080/${imageUrl}`,
+          date: new Date(createdAt).toLocaleDateString("en-US"),
         });
       } catch (err) {
         console.error(err);
