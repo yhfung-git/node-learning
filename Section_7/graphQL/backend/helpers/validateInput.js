@@ -42,3 +42,12 @@ exports.validatePostInput = (title, imageUrl, content) => {
 
   return errors;
 };
+
+exports.validateStatusInput = (status) => {
+  const errors = [];
+
+  if (validator.isEmpty(status))
+    errors.push({ message: "You must enter a status" });
+
+  return errors;
+};
