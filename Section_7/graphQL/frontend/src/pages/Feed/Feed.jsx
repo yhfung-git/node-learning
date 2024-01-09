@@ -24,19 +24,31 @@ const Feed = ({ userId, token }) => {
   useEffect(() => {
     const fetchUserStatus = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:8080/user/status/${userId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const graphqlQuery = {
+          query: `
+            {
+              getStatus(userId: "${userId}") {
+                status
+              }
+            }
+          `,
+        };
+
+        const response = await fetch("http://localhost:8080/graphql", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(graphqlQuery),
+        });
+
         if (!response.ok) {
           throw new Error("Failed to fetch user status.");
         }
+
         const resData = await response.json();
-        setStatus(resData.status);
+        setStatus(resData.data.getStatus.status);
       } catch (error) {
         catchError(error);
       }
@@ -116,21 +128,37 @@ const Feed = ({ userId, token }) => {
 
   const statusUpdateHandler = (event) => {
     event.preventDefault();
+
+    const graphqlQuery = {
+      query: `
+        mutation {
+          updateStatus(status: "${status}") {
+            status
+          }
+        }
+      `,
+    };
     fetch("http://localhost:8080/graphql", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ status }),
+      body: JSON.stringify(graphqlQuery),
     })
       .then((res) => {
-        if (res.status !== 200 && res.status !== 201) {
-          throw new Error("Can't update status!");
-        }
         return res.json();
       })
       .then((resData) => {
+        if (resData.errors) {
+          const errorMessage = resData.errors[0].message;
+          throw new Error(errorMessage);
+        }
+
+        if (!resData.data || !resData.data.updateStatus) {
+          throw new Error("Update status failed!");
+        }
+
         console.log(resData);
       })
       .catch(catchError);
