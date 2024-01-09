@@ -6,6 +6,7 @@ const { JWT_PRIVATE_KEY } = process.env;
 const {
   validateSignupInput,
   validatePostInput,
+  validateStatusInput,
 } = require("../helpers/validateInput");
 const { throwError } = require("../helpers/throwError");
 const { clearImage } = require("../utils/clearImage");
@@ -215,6 +216,43 @@ const rootValue = {
       return { success: true, message: "Post deleted successfully" };
     } catch (err) {
       console.error("deletePost resolvers error:", err);
+      throw err;
+    }
+  },
+  getStatus: async ({ userId }, { req }) => {
+    try {
+      if (!req.isAuth) throwError(401, "Not authenticated!");
+
+      const user = await User.findById(userId);
+      if (!user) throwError(404, "User not found");
+
+      if (user._id.toString() !== req.userId) {
+        throwError(403, "Not authorized to view this status");
+      }
+
+      return { status: user.status };
+    } catch (err) {
+      console.error("getStatus resolvers error:", err);
+      throw err;
+    }
+  },
+  updateStatus: async ({ status }, { req }) => {
+    try {
+      if (!req.isAuth) throwError(401, "Not authenticated!");
+
+      const user = await User.findById(req.userId);
+      if (!user) throwError(404, "User not found");
+
+      const errors = validateStatusInput(status);
+      if (errors.length > 0) throwError(422, "Invalid input", errors);
+
+      user.status = status;
+      const statusUpdated = await user.save();
+      if (!statusUpdated) throwError(500, "Failed to update the status");
+
+      return { status: user.status };
+    } catch (err) {
+      console.error("getStatus resolvers error:", err);
       throw err;
     }
   },
