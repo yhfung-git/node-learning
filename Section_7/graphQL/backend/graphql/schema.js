@@ -9,6 +9,7 @@ const schema = buildSchema(`
   type RootQuery {
     getPosts(page: Int): PostData!
     getPost(postId: ID!): Post!
+    getStatus(userId: ID!): User!
   }
 
   type RootMutation {
@@ -17,6 +18,7 @@ const schema = buildSchema(`
     createPost(postInput: PostInputData): Post!
     updatePost(updatePostInput: PostInputData, postId: ID!): Post!
     deletePost(postId: ID!): DeletePostData!
+    updateStatus(status: String!): User!
   }
 
   type DeletePostData {
