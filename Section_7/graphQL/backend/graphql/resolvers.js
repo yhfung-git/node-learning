@@ -132,6 +132,24 @@ const rootValue = {
       throw err;
     }
   },
+  getPost: async ({ postId }, { req }) => {
+    try {
+      if (!req.isAuth) throwError(401, "Not authenticated!");
+
+      const post = await Post.findById(postId).populate("creator", "name");
+      if (!post) throwError(404, "Post not found");
+
+      return {
+        ...post._doc,
+        _id: post._id.toString(),
+        createdAt: post.createdAt.toISOString(),
+        updatedAt: post.updatedAt.toISOString(),
+      };
+    } catch (err) {
+      console.error("getPost resolvers error:", err);
+      throw err;
+    }
+  },
 };
 
 module.exports = rootValue;
