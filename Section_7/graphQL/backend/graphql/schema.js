@@ -25,6 +25,7 @@ const schema = buildSchema(`
     createUser(userInput: UserInputData!): User!
     login(email: String!, password: String!): AuthData!
     createPost(postInput: PostInputData): Post!
+    updatePost(updatePostInput: PostInputData, postId: ID!): Post!
   }
 
   input PostInputData {
