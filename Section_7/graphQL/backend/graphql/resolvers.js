@@ -8,6 +8,7 @@ const {
   validatePostInput,
 } = require("../helpers/validateInput");
 const { throwError } = require("../helpers/throwError");
+const { clearImage } = require("../utils/clearImage");
 
 const User = require("../models/user");
 const Post = require("../models/post");
@@ -181,7 +182,39 @@ const rootValue = {
         updatedAt: updatedPost.updatedAt.toISOString(),
       };
     } catch (err) {
-      console.error("getPost resolvers error:", err);
+      console.error("updatePost resolvers error:", err);
+      throw err;
+    }
+  },
+  deletePost: async ({ postId }, { req }) => {
+    try {
+      if (!req.isAuth) throwError(401, "Not authenticated!");
+
+      const user = await User.findById(req.userId);
+      if (!user) throwError(404, "User not found");
+
+      const post = await Post.findById(postId);
+      if (!post) throwError(404, "Post not found");
+
+      if (post.creator.toString() !== req.userId) {
+        throwError(403, "Not authorized to delete this post");
+      }
+
+      const clearedImage = await clearImage(post.imageUrl);
+      if (!clearedImage) throwError(500, "Failed to clear image");
+
+      await user.posts.pull(postId);
+      const userPostsUpdated = await user.save();
+      if (!userPostsUpdated) {
+        throwError(500, "Failed to remove post from user's posts");
+      }
+
+      const deletedPost = await Post.findByIdAndDelete(postId);
+      if (!deletedPost) throwError(500, "Failed to delete the post");
+
+      return { success: true, message: "Post deleted successfully" };
+    } catch (err) {
+      console.error("deletePost resolvers error:", err);
       throw err;
     }
   },
