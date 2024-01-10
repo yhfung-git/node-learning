@@ -59,7 +59,17 @@ const fileFilter = (req, file, cb) => {
 
 const upload = multer({ storage: storage, fileFilter: fileFilter });
 
-app.use(helmet());
+app.use(
+  helmet.contentSecurityPolicy({
+    useDefaults: true,
+    directives: {
+      "default-src": ["'self'"],
+      "script-src": ["'self'", "'unsafe-inline'", "js.stripe.com"],
+      "frame-src": ["'self'", "js.stripe.com"],
+      "form-action": ["'self'", "checkout.stripe.com"],
+    },
+  })
+);
 app.use(express.urlencoded({ extended: false }));
 app.use(upload.single("image"));
 app.use(express.static(path.join(__dirname, "public")));
