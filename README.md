@@ -78,7 +78,7 @@
 
 - Handling Payments with Stripe.js
 
-### Section 7 ⏳
+### Section 7 ✅
 
 - Building REST APIs
 
@@ -94,7 +94,7 @@
 
 - File Upload in GraphQL
 
-### Section 8 📌
+### Section 8 ⏳
 
 - Deploying a Node.js Application
 
