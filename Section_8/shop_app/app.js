@@ -10,8 +10,13 @@ const { doubleCsrf } = require("csrf-csrf");
 const flash = require("connect-flash");
 const multer = require("multer");
 
-require("dotenv").config();
-const { MONGODB_URI, SESSION_SECRET, COOKIE_PARSER_SECRET } = process.env;
+const dotenvPath =
+  process.env.NODE_ENV === "production"
+    ? ".env.production"
+    : ".env.development";
+
+require("dotenv").config({ path: dotenvPath });
+const { MONGODB_URI, SESSION_SECRET, COOKIE_PARSER_SECRET, PORT } = process.env;
 
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
@@ -104,8 +109,8 @@ app.use((error, req, res, next) => {
   try {
     await mongoose.connect(MONGODB_URI);
 
-    app.listen(3000, () => {
-      console.log("Server is running on port 3000!");
+    app.listen(PORT || 3000, () => {
+      console.log(`Server is running!`);
     });
   } catch (err) {
     console.error(err);
