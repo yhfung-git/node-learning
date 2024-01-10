@@ -20,8 +20,8 @@ const SinglePost = ({ userId, token }) => {
       try {
         const graphqlQuery = {
           query: `
-            {
-              getPost(postId: "${postId}") {
+            query GetPost($postId: ID!) {
+              getPost(postId: $postId) {
                 title
                 imageUrl
                 content
@@ -30,6 +30,9 @@ const SinglePost = ({ userId, token }) => {
               }
             }
           `,
+          variables: {
+            postId: postId
+          }
         };
         const response = await fetch("http://localhost:8080/graphql", {
           method: "POST",
