@@ -1,0 +1,26 @@
+.error__h1 {
+  color: #ff6347;
+}
+
+.error-content {
+  width: 30rem;
+}
+
+.error-content a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.error-content p {
+  font-size: 18px;
+  margin: 10px 0;
+  line-height: 1.6;
+}
+
+@media (min-width: 768px) {
+  .error-content {
+    width: 70%;
+  }
+}
