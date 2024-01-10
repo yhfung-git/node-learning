@@ -9,6 +9,7 @@ const cookieParser = require("cookie-parser");
 const { doubleCsrf } = require("csrf-csrf");
 const flash = require("connect-flash");
 const multer = require("multer");
+const helmet = require("helmet");
 
 const dotenvPath =
   process.env.NODE_ENV === "production"
@@ -58,6 +59,7 @@ const fileFilter = (req, file, cb) => {
 
 const upload = multer({ storage: storage, fileFilter: fileFilter });
 
+app.use(helmet());
 app.use(express.urlencoded({ extended: false }));
 app.use(upload.single("image"));
 app.use(express.static(path.join(__dirname, "public")));
