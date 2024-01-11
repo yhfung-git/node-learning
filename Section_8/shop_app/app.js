@@ -126,9 +126,9 @@ app.use((error, req, res, next) => {
     await mongoose.connect(MONGODB_URI);
 
     app.listen(PORT || 3000, () => {
-      console.log(`Server is running!`);
+      console.log(`Server is running on port ${PORT || 3000}!`);
     });
   } catch (err) {
-    console.error(err);
+    console.error("MongoDB connection error:", err);
   }
 })();
