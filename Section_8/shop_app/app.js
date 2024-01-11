@@ -11,6 +11,7 @@ const flash = require("connect-flash");
 const multer = require("multer");
 const helmet = require("helmet");
 const compression = require("compression");
+const morgan = require("morgan");
 
 const dotenvPath =
   process.env.NODE_ENV === "production"
@@ -34,6 +35,7 @@ const generateToken = require("./middleware/generate-token");
 
 const alerts = require("./middleware/alerts");
 const handleOldInput = require("./middleware/handle-old-input");
+const { customFormat, accessLogStream } = require("./configs/loggingConfig");
 
 const app = express();
 const store = new MongoDBStore({
@@ -72,6 +74,7 @@ app.use(
   })
 );
 app.use(compression());
+app.use(morgan(customFormat, { stream: accessLogStream }));
 app.use(express.urlencoded({ extended: false }));
 app.use(upload.single("image"));
 app.use(express.static(path.join(__dirname, "public")));
@@ -90,7 +93,6 @@ app.use(
       httpOnly: true,
       //   secure: true,
       maxAge: 60 * 60 * 1000,
-      //   expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     },
   })
 );
