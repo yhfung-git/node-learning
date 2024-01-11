@@ -10,6 +10,7 @@ const { doubleCsrf } = require("csrf-csrf");
 const flash = require("connect-flash");
 const multer = require("multer");
 const helmet = require("helmet");
+const compression = require("compression");
 
 const dotenvPath =
   process.env.NODE_ENV === "production"
@@ -70,6 +71,7 @@ app.use(
     },
   })
 );
+app.use(compression());
 app.use(express.urlencoded({ extended: false }));
 app.use(upload.single("image"));
 app.use(express.static(path.join(__dirname, "public")));
