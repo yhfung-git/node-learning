@@ -50,6 +50,7 @@ const createTransporter = async () => {
 
     return transporter;
   } catch (err) {
+    console.error("Error creating transporter:", err);
     throw err;
   }
 };
@@ -77,6 +78,7 @@ const generateEmailOptions = async (to, subject, template, data) => {
 
     return emailOptions;
   } catch (err) {
+    console.error("Error generating email options:", err);
     throw err;
   }
 };
@@ -97,6 +99,7 @@ const sendEmail = async (to, subject, template, data) => {
     // send email
     emailTransporter.sendMail(emailOptions);
   } catch (err) {
+    console.error("Error sending email:", err);
     throw err;
   }
 };
