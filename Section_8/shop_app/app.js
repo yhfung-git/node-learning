@@ -113,7 +113,7 @@ app.use(authRoutes);
 app.use(errorRoutes);
 
 app.use((error, req, res, next) => {
-  console.log(error);
+  console.error(error);
   // res.redirect(500);
   res.status(500).render("errors/500", {
     pageTitle: "Internal Server Error",
