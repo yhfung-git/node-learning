@@ -1,6 +1,7 @@
 [build]
   command = "npm run build"
-  publish = "public"
+  publish = "shop_app"
+  base = "Section_8/shop_app"
 
 [context.production.environment]
   NODE_ENV = "production"
