@@ -1,0 +1,6 @@
+[build]
+base = "Section_8/shop_app"
+
+
+[build.environment]
+  NODE_ENV = "production"
