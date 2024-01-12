@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon app.js",
     "dev": "NODE_ENV=development nodemon app.js",
-    "build": "NODE_ENV=production node app.js"
+    "build": "npm install && echo 'Running build process...'"
   },
   "author": "YHFung",
   "license": "ISC",
