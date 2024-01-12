@@ -13,9 +13,12 @@ const helmet = require("helmet");
 const compression = require("compression");
 const morgan = require("morgan");
 
-if (process.env.NODE_ENV === "development") {
-  require("dotenv").config({ path: ".env.development" });
-}
+const dotenvPath =
+  process.env.NODE_ENV === "production"
+    ? ".env.production"
+    : ".env.development";
+
+require("dotenv").config({ path: dotenvPath });
 const { MONGODB_URI, SESSION_SECRET, COOKIE_PARSER_SECRET, PORT } = process.env;
 
 const adminRoutes = require("./routes/admin");
