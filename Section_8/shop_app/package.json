@@ -3,10 +3,14 @@
   "version": "1.0.0",
   "description": "Section_4_Learning",
   "main": "app.js",
+  "engines": {
+    "node": "21.1.0"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js",
     "dev": "NODE_ENV=development nodemon app.js",
-    "start": "NODE_ENV=production node app.js"
+    "build": "NODE_ENV=production node app.js"
   },
   "author": "YHFung",
   "license": "ISC",
