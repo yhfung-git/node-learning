@@ -1,6 +1,0 @@
-[build]
-  command = "npm run build"
-  base = "Section_8/shop_app"
-
-[context.production.environment]
-  NODE_ENV = "production"
