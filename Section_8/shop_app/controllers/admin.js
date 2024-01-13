@@ -1,9 +1,15 @@
+const cloudinary = require("cloudinary").v2;
+
 const Product = require("../models/product");
 const User = require("../models/user");
 const { handleValidationErrors } = require("../middleware/validation");
 const errorHandler = require("../utils/error-handler");
-const { deleteFile } = require("../utils/file-helper");
 const { getPaginationInfo } = require("../utils/pagination-info");
+const {
+  deleteFile,
+  uploadImageToCloudinary,
+  extractPublicId,
+} = require("../utils/file-helper");
 
 exports.getProducts = async (req, res, next) => {
   try {
@@ -67,7 +73,7 @@ exports.postAddProduct = async (req, res, next) => {
 
     if (!validationPassed) return;
 
-    const imageUrl = `/images/${image.filename}`;
+    const imageUrl = await uploadImageToCloudinary(image);
 
     const newProduct = new Product({
       title: title,
@@ -167,8 +173,13 @@ exports.postEditProduct = async (req, res, next) => {
     };
 
     if (image) {
-      deleteFile(product.imageUrl);
-      updatedFields.imageUrl = `/images/${image.filename}`;
+      if (product.imageUrl) {
+        const publicId = await extractPublicId(product.imageUrl);
+        await cloudinary.uploader.destroy(publicId);
+      }
+
+      const imageUrl = await uploadImageToCloudinary(image);
+      updatedFields.imageUrl = imageUrl;
     }
 
     const updatedProduct = await Product.findByIdAndUpdate(
@@ -210,7 +221,11 @@ exports.deleteProduct = async (req, res, next) => {
       return res.status(404).json({ error: "Product not found" });
     }
 
-    deleteFile(product.imageUrl);
+    if (product.imageUrl) {
+      const publicId = await extractPublicId(product.imageUrl);
+      await cloudinary.uploader.destroy(publicId);
+    }
+
     const deletedProduct = await Product.findByIdAndDelete(prodId);
 
     if (!deletedProduct) {
