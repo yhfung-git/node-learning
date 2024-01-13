@@ -215,7 +215,7 @@ exports.postResetPassword = async (req, res, next) => {
       // Send email (to, subject, template, data)
       const data = {
         username: user.username,
-        linkPath: `http://localhost:3000/new-password/${resetToken}`,
+        linkPath: `/new-password/${resetToken}`,
       };
       sendEmail(email, "Password Reset", "email-reset-password", data);
     }
