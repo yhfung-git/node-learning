@@ -12,13 +12,22 @@ const multer = require("multer");
 const helmet = require("helmet");
 const compression = require("compression");
 const morgan = require("morgan");
+const cloudinary = require("cloudinary").v2;
 
 if (process.env.NODE_ENV === "development") {
   const dotenvPath = ".env.development";
   require("dotenv").config({ path: dotenvPath });
 }
 
-const { MONGODB_URI, SESSION_SECRET, COOKIE_PARSER_SECRET, PORT } = process.env;
+const {
+  MONGODB_URI,
+  SESSION_SECRET,
+  COOKIE_PARSER_SECRET,
+  PORT,
+  CLOUDINARY_NAME,
+  CLOUDINARY_API_KEY,
+  CLOUDINARY_SECRET,
+} = process.env;
 
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
@@ -42,24 +51,14 @@ const store = new MongoDBStore({
   collection: "mySessions",
 });
 
-// Catch errors
 store.on("MongoDBStore error:", (err) => console.error(err));
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "public/images");
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + "-" + file.originalname);
-  },
+cloudinary.config({
+  cloud_name: CLOUDINARY_NAME,
+  api_key: CLOUDINARY_API_KEY,
+  api_secret: CLOUDINARY_SECRET,
+  secure: true,
 });
-
-const fileFilter = (req, file, cb) => {
-  const acceptedImageTypes = ["image/png", "image/jpg", "image/jpeg"];
-  acceptedImageTypes.includes(file.mimetype) ? cb(null, true) : cb(null, false);
-};
-
-const upload = multer({ storage: storage, fileFilter: fileFilter });
 
 app.use(
   helmet.contentSecurityPolicy({
@@ -69,13 +68,14 @@ app.use(
       "script-src": ["'self'", "'unsafe-inline'", "js.stripe.com"],
       "frame-src": ["'self'", "js.stripe.com"],
       "form-action": ["'self'", "checkout.stripe.com"],
+      "img-src": ["'self'", "res.cloudinary.com"],
     },
   })
 );
 app.use(compression());
 app.use(morgan(customFormat, { stream: accessLogStream }));
 app.use(express.urlencoded({ extended: false }));
-app.use(upload.single("image"));
+app.use(multer({ storage: multer.memoryStorage() }).single("image"));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use(expressLayout);
@@ -90,7 +90,7 @@ app.use(
     store: store,
     cookie: {
       httpOnly: true,
-      //   secure: true,
+      // secure: true,
       maxAge: 60 * 60 * 1000,
     },
   })
@@ -113,7 +113,6 @@ app.use(errorRoutes);
 
 app.use((error, req, res, next) => {
   console.error(error);
-  // res.redirect(500);
   res.status(500).render("errors/500", {
     pageTitle: "Internal Server Error",
     path: "/500",
