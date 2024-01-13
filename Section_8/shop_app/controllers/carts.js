@@ -5,13 +5,9 @@ const stripe = require("stripe")(STRIPE_SECRET_KEY);
 
 exports.getCart = async (req, res, next) => {
   try {
-    // Populate the "cart.items.productId" field to fetch details of products in the cart
     const populatedUser = await req.user.populate("cart.items.productId");
-    // console.log(JSON.stringify(populatedUser, null, 2));
 
-    // Extract the cart items from the populated user object and Map the cart items to a new array with additional details (quantity)
     const products = populatedUser.cart.items.map((item) => {
-      // Using .toJSON() converts the Mongoose document to a plain JavaScript object
       const product = item.productId.toJSON();
       return { ...product, quantity: item.quantity };
     });
