@@ -5,9 +5,9 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app.js",
+    "start": "NODE_ENV=production node app.js",
     "dev": "NODE_ENV=development nodemon app.js",
-    "build": "npm install && echo 'Running build process...'"
+    "build": "npm install"
   },
   "author": "YHFung",
   "license": "ISC",
