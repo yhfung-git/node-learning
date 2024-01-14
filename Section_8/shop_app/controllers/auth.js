@@ -6,6 +6,8 @@ const { sendEmail } = require("../utils/email-service");
 const { handleValidationErrors } = require("../middleware/validation");
 const errorHandler = require("../utils/error-handler");
 
+const { WEBSITE_URL } = process.env;
+
 exports.getLogin = async (req, res, next) => {
   try {
     let message = "";
@@ -215,7 +217,7 @@ exports.postResetPassword = async (req, res, next) => {
       // Send email (to, subject, template, data)
       const data = {
         username: user.username,
-        linkPath: `/new-password/${resetToken}`,
+        linkPath: `${WEBSITE_URL}/new-password/${resetToken}`,
       };
       sendEmail(email, "Password Reset", "email-reset-password", data);
     }
