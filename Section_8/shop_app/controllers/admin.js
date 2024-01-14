@@ -19,6 +19,7 @@ exports.getProducts = async (req, res, next) => {
     const paginationInfo = await getPaginationInfo(page, itemPerPage, Product);
 
     const products = await Product.find()
+      .sort({ createdAt: -1 })
       .skip((page - 1) * itemPerPage)
       .limit(itemPerPage);
 
