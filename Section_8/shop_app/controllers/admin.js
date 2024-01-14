@@ -6,7 +6,6 @@ const { handleValidationErrors } = require("../middleware/validation");
 const errorHandler = require("../utils/error-handler");
 const { getPaginationInfo } = require("../utils/pagination-info");
 const {
-  deleteFile,
   uploadImageToCloudinary,
   extractPublicId,
 } = require("../utils/file-helper");
