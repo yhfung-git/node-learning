@@ -194,7 +194,7 @@ main {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  padding: 0 20px;
+  padding: 20px;
 }
 
 .card__actions {
