@@ -2,9 +2,10 @@
   "name": "learn-typescript",
   "version": "1.0.0",
   "description": "for typescript learning",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node dist/index.js"
   },
   "author": "YHFung",
   "license": "ISC",
