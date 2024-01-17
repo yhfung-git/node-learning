@@ -22,3 +22,9 @@ buttonElement === null || buttonElement === void 0 ? void 0 : buttonElement.addE
     printResult({ value: sum, timestamp: new Date() });
     console.log(numResults, textResults);
 });
+const myPromise = new Promise((resolve, reject) => {
+    setTimeout(() => {
+        resolve("It works!");
+    }, 1000);
+});
+myPromise.then((res) => console.log(res.split(" ")));
