@@ -1,9 +1,7 @@
-import React from 'react';
+import Todos from "./components/Todos";
 
-import Todos from './components/Todos';
-
-function App() {
+const App = () => {
   return <Todos />;
-}
+};
 
 export default App;

@@ -1,15 +1,15 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from "react";
 
-import './Todos.css';
+import "./Todos.css";
 
 const Todos = () => {
   const [todos, setTodos] = useState([]);
   const [editedTodo, setEditedTodo] = useState();
-  const [enteredText, setEnteredText] = useState('');
+  const [enteredText, setEnteredText] = useState("");
 
   const getTodos = useCallback(async () => {
     try {
-      const response = await fetch('http://localhost:3000/todos');
+      const response = await fetch("http://localhost:3000/todos");
       const todosData = await response.json();
       setTodos(todosData.todos);
     } catch (err) {
@@ -33,8 +33,8 @@ const Todos = () => {
   };
 
   const deleteTodoHandler = async (todoId) => {
-    const response = await fetch('http://localhost:3000/todos/' + todoId, {
-      method: 'DELETE',
+    const response = await fetch("http://localhost:3000/todos/" + todoId, {
+      method: "DELETE",
     });
     const data = await response.json();
 
@@ -49,12 +49,12 @@ const Todos = () => {
   const submitHandler = async (event) => {
     event.preventDefault();
     setEditedTodo(null);
-    setEnteredText('');
-    let url = 'http://localhost:3000/todos';
-    let method = 'POST';
+    setEnteredText("");
+    let url = "http://localhost:3000/todos";
+    let method = "POST";
     if (editedTodo) {
-      url = url + '/' + editedTodo.id;
-      method = 'PUT';
+      url = url + "/" + editedTodo.id;
+      method = "PUT";
     }
     const response = await fetch(url, {
       method,
@@ -62,7 +62,7 @@ const Todos = () => {
         text: enteredText,
       }),
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
     const data = await response.json();
@@ -76,7 +76,7 @@ const Todos = () => {
         <form onSubmit={submitHandler}>
           <label>Todo Text</label>
           <input type="text" value={enteredText} onChange={inputHandler} />
-          <button type="submit">{editedTodo ? 'Edit' : 'Add'} Todo</button>
+          <button type="submit">{editedTodo ? "Edit" : "Add"} Todo</button>
         </form>
       </div>
       {todos && todos.length > 0 && (
