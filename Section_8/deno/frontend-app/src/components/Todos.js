@@ -9,7 +9,7 @@ const Todos = () => {
 
   const getTodos = useCallback(async () => {
     try {
-      const response = await fetch("http://localhost:3000/todos");
+      const response = await fetch("http://localhost:8000/todos");
       const todosData = await response.json();
       setTodos(todosData.todos);
     } catch (err) {
@@ -33,9 +33,12 @@ const Todos = () => {
   };
 
   const deleteTodoHandler = async (todoId) => {
-    const response = await fetch("http://localhost:3000/todos/" + todoId, {
-      method: "DELETE",
-    });
+    const response = await fetch(
+      `http://localhost:8000/todos/delete/${todoId}`,
+      {
+        method: "DELETE",
+      }
+    );
     const data = await response.json();
 
     console.log(data);
@@ -50,10 +53,10 @@ const Todos = () => {
     event.preventDefault();
     setEditedTodo(null);
     setEnteredText("");
-    let url = "http://localhost:3000/todos";
+    let url = "http://localhost:8000/todos/create";
     let method = "POST";
     if (editedTodo) {
-      url = url + "/" + editedTodo.id;
+      url = `http://localhost:8000/todos/update/${editedTodo._id}`;
       method = "PUT";
     }
     const response = await fetch(url, {
@@ -82,13 +85,13 @@ const Todos = () => {
       {todos && todos.length > 0 && (
         <ul className="todos__list">
           {todos.map((todo) => (
-            <li key={todo.id}>
+            <li key={todo._id}>
               <span>{todo.text}</span>
               <div className="todo__actions">
                 <button onClick={startEditHandler.bind(null, todo)}>
                   Edit
                 </button>
-                <button onClick={deleteTodoHandler.bind(null, todo.id)}>
+                <button onClick={deleteTodoHandler.bind(null, todo._id)}>
                   Delete
                 </button>
               </div>
