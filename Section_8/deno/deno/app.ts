@@ -4,7 +4,18 @@ import { green, yellow } from "https://deno.land/std@0.181.0/fmt/colors.ts";
 import todosRoutes from "./routes/todos.ts";
 
 const app = new Application();
-const port = 3000;
+const port = 8000;
+
+app.use(async (ctx, next) => {
+  ctx.response.headers.set("Access-Control-Allow-Origin", "*");
+  ctx.response.headers.set(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE"
+  );
+  ctx.response.headers.set("Access-Control-Allow-Headers", "Content-Type");
+
+  await next();
+});
 
 app.use(todosRoutes.routes());
 app.use(todosRoutes.allowedMethods());
