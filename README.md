@@ -1,4 +1,4 @@
-# Learning Node.js on Udemy
+# Learning Node.js on Udemy (COMPLETED)
 
 [![portfolio](https://img.shields.io/badge/link_to_the_course-BE32F5?style=for-the-badge&logo=logoColor=white)](https://www.udemy.com/share/101r4c3@IPRvGmuNcNMV6kmnPzrcHHq5dBJ553bVFr5p98DojqxjlDFErE6Wcho8eJCK2cKtXg==/)
 
@@ -94,7 +94,7 @@
 
 - File Upload in GraphQL
 
-### Section 8 ⏳
+### Section 8 ✅
 
 - Deploying a Node.js Application
 
