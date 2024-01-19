@@ -2,7 +2,9 @@ import { Application } from "https://deno.land/x/oak@v12.6.2/mod.ts";
 import { green, yellow } from "https://deno.land/std@0.181.0/fmt/colors.ts";
 
 import todosRoutes from "./routes/todos.ts";
+import { connectDb } from "./helpers/db_client.ts";
 
+await connectDb();
 const app = new Application();
 const port = 8000;
 
